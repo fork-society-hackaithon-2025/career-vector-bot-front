@@ -1,30 +1,22 @@
-
-import React, { useState } from 'react';
-import { orders as initialOrders } from '@/lib/mock-data';
-import { Order, OrderStatus } from '@/types/order';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger,
+import React, {useState} from 'react';
+import {orders as initialOrders} from '@/lib/mock-data';
+import {Order, OrderStatus} from '@/types/order';
+import {Card, CardContent} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
   DialogFooter,
-  DialogClose
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
 } from '@/components/ui/dialog';
-import { Check, Download, Phone, X } from 'lucide-react';
-import { format } from 'date-fns';
-import { toast } from 'sonner';
-import { Label } from '@/components/ui/label';
+import {Check, Download, Phone, X} from 'lucide-react';
+import {format} from 'date-fns';
+import {toast} from 'sonner';
 
 const MerchantOrders = () => {
   const [orders, setOrders] = useState<Order[]>(initialOrders);
@@ -145,7 +137,7 @@ const MerchantOrders = () => {
                       <p className="text-xl font-bold">${order.totalAmount.toFixed(2)}</p>
                     </div>
                     
-                    <div className="flex gap-2 justify-end mt-2">
+                    <div className="w-full overflow-scroll flex gap-2 mt-2">
                       <Button
                         variant="outline"
                         size="sm"

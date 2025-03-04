@@ -28,7 +28,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="font-semibold text-xl flex items-center gap-2">
-          TeleShop
+          TG Order Manager
         </Link>
         
         <div className="flex items-center gap-2">
@@ -57,7 +57,7 @@ const Navbar = () => {
                 variant="ghost" 
                 size="icon"
                 onClick={handleLogout}
-                title="Log out"
+                title="Выйти"
               >
                 <LogOut className="h-5 w-5" />
               </Button>
@@ -70,7 +70,7 @@ const Navbar = () => {
               className="font-medium"
             >
               <User className="mr-2 h-4 w-4" />
-              Login
+              Войти
             </Button>
           )}
         </div>

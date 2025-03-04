@@ -18,9 +18,9 @@ const Index = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md mx-auto text-center space-y-6"
       >
-        <h1 className="text-3xl md:text-4xl font-bold">Welcome to TeleShop</h1>
+        <h1 className="text-3xl md:text-4xl font-bold">Добро пожаловать!</h1>
         <p className="text-muted-foreground text-lg">
-          {user ? `Hello, ${user.name}!` : "Please sign in to get started"}
+          {user ? `Здравствуйте, ${user.name}!` : "Пожалуйста, войдите в аккаунт"}
         </p>
 
         <div className="grid gap-4 mt-8">
@@ -30,7 +30,7 @@ const Index = () => {
               className="w-full text-lg h-14" 
               onClick={() => navigate("/login")}
             >
-              Sign In
+              Войти
             </Button>
           )}
           
