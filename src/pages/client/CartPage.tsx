@@ -1,0 +1,153 @@
+
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '@/contexts/CartContext';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Minus, Plus, Trash2, ArrowLeft, ShoppingBag } from 'lucide-react';
+import { toast } from 'sonner';
+
+const CartPage = () => {
+  const { items, updateQuantity, removeItem, clearCart, totalPrice, hasCartTimeExpired } = useCart();
+  const navigate = useNavigate();
+
+  const handleIncreaseQuantity = (productId: string, currentQuantity: number) => {
+    updateQuantity(productId, currentQuantity + 1);
+  };
+
+  const handleDecreaseQuantity = (productId: string, currentQuantity: number) => {
+    if (currentQuantity > 1) {
+      updateQuantity(productId, currentQuantity - 1);
+    } else {
+      removeItem(productId);
+    }
+  };
+
+  const handleRemoveItem = (productId: string) => {
+    removeItem(productId);
+  };
+
+  const handleCheckout = () => {
+    if (items.length === 0) {
+      toast.error('Your cart is empty');
+      return;
+    }
+    
+    navigate('/checkout');
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-2">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => navigate('/catalogue')}
+          className="h-8 w-8"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <h1 className="text-2xl font-bold">Your Cart</h1>
+      </div>
+
+      {hasCartTimeExpired && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+          <p className="text-yellow-700">
+            Your cart edit time has expired. You can no longer modify this order.
+          </p>
+        </div>
+      )}
+      
+      {items.length === 0 ? (
+        <Card className="text-center py-8">
+          <CardContent>
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <ShoppingBag className="h-12 w-12 text-muted-foreground" />
+              <h3 className="text-lg font-medium">Your cart is empty</h3>
+              <p className="text-muted-foreground">Add some products to your cart</p>
+              <Button onClick={() => navigate('/catalogue')}>
+                Continue Shopping
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Items ({items.length})</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {items.map((item) => (
+                <div key={item.product.id} className="flex items-center justify-between space-x-4">
+                  <div className="flex items-center space-x-4">
+                    <div 
+                      className="h-12 w-12 rounded bg-cover bg-center flex-shrink-0" 
+                      style={{ backgroundImage: `url(${item.product.image || '/placeholder.svg'})` }}
+                    />
+                    <div className="space-y-1">
+                      <h3 className="font-medium">{item.product.name}</h3>
+                      <p className="text-sm text-muted-foreground">${item.product.price.toFixed(2)}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handleDecreaseQuantity(item.product.id, item.quantity)}
+                      disabled={hasCartTimeExpired}
+                    >
+                      <Minus className="h-3 w-3" />
+                    </Button>
+                    <span className="mx-2 w-8 text-center">{item.quantity}</span>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handleIncreaseQuantity(item.product.id, item.quantity)}
+                      disabled={hasCartTimeExpired}
+                    >
+                      <Plus className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 ml-2 text-destructive hover:text-destructive/90 hover:bg-destructive/10"
+                      onClick={() => handleRemoveItem(item.product.id)}
+                      disabled={hasCartTimeExpired}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+            <Separator />
+            <CardFooter className="flex justify-between py-4">
+              <div>
+                <p className="font-medium">Total</p>
+                <p className="text-2xl font-bold">${totalPrice.toFixed(2)}</p>
+              </div>
+              <div className="space-x-2">
+                <Button 
+                  variant="outline" 
+                  onClick={clearCart}
+                  disabled={hasCartTimeExpired}
+                >
+                  Clear Cart
+                </Button>
+                <Button onClick={handleCheckout}>
+                  Checkout
+                </Button>
+              </div>
+            </CardFooter>
+          </Card>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default CartPage;
