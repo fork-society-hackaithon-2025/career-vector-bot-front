@@ -10,18 +10,25 @@ interface MobileNavbarProps {
   isMerchant: boolean;
 }
 
+interface NavItem {
+  icon: React.ElementType;
+  label: string;
+  path: string;
+  badge?: number;
+}
+
 const MobileNavbar: React.FC<MobileNavbarProps> = ({ isMerchant }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { itemCount } = useCart();
   
-  const clientNavItems = [
+  const clientNavItems: NavItem[] = [
     { icon: Home, label: 'Home', path: '/' },
     { icon: ShoppingBag, label: 'Shop', path: '/catalogue' },
     { icon: ShoppingCart, label: 'Cart', path: '/cart', badge: itemCount > 0 ? itemCount : undefined },
   ];
   
-  const merchantNavItems = [
+  const merchantNavItems: NavItem[] = [
     { icon: Home, label: 'Dashboard', path: '/merchant' },
     { icon: Package, label: 'Products', path: '/merchant/products' },
     { icon: ShoppingBag, label: 'Orders', path: '/merchant/orders' },

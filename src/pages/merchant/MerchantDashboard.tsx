@@ -4,6 +4,7 @@ import { orders } from '@/lib/mock-data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Wallet, ShoppingBag, UserCheck } from 'lucide-react';
 import { generateAnalyticsData } from '@/lib/mock-data';
+import { format } from 'date-fns';
 
 const MerchantDashboard = () => {
   const pendingOrders = orders.filter(order => order.status === 'pending');
@@ -134,7 +135,7 @@ const MerchantDashboard = () => {
                       <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
                         ${day.amount.toFixed(2)}
                       </div>
-                      <div className="absolute bottom-0 left-0 right-0 bg-primary rounded-t h-[30%]"></div>
+                      <div className="absolute bottom-0 let-0 right-0 bg-primary rounded-t h-[30%]"></div>
                     </div>
                     <span className="text-xs">{day.date.split('-')[2]}</span>
                   </div>
