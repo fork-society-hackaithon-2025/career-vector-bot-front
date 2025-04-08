@@ -1,13 +1,12 @@
-
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { products } from '@/lib/mock-data';
-import { useCart } from '@/contexts/CartContext';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Minus, Plus, ShoppingCart } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { motion } from 'framer-motion';
+import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {products} from '@/lib/mock-data';
+import {useCart} from '@/contexts/CartContext';
+import {Card, CardContent, CardFooter} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+import {Minus, Plus, ShoppingCart} from 'lucide-react';
+import {Badge} from '@/components/ui/badge';
+import {motion} from 'framer-motion';
 
 const CataloguePage = () => {
   const { addItem, items } = useCart();
@@ -61,13 +60,13 @@ const CataloguePage = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Products</h1>
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => navigate('/cart')}
           className="flex items-center gap-2"
         >
-          <ShoppingCart className="h-4 w-4" /> 
+          <ShoppingCart className="h-4 w-4" />
           View Cart
         </Button>
       </div>
@@ -81,8 +80,8 @@ const CataloguePage = () => {
             transition={{ duration: 0.3 }}
           >
             <Card className="h-full flex flex-col overflow-hidden">
-              <div 
-                className="h-48 bg-cover bg-center" 
+              <div
+                className="h-48 bg-cover bg-center"
                 style={{ backgroundImage: `url(${product.image || '/placeholder.svg'})` }}
               />
               <CardContent className="flex-grow p-4">
@@ -120,7 +119,7 @@ const CataloguePage = () => {
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
-                    <Button 
+                    <Button
                       className="w-full"
                       onClick={() => handleAddToCartWithQuantity(product.id)}
                     >
@@ -128,7 +127,7 @@ const CataloguePage = () => {
                     </Button>
                   </>
                 ) : (
-                  <Button 
+                  <Button
                     className="w-full"
                     onClick={() => handleAddToCart(product.id)}
                   >

@@ -1,6 +1,7 @@
-import axios, { AxiosInstance } from "axios";
+import axios, {AxiosInstance} from "axios";
 import cookie from "js-cookie";
 import {UsersService} from "@/common/api/services/users.service.ts";
+import {ProductsService} from "@/common/api/services/products.service.ts";
 
 export const apiConfig = {
     baseUrl: import.meta.env.VITE_API_URL
@@ -10,6 +11,7 @@ export class Api {
     private axios: AxiosInstance;
 
     public users: UsersService;
+    public products: ProductsService;
 
     constructor() {
         this.axios = axios.create({
@@ -32,6 +34,7 @@ export class Api {
         );
 
         this.users = new UsersService(this.axios);
+        this.products = new ProductsService(this.axios);
     }
 }
 
