@@ -7,6 +7,7 @@ import {Button} from '@/components/ui/button';
 import {Minus, Plus, ShoppingCart} from 'lucide-react';
 import {Badge} from '@/components/ui/badge';
 import {motion} from 'framer-motion';
+import {useUsers} from "@/common/hooks/useUsers.ts";
 
 const CataloguePage = () => {
   const { addItem, items } = useCart();
@@ -17,6 +18,10 @@ const CataloguePage = () => {
       [product.id]: items.find(item => item.product.id === product.id)?.quantity || 0
     }), {})
   );
+  const {data, isLoading} = useUsers();
+
+
+  console.log(data);
 
   const handleAddToCart = (productId: string) => {
     const product = products.find(p => p.id === productId);
