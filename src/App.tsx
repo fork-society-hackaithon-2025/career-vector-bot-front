@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,76 +21,86 @@ import MerchantAnalytics from "./pages/merchant/MerchantAnalytics";
 import Layout from "./components/layout/Layout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import MerchantRoute from "./components/auth/MerchantRoute";
+import {useEffect} from "react";
+import WebApp from "@twa-dev/sdk";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <CartProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route element={<Layout />}>
-                {/* Public Routes */}
-                <Route path="/" element={<Index />} />
-                <Route path="/login" element={<LoginPage />} />
-                
-                {/* Client Routes */}
-                <Route path="/catalogue" element={
-                  <ProtectedRoute>
-                    <CataloguePage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/cart" element={
-                  <ProtectedRoute>
-                    <CartPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/checkout" element={
-                  <ProtectedRoute>
-                    <CheckoutPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/order-confirmation" element={
-                  <ProtectedRoute>
-                    <OrderConfirmationPage />
-                  </ProtectedRoute>
-                } />
-                
-                {/* Merchant Routes */}
-                <Route path="/merchant" element={
-                  <MerchantRoute>
-                    <MerchantDashboard />
-                  </MerchantRoute>
-                } />
-                <Route path="/merchant/products" element={
-                  <MerchantRoute>
-                    <MerchantProducts />
-                  </MerchantRoute>
-                } />
-                <Route path="/merchant/orders" element={
-                  <MerchantRoute>
-                    <MerchantOrders />
-                  </MerchantRoute>
-                } />
-                <Route path="/merchant/analytics" element={
-                  <MerchantRoute>
-                    <MerchantAnalytics />
-                  </MerchantRoute>
-                } />
-                
-                {/* Catch All */}
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </CartProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+
+  useEffect(() => {
+    WebApp.ready();
+    WebApp.expand(); // optional, makes it full height
+  }, []);
+
+  return (
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <CartProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route element={<Layout />}>
+                    {/* Public Routes */}
+                    <Route path="/" element={<Index />} />
+                    <Route path="/login" element={<LoginPage />} />
+
+                    {/* Client Routes */}
+                    <Route path="/catalogue" element={
+                      <ProtectedRoute>
+                        <CataloguePage />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/cart" element={
+                      <ProtectedRoute>
+                        <CartPage />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/checkout" element={
+                      <ProtectedRoute>
+                        <CheckoutPage />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/order-confirmation" element={
+                      <ProtectedRoute>
+                        <OrderConfirmationPage />
+                      </ProtectedRoute>
+                    } />
+
+                    {/* Merchant Routes */}
+                    <Route path="/merchant" element={
+                      <MerchantRoute>
+                        <MerchantDashboard />
+                      </MerchantRoute>
+                    } />
+                    <Route path="/merchant/products" element={
+                      <MerchantRoute>
+                        <MerchantProducts />
+                      </MerchantRoute>
+                    } />
+                    <Route path="/merchant/orders" element={
+                      <MerchantRoute>
+                        <MerchantOrders />
+                      </MerchantRoute>
+                    } />
+                    <Route path="/merchant/analytics" element={
+                      <MerchantRoute>
+                        <MerchantAnalytics />
+                      </MerchantRoute>
+                    } />
+
+                    {/* Catch All */}
+                    <Route path="*" element={<NotFound />} />
+                  </Route>
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </CartProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+  )
+};
 
 export default App;
