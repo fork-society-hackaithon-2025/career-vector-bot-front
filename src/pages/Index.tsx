@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,21 +19,11 @@ const Index = () => {
       >
         <h1 className="text-3xl md:text-4xl font-bold">Добро пожаловать!</h1>
         <p className="text-muted-foreground text-lg">
-          {user ? `Здравствуйте, ${user.name}!` : "Пожалуйста, войдите в аккаунт"}
+          {user ? `Здравствуйте, ${user.name}!` : "Пожалуйста, войдите в аккаунт через Telegram"}
         </p>
 
         <div className="grid gap-4 mt-8">
-          {!user && (
-            <Button 
-              size="lg" 
-              className="w-full text-lg h-14" 
-              onClick={() => navigate("/login")}
-            >
-              Войти
-            </Button>
-          )}
-          
-          {user?.role === "client" && (
+          {user?.role === "USER" && (
             <Button 
               size="lg" 
               className="w-full text-lg h-14"
@@ -45,7 +34,7 @@ const Index = () => {
             </Button>
           )}
           
-          {user?.role === "merchant" && (
+          {user?.role === "ADMIN" && (
             <Button 
               size="lg" 
               className="w-full text-lg h-14"

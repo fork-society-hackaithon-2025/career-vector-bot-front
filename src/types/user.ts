@@ -2,6 +2,6 @@
 export interface User {
   id: string;
   name: string;
-  phone?: string;
-  role: "client" | "merchant";
+  telegramId: string;
+  role: "USER" | "ADMIN";
 }

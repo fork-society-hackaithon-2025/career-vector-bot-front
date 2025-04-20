@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -6,22 +5,16 @@ import { toast } from "sonner";
 export interface User {
   id: string;
   name: string;
-  role: "client" | "merchant";
+  role: "ADMIN" | "USER";
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (credentials: { username: string; password: string }) => Promise<void>;
+  login: (userData: User) => Promise<void>;
   logout: () => void;
   isMerchant: () => boolean;
 }
-
-// Mock user data (would come from API/database in real implementation)
-const MOCK_USERS = [
-  { id: "1", name: "Client User", username: "client", password: "client123", role: "client" as const },
-  { id: "2", name: "Merchant User", username: "merchant", password: "merchant123", role: "merchant" as const },
-];
 
 // Create context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -44,31 +37,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
-  const login = async (credentials: { username: string; password: string }) => {
+  const login = async (userData: User) => {
     setIsLoading(true);
     try {
-      // Simulate API request delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      const foundUser = MOCK_USERS.find(
-        u => u.username === credentials.username && u.password === credentials.password
-      );
-      
-      if (!foundUser) {
-        throw new Error("Invalid credentials");
-      }
-      
-      const userData: User = {
-        id: foundUser.id,
-        name: foundUser.name,
-        role: foundUser.role,
-      };
-      
+      console.log(userData);
       setUser(userData);
       localStorage.setItem("telegramShopUser", JSON.stringify(userData));
       toast.success(`Welcome back, ${userData.name}!`);
     } catch (error) {
-      toast.error("Login failed. Please check your credentials.");
+      toast.error("Login failed. Please try again.");
       throw error;
     } finally {
       setIsLoading(false);
@@ -82,7 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const isMerchant = () => {
-    return user?.role === "merchant";
+    return user?.role === "ADMIN";
   };
 
   return (

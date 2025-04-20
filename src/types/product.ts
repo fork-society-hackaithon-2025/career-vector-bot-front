@@ -1,9 +1,29 @@
-
 export interface Product {
-  id: string;
+  id: number;
   name: string;
+  brand: string;
+  category: string;
   grossPrice: number;
-  price: number; // Client price
-  inventory: number;
-  image?: string;
+  clientPrice: number;
+  availableAmount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateProductDto {
+  name: string;
+  brand: string;
+  category: string;
+  grossPrice: number;
+  clientPrice: number;
+  availableAmount: number;
+}
+
+export interface UpdateProductDto {
+  name?: string;
+  brand?: string;
+  category?: string;
+  grossPrice?: number;
+  clientPrice?: number;
+  availableAmount?: number;
 }

@@ -1,94 +1,96 @@
-
-import React, { useState } from 'react';
-import { products as initialProducts } from '@/lib/mock-data';
-import { Product } from '@/types/product';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger,
+import React, {useState} from 'react';
+import {CreateProductDto, Product, UpdateProductDto} from '@/types/product';
+import {Card, CardContent} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
   DialogFooter,
-  DialogClose
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
 } from '@/components/ui/dialog';
-import { Edit, Plus, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
+import {Edit, Plus, Trash2} from 'lucide-react';
+import {toast} from 'sonner';
+import {useCreateProduct, useDeleteProduct, useProducts, useUpdateProduct} from '@/common/hooks/useProducts';
 
 const MerchantProducts = () => {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const { data: productsData, isLoading, error } = useProducts();
+  const createProduct = useCreateProduct();
+  const updateProduct = useUpdateProduct();
+  const deleteProduct = useDeleteProduct();
+  
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [newProduct, setNewProduct] = useState<Partial<Product>>({
+  const [newProduct, setNewProduct] = useState<CreateProductDto>({
     name: '',
+    brand: '',
+    category: '',
     grossPrice: 0,
-    price: 0,
-    inventory: 0,
-    image: ''
+    clientPrice: 0,
+    availableAmount: 0
   });
+
+  console.log(productsData)
+
+  // Ensure products is always an array
+  const products = Array.isArray(productsData) ? productsData : [];
   
   const handleAddProduct = () => {
     // Validate product details
-    if (!newProduct.name || newProduct.price === undefined || newProduct.grossPrice === undefined) {
+    if (!newProduct.name || !newProduct.brand || !newProduct.category) {
       toast.error('Please fill in all required fields');
       return;
     }
     
-    const id = `product${Date.now()}`;
-    const product: Product = {
-      id,
-      name: newProduct.name,
-      grossPrice: Number(newProduct.grossPrice),
-      price: Number(newProduct.price),
-      inventory: Number(newProduct.inventory) || 0,
-      image: newProduct.image
-    };
-    
-    setProducts([...products, product]);
+    createProduct.mutate(newProduct);
     setNewProduct({
       name: '',
+      brand: '',
+      category: '',
       grossPrice: 0,
-      price: 0,
-      inventory: 0,
-      image: ''
+      clientPrice: 0,
+      availableAmount: 0
     });
-    
-    toast.success('Product added successfully');
   };
   
   const handleUpdateProduct = () => {
     if (!editingProduct) return;
     
-    setProducts(products.map(p => 
-      p.id === editingProduct.id ? editingProduct : p
-    ));
-    
+    const { id, ...updateData } = editingProduct;
+    updateProduct.mutate({ id, product: updateData });
     setEditingProduct(null);
-    toast.success('Product updated successfully');
   };
   
-  const handleDeleteProduct = (productId: string) => {
-    setProducts(products.filter(p => p.id !== productId));
-    toast.success('Product deleted successfully');
+  const handleDeleteProduct = (productId: number) => {
+    deleteProduct.mutate(productId);
   };
   
-  const handleEditingChange = (field: keyof Product, value: string) => {
+  const handleEditingChange = (field: keyof UpdateProductDto, value: string) => {
     if (!editingProduct) return;
     
     setEditingProduct({
       ...editingProduct,
-      [field]: field === 'name' || field === 'image' ? value : Number(value)
+      [field]: field === 'name' || field === 'brand' || field === 'category' ? value : Number(value)
     });
   };
   
-  const handleNewProductChange = (field: keyof Product, value: string) => {
+  const handleNewProductChange = (field: keyof CreateProductDto, value: string) => {
     setNewProduct({
       ...newProduct,
-      [field]: field === 'name' || field === 'image' ? value : Number(value)
+      [field]: field === 'name' || field === 'brand' || field === 'category' ? value : Number(value)
     });
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading products: {error.message}</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -116,6 +118,26 @@ const MerchantProducts = () => {
                   placeholder="Enter product name"
                 />
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="brand">Brand</Label>
+                <Input
+                  id="brand"
+                  value={newProduct.brand}
+                  onChange={(e) => handleNewProductChange('brand', e.target.value)}
+                  placeholder="Enter brand name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="category">Category</Label>
+                <Input
+                  id="category"
+                  value={newProduct.category}
+                  onChange={(e) => handleNewProductChange('category', e.target.value)}
+                  placeholder="Enter category"
+                />
+              </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -132,38 +154,28 @@ const MerchantProducts = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="price">Client Price ($)</Label>
+                  <Label htmlFor="clientPrice">Client Price ($)</Label>
                   <Input
-                    id="price"
+                    id="clientPrice"
                     type="number"
                     min="0"
                     step="0.01"
-                    value={newProduct.price}
-                    onChange={(e) => handleNewProductChange('price', e.target.value)}
+                    value={newProduct.clientPrice}
+                    onChange={(e) => handleNewProductChange('clientPrice', e.target.value)}
                     placeholder="0.00"
                   />
                 </div>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="inventory">Inventory</Label>
+                <Label htmlFor="availableAmount">Available Amount</Label>
                 <Input
-                  id="inventory"
+                  id="availableAmount"
                   type="number"
                   min="0"
-                  value={newProduct.inventory}
-                  onChange={(e) => handleNewProductChange('inventory', e.target.value)}
+                  value={newProduct.availableAmount}
+                  onChange={(e) => handleNewProductChange('availableAmount', e.target.value)}
                   placeholder="0"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="image">Image URL (optional)</Label>
-                <Input
-                  id="image"
-                  value={newProduct.image}
-                  onChange={(e) => handleNewProductChange('image', e.target.value)}
-                  placeholder="Enter image URL"
                 />
               </div>
             </div>
@@ -182,18 +194,16 @@ const MerchantProducts = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
         {products.map((product) => (
           <Card key={product.id}>
-            <div 
-              className="h-48 bg-cover bg-center" 
-              style={{ backgroundImage: `url(${product.image || '/placeholder.svg'})` }}
-            />
             <CardContent className="pt-6">
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="text-lg font-medium">{product.name}</h3>
                   <div className="flex flex-col text-sm">
+                    <span>Brand: {product.brand}</span>
+                    <span>Category: {product.category}</span>
                     <span>Gross: ${product.grossPrice.toFixed(2)}</span>
-                    <span>Retail: ${product.price.toFixed(2)}</span>
-                    <span className="text-muted-foreground mt-1">Stock: {product.inventory}</span>
+                    <span>Client: ${product.clientPrice.toFixed(2)}</span>
+                    <span className="text-muted-foreground mt-1">Available: {product.availableAmount}</span>
                   </div>
                 </div>
                 <div className="flex space-x-2">
@@ -221,6 +231,24 @@ const MerchantProducts = () => {
                               onChange={(e) => handleEditingChange('name', e.target.value)}
                             />
                           </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="edit-brand">Brand</Label>
+                            <Input
+                              id="edit-brand"
+                              value={editingProduct.brand}
+                              onChange={(e) => handleEditingChange('brand', e.target.value)}
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="edit-category">Category</Label>
+                            <Input
+                              id="edit-category"
+                              value={editingProduct.category}
+                              onChange={(e) => handleEditingChange('category', e.target.value)}
+                            />
+                          </div>
                           
                           <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
@@ -236,35 +264,26 @@ const MerchantProducts = () => {
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="edit-price">Client Price ($)</Label>
+                              <Label htmlFor="edit-clientPrice">Client Price ($)</Label>
                               <Input
-                                id="edit-price"
+                                id="edit-clientPrice"
                                 type="number"
                                 min="0"
                                 step="0.01"
-                                value={editingProduct.price}
-                                onChange={(e) => handleEditingChange('price', e.target.value)}
+                                value={editingProduct.clientPrice}
+                                onChange={(e) => handleEditingChange('clientPrice', e.target.value)}
                               />
                             </div>
                           </div>
                           
                           <div className="space-y-2">
-                            <Label htmlFor="edit-inventory">Inventory</Label>
+                            <Label htmlFor="edit-availableAmount">Available Amount</Label>
                             <Input
-                              id="edit-inventory"
+                              id="edit-availableAmount"
                               type="number"
                               min="0"
-                              value={editingProduct.inventory}
-                              onChange={(e) => handleEditingChange('inventory', e.target.value)}
-                            />
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label htmlFor="edit-image">Image URL</Label>
-                            <Input
-                              id="edit-image"
-                              value={editingProduct.image || ''}
-                              onChange={(e) => handleEditingChange('image', e.target.value)}
+                              value={editingProduct.availableAmount}
+                              onChange={(e) => handleEditingChange('availableAmount', e.target.value)}
                             />
                           </div>
                         </div>
