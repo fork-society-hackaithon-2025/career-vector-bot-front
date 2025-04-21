@@ -35,6 +35,8 @@ const LoginPage = () => {
     const tg = window.Telegram.WebApp;
     tg.ready();
 
+    console.log('tg.initData', tg.initData);
+
     // auto-kick off login as soon as WebApp loads
     mutate(tg.initData, {
       onSuccess: (data) => {

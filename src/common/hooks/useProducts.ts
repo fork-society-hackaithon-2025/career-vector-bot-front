@@ -3,15 +3,15 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import type {CreateProductDto, UpdateProductDto} from "@/types/product";
 import {toast} from "sonner";
 
-export function useProducts() {
+export const useProducts = () => {
     return useQuery({
-        queryKey: ["products"],
+        queryKey: ['products'],
         queryFn: async () => {
             const response = await api.products.list();
             return response.data.responseObject || [];
         },
     });
-}
+};
 
 export function useProduct(productId: number) {
     return useQuery({
