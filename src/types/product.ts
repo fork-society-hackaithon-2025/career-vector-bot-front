@@ -1,8 +1,11 @@
+import { Brand } from '@/data/brands';
+import { Category } from '@/data/categories';
+
 export interface Product {
   id: number;
   name: string;
-  brand: string;
-  category: string;
+  brand: Brand;
+  category: Category;
   grossPrice: number;
   clientPrice: number;
   availableAmount: number;
@@ -12,8 +15,8 @@ export interface Product {
 
 export interface CreateProductDto {
   name: string;
-  brand: string;
-  category: string;
+  brand: Brand;
+  category: Category;
   grossPrice: number;
   clientPrice: number;
   availableAmount: number;
@@ -21,8 +24,8 @@ export interface CreateProductDto {
 
 export interface UpdateProductDto {
   name?: string;
-  brand?: string;
-  category?: string;
+  brand?: Brand;
+  category?: Category;
   grossPrice?: number;
   clientPrice?: number;
   availableAmount?: number;
