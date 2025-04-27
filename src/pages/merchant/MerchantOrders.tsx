@@ -25,7 +25,7 @@ const MerchantOrders = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   
   const filteredOrders = orders.filter(order => {
-    const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+    const matchesStatus = statusFilter === 'all' || order.orderStatus === statusFilter;
     const matchesSearch = order.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           order.id.toLowerCase().includes(searchQuery.toLowerCase());
     
@@ -60,10 +60,10 @@ const MerchantOrders = () => {
   
   const getStatusColor = (status: OrderStatus) => {
     switch(status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'confirmed': return 'bg-green-100 text-green-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      case 'delivered': return 'bg-blue-100 text-blue-800';
+      case 'PENDING': return 'bg-yellow-100 text-yellow-800';
+      case 'CONFIRMED': return 'bg-green-100 text-green-800';
+      case 'REJECTED': return 'bg-red-100 text-red-800';
+      case 'DELIVERED': return 'bg-blue-100 text-blue-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -100,14 +100,14 @@ const MerchantOrders = () => {
         {filteredOrders.length > 0 ? (
           filteredOrders.map((order) => (
             <Card key={order.id} className="overflow-hidden">
-              <div className={`h-2 ${getStatusColor(order.status)}`} />
+              <div className={`h-2 ${getStatusColor(order.orderStatus)}`} />
               <CardContent className="pt-6">
                 <div className="flex flex-col md:flex-row justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold">Order #{order.id.slice(-5)}</h3>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(order.status)}`}>
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(order.orderStatus)}`}>
+                        {order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1)}
                       </span>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
@@ -134,7 +134,7 @@ const MerchantOrders = () => {
                   <div className="flex flex-col gap-2">
                     <div className="text-right">
                       <p className="text-sm font-medium">Total Amount:</p>
-                      <p className="text-xl font-bold">${order.totalAmount.toFixed(2)}</p>
+                      <p className="text-xl font-bold">${order.totalPrice.toFixed(2)}</p>
                     </div>
                     
                     <div className="w-full overflow-scroll flex gap-2 mt-2">
@@ -176,7 +176,7 @@ const MerchantOrders = () => {
                                     {selectedOrder.items.map((item, index) => (
                                       <div key={index} className="flex justify-between">
                                         <div>
-                                          <p className="font-medium">{item.product.name}</p>
+                                          <p className="font-medium">{item.productId}</p>
                                           <p className="text-sm text-muted-foreground">
                                             ${item.price.toFixed(2)} × {item.quantity}
                                           </p>
@@ -192,7 +192,7 @@ const MerchantOrders = () => {
                                 <div className="flex justify-between items-center pt-2 border-t">
                                   <p className="font-medium">Total Amount</p>
                                   <p className="font-bold text-lg">
-                                    ${selectedOrder.totalAmount.toFixed(2)}
+                                    ${selectedOrder.totalPrice.toFixed(2)}
                                   </p>
                                 </div>
                               </div>
@@ -206,7 +206,7 @@ const MerchantOrders = () => {
                         </DialogContent>
                       </Dialog>
                       
-                      {order.status === 'pending' && (
+                      {order.orderStatus === 'PENDING' && (
                         <>
                           <Button
                             variant="outline"

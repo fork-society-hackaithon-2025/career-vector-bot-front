@@ -54,13 +54,13 @@ const MerchantAnalytics = () => {
   
   // Calculate revenues
   const confirmedOrders = orders.filter(order => 
-    order.status === 'confirmed' || order.status === 'delivered'
+    order.orderStatus === 'CONFIRMED' || order.orderStatus === 'DELIVERED'
   );
   
   const calculateRevenue = (start: Date, end: Date) => {
     return confirmedOrders
       .filter(order => order.createdAt >= start && order.createdAt <= end)
-      .reduce((total, order) => total + order.totalAmount, 0);
+      .reduce((total, order) => total + order.totalPrice, 0);
   };
   
   const currentRevenue = calculateRevenue(dateRange.start, dateRange.end);

@@ -1,25 +1,26 @@
-import { Product } from "./product";
-
 export interface OrderItem {
-  product: Product;
+  id: number;
+  productId: number;
   quantity: number;
-  price: number; // Price at time of order
+  price: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Order {
   id: string;
-  clientId: string;
+  userId: string;
   clientName: string;
   clientPhone: string;
+  deliveryDate: string;
   items: OrderItem[];
-  totalAmount: number;
-  deliveryDate: Date;
-  status: OrderStatus;
+  totalPrice: number;
+  orderStatus: OrderStatus;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export type OrderStatus = "PENDING" | "CONFIRMED" | "REJECTED";
+export type OrderStatus = "PENDING" | "CONFIRMED" | "REJECTED" | "DELIVERED";
 
 export interface CreateOrderDto {
   name: string;

@@ -7,11 +7,11 @@ import { generateAnalyticsData } from '@/lib/mock-data';
 import { format } from 'date-fns';
 
 const MerchantDashboard = () => {
-  const pendingOrders = orders.filter(order => order.status === 'pending');
+  const pendingOrders = orders.filter(order => order.orderStatus === 'PENDING');
   const totalSales = orders
-    .filter(order => order.status === 'confirmed' || order.status === 'delivered')
-    .reduce((total, order) => total + order.totalAmount, 0);
-  const totalCustomers = new Set(orders.map(order => order.clientId)).size;
+    .filter(order => order.orderStatus === 'CONFIRMED' || order.orderStatus === 'DELIVERED')
+    .reduce((total, order) => total + order.totalPrice, 0);
+  const totalCustomers = new Set(orders.map(order => order.userId)).size;
   
   const analytics = generateAnalyticsData();
 
@@ -97,14 +97,14 @@ const MerchantDashboard = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium">${order.totalAmount.toFixed(2)}</p>
+                      <p className="font-medium">${order.totalPrice.toFixed(2)}</p>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        order.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                        order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                        order.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                        order.orderStatus === 'CONFIRMED' ? 'bg-green-100 text-green-800' :
+                        order.orderStatus === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                        order.orderStatus === 'REJECTED' ? 'bg-red-100 text-red-800' :
                         'bg-blue-100 text-blue-800'
                       }`}>
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        {order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1)}
                       </span>
                     </div>
                   </div>

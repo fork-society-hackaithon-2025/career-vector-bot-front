@@ -65,7 +65,7 @@ const createMockOrder = (
   id: string, 
   clientId: string, 
   clientName: string, 
-  status: OrderStatus = "pending",
+  status: OrderStatus = "PENDING",
   daysAgo = 0
 ): Order => {
   // Take 1-3 random products
@@ -76,7 +76,7 @@ const createMockOrder = (
   const items = selectedProducts.map(product => ({
     product,
     quantity: Math.floor(Math.random() * 3) + 1,
-    price: product.price
+    price: product.clientPrice
   }));
   
   const totalAmount = items.reduce(
@@ -93,7 +93,7 @@ const createMockOrder = (
     clientName,
     clientPhone: "+1" + Math.floor(Math.random() * 9000000000 + 1000000000),
     items,
-    totalAmount,
+    totalPrice: totalAmount,
     deliveryDate: randomFutureDate(),
     status,
     createdAt: createdDate,
@@ -141,11 +141,11 @@ export const generateAnalyticsData = () => {
     nextDate.setDate(date.getDate() + 1);
     
     const ordersOnDate = orders.filter(order => 
-      order.status === "confirmed" || order.status === "delivered" &&
+      order.orderStatus === "CONFIRMED" || order.orderStatus === "DELIVERED" &&
       order.createdAt >= date && order.createdAt < nextDate
     );
     
-    const total = ordersOnDate.reduce((sum, order) => sum + order.totalAmount, 0);
+    const total = ordersOnDate.reduce((sum, order) => sum + order.totalPrice, 0);
     
     return {
       date: date.toISOString().split('T')[0],
