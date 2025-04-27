@@ -1,4 +1,3 @@
-
 import { Product } from "./product";
 
 export interface OrderItem {
@@ -6,8 +5,6 @@ export interface OrderItem {
   quantity: number;
   price: number; // Price at time of order
 }
-
-export type OrderStatus = "pending" | "confirmed" | "rejected" | "delivered";
 
 export interface Order {
   id: string;
@@ -20,4 +17,17 @@ export interface Order {
   status: OrderStatus;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export type OrderStatus = "PENDING" | "CONFIRMED" | "REJECTED";
+
+export interface CreateOrderDto {
+  name: string;
+  phone: string;
+  deliveryDate: Date;
+  items: {
+    productId: number;
+    quantity: number;
+  }[];
+  totalPrice: number;
 }
