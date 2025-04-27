@@ -1,19 +1,39 @@
-
 import React from 'react';
-import { orders } from '@/lib/mock-data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Wallet, ShoppingBag, UserCheck } from 'lucide-react';
-import { generateAnalyticsData } from '@/lib/mock-data';
 import { format } from 'date-fns';
+import { useOrders } from '@/common/hooks/useOrders';
 
 const MerchantDashboard = () => {
+  const { data: orders = [], isLoading, error } = useOrders();
+
+  if (isLoading) {
+    return <div>Loading dashboard...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading dashboard: {error.message}</div>;
+  }
+
   const pendingOrders = orders.filter(order => order.orderStatus === 'PENDING');
   const totalSales = orders
     .filter(order => order.orderStatus === 'CONFIRMED' || order.orderStatus === 'DELIVERED')
     .reduce((total, order) => total + order.totalPrice, 0);
   const totalCustomers = new Set(orders.map(order => order.userId)).size;
   
-  const analytics = generateAnalyticsData();
+  // Calculate weekly revenue
+  const today = new Date();
+  const weekStart = new Date(today);
+  weekStart.setDate(today.getDate() - 7);
+  
+  const weeklyRevenue = orders
+    .filter(order => {
+      const orderDate = new Date(order.createdAt);
+      return orderDate >= weekStart && 
+             orderDate <= today && 
+             (order.orderStatus === 'CONFIRMED' || order.orderStatus === 'DELIVERED');
+    })
+    .reduce((total, order) => total + order.totalPrice, 0);
 
   return (
     <div className="space-y-6">
@@ -70,7 +90,7 @@ const MerchantDashboard = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Weekly Revenue</p>
-                <h3 className="text-2xl font-bold">${analytics.weeklyTotal.toFixed(2)}</h3>
+                <h3 className="text-2xl font-bold">${weeklyRevenue.toFixed(2)}</h3>
               </div>
             </div>
           </CardContent>
@@ -86,14 +106,14 @@ const MerchantDashboard = () => {
           <CardContent>
             <div className="space-y-4">
               {orders
-                .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                 .slice(0, 5)
                 .map(order => (
                   <div key={order.id} className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">{order.clientName}</p>
                       <p className="text-sm text-muted-foreground">
-                        {format(order.createdAt, 'PPp')}
+                        {format(new Date(order.createdAt), 'PPp')}
                       </p>
                     </div>
                     <div className="text-right">
@@ -110,37 +130,6 @@ const MerchantDashboard = () => {
                   </div>
                 ))
               }
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Sales Overview</CardTitle>
-            <CardDescription>Daily sales for the last week</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[200px] w-full flex items-end justify-between gap-2">
-              {analytics.dailyRevenue.map((day, index) => {
-                // Find the max value for scaling
-                const maxValue = Math.max(...analytics.dailyRevenue.map(d => d.amount));
-                const percentage = maxValue ? (day.amount / maxValue) * 100 : 0;
-                
-                return (
-                  <div key={index} className="flex flex-col items-center gap-2">
-                    <div 
-                      className="w-8 bg-primary/20 rounded-t relative group"
-                      style={{ height: `${percentage}%` }}
-                    >
-                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                        ${day.amount.toFixed(2)}
-                      </div>
-                      <div className="absolute bottom-0 let-0 right-0 bg-primary rounded-t h-[30%]"></div>
-                    </div>
-                    <span className="text-xs">{day.date.split('-')[2]}</span>
-                  </div>
-                );
-              })}
             </div>
           </CardContent>
         </Card>

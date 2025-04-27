@@ -21,6 +21,17 @@ export function useProduct(productId: number) {
     });
 }
 
+export function useProductsBatch(productIds: number[]) {
+    return useQuery({
+        queryKey: ['products', 'batch', productIds],
+        queryFn: async () => {
+            const response = await api.products.batch(productIds);
+            return response.data.responseObject || [];
+        },
+        enabled: productIds.length > 0,
+    });
+}
+
 export function useCreateProduct() {
     const queryClient = useQueryClient();
 

@@ -92,7 +92,7 @@ const createMockOrder = (
     clientId,
     clientName,
     clientPhone: "+1" + Math.floor(Math.random() * 9000000000 + 1000000000),
-    items,
+    orderItems: items,
     totalPrice: totalAmount,
     deliveryDate: randomFutureDate(),
     status,

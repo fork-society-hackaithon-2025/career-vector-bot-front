@@ -13,7 +13,7 @@ export interface Order {
   clientName: string;
   clientPhone: string;
   deliveryDate: string;
-  items: OrderItem[];
+  orderItems: OrderItem[];
   totalPrice: number;
   orderStatus: OrderStatus;
   createdAt: Date;

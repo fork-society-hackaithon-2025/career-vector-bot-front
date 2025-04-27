@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import {orders as initialOrders} from '@/lib/mock-data';
+import React, {useMemo, useState} from 'react';
 import {Order, OrderStatus} from '@/types/order';
 import {Card, CardContent} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
@@ -17,39 +16,72 @@ import {
 import {Check, Download, Phone, X} from 'lucide-react';
 import {format} from 'date-fns';
 import {toast} from 'sonner';
+import {useOrder, useOrders, useUpdateOrderStatus} from '@/common/hooks/useOrders';
+import {useProductsBatch} from '@/common/hooks/useProducts';
+
+interface OrderItemProps {
+  productId: number;
+  price: number;
+  quantity: number;
+  productName?: string;
+}
+
+const OrderItem: React.FC<OrderItemProps> = ({ productId, price, quantity, productName }) => {
+  return (
+    <div className="flex justify-between">
+      <div>
+        <p className="font-medium">
+          {productName || `Product #${productId}`}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          ${price.toFixed(2)} × {quantity}
+        </p>
+      </div>
+      <p className="font-medium">
+        ${(price * quantity).toFixed(2)}
+      </p>
+    </div>
+  );
+};
 
 const MerchantOrders = () => {
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const { data: orders = [], isLoading, error } = useOrders();
+  const updateOrderStatus = useUpdateOrderStatus();
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const { data: selectedOrder, isLoading: isLoadingOrderDetails } = useOrder(selectedOrderId || 0);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   
+  const productIds = useMemo(() => {
+    if (!selectedOrder?.orderItems) {
+      return [];
+    }
+    return selectedOrder.orderItems.map(item => item.productId);
+  }, [selectedOrder]);
+
+  const { data: products = [], isLoading: isLoadingProducts } = useProductsBatch(productIds);
+
+  const productMap = useMemo(() => {
+    return products.reduce((acc, product) => {
+      acc[product.id] = product.name;
+      return acc;
+    }, {} as Record<number, string>);
+  }, [products]);
+
   const filteredOrders = orders.filter(order => {
     const matchesStatus = statusFilter === 'all' || order.orderStatus === statusFilter;
     const matchesSearch = order.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          order.id.toLowerCase().includes(searchQuery.toLowerCase());
+                          order.id.toString().includes(searchQuery);
     
     return matchesStatus && matchesSearch;
   });
   
   const handleConfirmOrder = (orderId: string) => {
-    setOrders(orders.map(order => 
-      order.id === orderId 
-        ? { ...order, status: 'confirmed' as OrderStatus, updatedAt: new Date() } 
-        : order
-    ));
-    
-    toast.success('Order confirmed successfully');
+    updateOrderStatus.mutate({ id: Number(orderId), status: 'CONFIRMED' });
   };
   
   const handleRejectOrder = (orderId: string) => {
-    setOrders(orders.map(order => 
-      order.id === orderId 
-        ? { ...order, status: 'rejected' as OrderStatus, updatedAt: new Date() } 
-        : order
-    ));
-    
-    toast.success('Order rejected');
+    updateOrderStatus.mutate({ id: Number(orderId), status: 'REJECTED' });
   };
   
   const handlePrintOrder = (order: Order) => {
@@ -67,6 +99,28 @@ const MerchantOrders = () => {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold">Orders Management</h1>
+        <div className="flex items-center justify-center h-64">
+          <p className="text-muted-foreground">Loading orders...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold">Orders Management</h1>
+        <div className="flex items-center justify-center h-64">
+          <p className="text-red-500">Error loading orders: {error.message}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -87,10 +141,10 @@ const MerchantOrders = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Orders</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="confirmed">Confirmed</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-              <SelectItem value="delivered">Delivered</SelectItem>
+              <SelectItem value="PENDING">Pending</SelectItem>
+              <SelectItem value="CONFIRMED">Confirmed</SelectItem>
+              <SelectItem value="REJECTED">Rejected</SelectItem>
+              <SelectItem value="DELIVERED">Delivered</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -105,13 +159,13 @@ const MerchantOrders = () => {
                 <div className="flex flex-col md:flex-row justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold">Order #{order.id.slice(-5)}</h3>
+                      <h3 className="font-semibold">Order #{order.id}</h3>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(order.orderStatus)}`}>
                         {order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1)}
                       </span>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
-                      {format(order.createdAt, 'PPp')}
+                      {format(new Date(order.createdAt), 'PPp')}
                     </p>
                     
                     <div className="flex items-center gap-2 mb-2">
@@ -127,7 +181,7 @@ const MerchantOrders = () => {
                     
                     <div className="text-sm">
                       <p className="font-medium">Delivery Date:</p>
-                      <p>{format(order.deliveryDate, 'PPP')}</p>
+                      <p>{format(new Date(order.deliveryDate), 'PPP')}</p>
                     </div>
                   </div>
                   
@@ -152,57 +206,63 @@ const MerchantOrders = () => {
                           <Button 
                             size="sm"
                             variant="outline"
-                            onClick={() => setSelectedOrder(order)}
+                            onClick={() => setSelectedOrderId(Number(order.id))}
                           >
                             View Details
                           </Button>
                         </DialogTrigger>
                         <DialogContent>
-                          {selectedOrder && (
-                            <>
-                              <DialogHeader>
-                                <DialogTitle>Order Details</DialogTitle>
-                              </DialogHeader>
-                              <div className="space-y-4">
-                                <div>
-                                  <h3 className="font-medium">Customer Information</h3>
-                                  <p>Name: {selectedOrder.clientName}</p>
-                                  <p>Phone: {selectedOrder.clientPhone}</p>
-                                </div>
-                                
-                                <div>
-                                  <h3 className="font-medium">Order Items</h3>
-                                  <div className="space-y-2 mt-2">
-                                    {selectedOrder.items.map((item, index) => (
-                                      <div key={index} className="flex justify-between">
-                                        <div>
-                                          <p className="font-medium">{item.productId}</p>
-                                          <p className="text-sm text-muted-foreground">
-                                            ${item.price.toFixed(2)} × {item.quantity}
-                                          </p>
-                                        </div>
-                                        <p className="font-medium">
-                                          ${(item.price * item.quantity).toFixed(2)}
-                                        </p>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                                
-                                <div className="flex justify-between items-center pt-2 border-t">
-                                  <p className="font-medium">Total Amount</p>
-                                  <p className="font-bold text-lg">
-                                    ${selectedOrder.totalPrice.toFixed(2)}
-                                  </p>
+                          <DialogHeader>
+                            <DialogTitle>Order Details</DialogTitle>
+                          </DialogHeader>
+                          {isLoadingOrderDetails ? (
+                            <div className="flex items-center justify-center h-32">
+                              <p className="text-muted-foreground">Loading order details...</p>
+                            </div>
+                          ) : selectedOrder ? (
+                            <div className="space-y-4">
+                              <div>
+                                <h3 className="font-medium">Customer Information</h3>
+                                <p>Name: {selectedOrder.clientName}</p>
+                                <p>Phone: {selectedOrder.clientPhone}</p>
+                              </div>
+                              
+                              <div>
+                                <h3 className="font-medium">Order Items</h3>
+                                <div className="space-y-2 mt-2">
+                                  {isLoadingProducts ? (
+                                    <p className="text-muted-foreground">Loading products...</p>
+                                  ) : selectedOrder.orderItems?.map((item, index) => (
+                                    <OrderItem
+                                      key={index}
+                                      productId={item.productId}
+                                      price={item.price}
+                                      quantity={item.quantity}
+                                      productName={productMap[item.productId]}
+                                    />
+                                  )) || (
+                                    <p className="text-muted-foreground">No items in this order</p>
+                                  )}
                                 </div>
                               </div>
-                              <DialogFooter>
-                                <DialogClose asChild>
-                                  <Button variant="outline">Close</Button>
-                                </DialogClose>
-                              </DialogFooter>
-                            </>
+                              
+                              <div className="flex justify-between items-center pt-2 border-t">
+                                <p className="font-medium">Total Amount</p>
+                                <p className="font-bold text-lg">
+                                  ${selectedOrder.totalPrice.toFixed(2)}
+                                </p>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex items-center justify-center h-32">
+                              <p className="text-red-500">Failed to load order details</p>
+                            </div>
                           )}
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button variant="outline">Close</Button>
+                            </DialogClose>
+                          </DialogFooter>
                         </DialogContent>
                       </Dialog>
                       
@@ -212,7 +272,7 @@ const MerchantOrders = () => {
                             variant="outline"
                             size="sm"
                             className="border-red-500 hover:bg-red-50 text-red-500"
-                            onClick={() => handleRejectOrder(order.id)}
+                            onClick={() => handleRejectOrder(order.id.toString())}
                           >
                             <X className="h-4 w-4 mr-1" />
                             Reject
@@ -221,7 +281,7 @@ const MerchantOrders = () => {
                           <Button
                             size="sm"
                             className="bg-green-500 hover:bg-green-600"
-                            onClick={() => handleConfirmOrder(order.id)}
+                            onClick={() => handleConfirmOrder(order.id.toString())}
                           >
                             <Check className="h-4 w-4 mr-1" />
                             Confirm

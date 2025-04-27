@@ -108,7 +108,7 @@ const MerchantAnalytics = () => {
   });
   
   const productPerformance = orders
-    .flatMap(order => order.items)
+    .flatMap(order => order.orderItems)
     .reduce((acc, item) => {
       const productName = item.product.name;
       if (!acc[productName]) {

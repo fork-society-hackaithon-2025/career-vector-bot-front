@@ -17,7 +17,11 @@ export class ProductsService extends ApiServiceClass {
         return this.GET("");
     }
 
-    async get(id: number): Promise<Product> {
+    async batch(ids: number[]): Promise<ApiResponse<Product[]>> {
+        return this.GET("/batch", {ids});
+    }
+
+    async get(id: number): Promise<ApiResponse<Product>> {
         return this.GET(`/${id}`);
     }
 
