@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Product } from "@/types/product";
@@ -11,82 +10,42 @@ export interface CartItem {
 interface CartContextType {
   items: CartItem[];
   addItem: (product: Product, quantity?: number) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeItem: (productId: number) => void;
+  updateQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
   itemCount: number;
   totalPrice: number;
-  hasCartTimeExpired: boolean;
-  cartEditDeadline: Date | null;
-  setCartEditDeadline: (date: Date | null) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+};
+
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
-  const [cartEditDeadline, setCartEditDeadline] = useState<Date | null>(null);
-  const [hasCartTimeExpired, setHasCartTimeExpired] = useState(false);
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const storedCart = localStorage.getItem("telegramShopCart");
-    if (storedCart) {
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
       try {
-        setItems(JSON.parse(storedCart));
+        setItems(JSON.parse(savedCart));
       } catch (error) {
-        console.error("Failed to parse stored cart:", error);
-      }
-    }
-    
-    const storedDeadline = localStorage.getItem("telegramShopCartDeadline");
-    if (storedDeadline) {
-      try {
-        const deadline = new Date(storedDeadline);
-        setCartEditDeadline(deadline);
-      } catch (error) {
-        console.error("Failed to parse stored deadline:", error);
+        console.error('Error loading cart from localStorage:', error);
       }
     }
   }, []);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("telegramShopCart", JSON.stringify(items));
+    localStorage.setItem('cart', JSON.stringify(items));
   }, [items]);
-
-  // Save deadline to localStorage whenever it changes
-  useEffect(() => {
-    if (cartEditDeadline) {
-      localStorage.setItem("telegramShopCartDeadline", cartEditDeadline.toISOString());
-    } else {
-      localStorage.removeItem("telegramShopCartDeadline");
-    }
-  }, [cartEditDeadline]);
-
-  // Check if cart edit time has expired
-  useEffect(() => {
-    if (!cartEditDeadline) {
-      setHasCartTimeExpired(false);
-      return;
-    }
-
-    const checkExpiration = () => {
-      if (cartEditDeadline && new Date() > cartEditDeadline) {
-        setHasCartTimeExpired(true);
-      } else {
-        setHasCartTimeExpired(false);
-      }
-    };
-
-    // Check immediately
-    checkExpiration();
-
-    // Then check every minute
-    const interval = setInterval(checkExpiration, 60000);
-    
-    return () => clearInterval(interval);
-  }, [cartEditDeadline]);
 
   const addItem = (product: Product, quantity = 1) => {
     setItems(prevItems => {
@@ -102,16 +61,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return [...prevItems, { product, quantity }];
       }
     });
-    
-    toast.success(`${product.name} added to cart`);
   };
 
-  const removeItem = (productId: string) => {
+  const removeItem = (productId: number) => {
     setItems(prevItems => prevItems.filter(item => item.product.id !== productId));
     toast.info("Item removed from cart");
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = (productId: number, quantity: number) => {
     if (quantity <= 0) {
       removeItem(productId);
       return;
@@ -128,15 +85,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = () => {
     setItems([]);
-    setCartEditDeadline(null);
-    setHasCartTimeExpired(false);
     toast.info("Cart has been cleared");
   };
 
   const itemCount = items.reduce((count, item) => count + item.quantity, 0);
   
   const totalPrice = items.reduce(
-    (total, item) => total + item.product.price * item.quantity, 
+    (total, item) => total + item.product.clientPrice * item.quantity, 
     0
   );
 
@@ -148,20 +103,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updateQuantity,
       clearCart,
       itemCount,
-      totalPrice,
-      hasCartTimeExpired,
-      cartEditDeadline,
-      setCartEditDeadline
+      totalPrice
     }}>
       {children}
     </CartContext.Provider>
   );
-};
-
-export const useCart = (): CartContextType => {
-  const context = useContext(CartContext);
-  if (context === undefined) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
-  return context;
 };

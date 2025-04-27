@@ -12,11 +12,11 @@ const CartPage = () => {
   const { items, updateQuantity, removeItem, clearCart, totalPrice, hasCartTimeExpired } = useCart();
   const navigate = useNavigate();
 
-  const handleIncreaseQuantity = (productId: string, currentQuantity: number) => {
+  const handleIncreaseQuantity = (productId: number, currentQuantity: number) => {
     updateQuantity(productId, currentQuantity + 1);
   };
 
-  const handleDecreaseQuantity = (productId: string, currentQuantity: number) => {
+  const handleDecreaseQuantity = (productId: number, currentQuantity: number) => {
     if (currentQuantity > 1) {
       updateQuantity(productId, currentQuantity - 1);
     } else {
@@ -24,7 +24,7 @@ const CartPage = () => {
     }
   };
 
-  const handleRemoveItem = (productId: string) => {
+  const handleRemoveItem = (productId: number) => {
     removeItem(productId);
   };
 
@@ -82,13 +82,9 @@ const CartPage = () => {
               {items.map((item) => (
                 <div key={item.product.id} className="flex items-center justify-between space-x-4">
                   <div className="flex items-center space-x-4">
-                    <div 
-                      className="h-12 w-12 rounded bg-cover bg-center flex-shrink-0" 
-                      style={{ backgroundImage: `url(${item.product.image || '/placeholder.svg'})` }}
-                    />
                     <div className="space-y-1">
                       <h3 className="font-medium">{item.product.name}</h3>
-                      <p className="text-sm text-muted-foreground">${item.product.price.toFixed(2)}</p>
+                      <p className="text-sm text-muted-foreground">${item.product.clientPrice.toFixed(2)}</p>
                     </div>
                   </div>
                   <div className="flex items-center">
