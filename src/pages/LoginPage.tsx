@@ -1,5 +1,5 @@
 import React from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import {useAuth} from '@/contexts/AuthContext';
 import {useTelegramLogin} from "@/common/hooks/useTelegramLogin.ts";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
@@ -9,6 +9,7 @@ import WebApp from "@twa-dev/sdk";
 const LoginPage = () => {
   const { login, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { mutate, isPending } = useTelegramLogin();
 
   // If user is already logged in, redirect to appropriate page
@@ -30,8 +31,16 @@ const LoginPage = () => {
         WebApp.ready();
         WebApp.expand();
 
-        // Get Telegram WebApp data
-        const webAppData = WebApp.initData;
+        // Get Telegram WebApp data from URL path if present
+        let webAppData = WebApp.initData;
+        
+        // If no WebApp data in initData, check URL path
+        if (!webAppData && location.pathname.startsWith('/tgWebAppData=')) {
+          webAppData = decodeURIComponent(location.pathname.substring(1)); // Remove leading '/'
+          // Clean up the URL by removing the WebApp data
+          window.history.replaceState({}, '', '/');
+        }
+
         if (!webAppData) {
           console.error('No Telegram WebApp data available');
           return;
@@ -52,7 +61,7 @@ const LoginPage = () => {
     };
 
     initTelegramAuth();
-  }, [mutate, login]);
+  }, [mutate, login, location]);
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4">
