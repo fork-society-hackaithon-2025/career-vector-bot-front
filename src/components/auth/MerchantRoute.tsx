@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import UnauthorizedPage from '@/pages/UnauthorizedPage';
 
 interface MerchantRouteProps {
   children: React.ReactNode;
@@ -19,7 +19,7 @@ const MerchantRoute: React.FC<MerchantRouteProps> = ({ children }) => {
   }
   
   if (!isMerchant()) {
-    return <Navigate to="/" replace />;
+    return <UnauthorizedPage />;
   }
   
   return <>{children}</>;
