@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import {useAuth} from '@/contexts/AuthContext';
 import {useTelegramLogin} from "@/common/hooks/useTelegramLogin.ts";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {UserResponse} from '@/types/user';
 
 declare global {
   interface Window {
@@ -23,7 +24,9 @@ const LoginPage = () => {
   // If user is already logged in, redirect to appropriate page
   React.useEffect(() => {
     if (user) {
-      if (user.role === 'ADMIN') {
+      console.log(user);
+      if (user?.role === "ADMIN") {
+        console.log('tippy and zelba')
         navigate('/merchant');
       } else {
         navigate('/catalogue');
@@ -39,8 +42,8 @@ const LoginPage = () => {
 
     // auto-kick off login as soon as WebApp loads
     mutate(tg.initData, {
-      onSuccess: (data) => {
-        login(data);
+      onSuccess: (data: UserResponse) => {
+        login(data.user, data.token);
       },
       onError: (error) => {
         console.error('Telegram login failed:', error);

@@ -1,13 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { api } from "@/common/api";
-
-// Types
-export interface User {
-  id: string;
-  name: string;
-  role: "ADMIN" | "USER";
-}
+import { User } from "@/types/user";
 
 interface AuthContextType {
   user: User | null;
@@ -34,7 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         setUser(JSON.parse(storedUser));
         setToken(storedToken);
-        api.setAuthToken(storedToken);         // ← immediately prime axios
+        api.setAuthToken(storedToken);
       } catch (error) {
         console.error("Failed to parse stored user:", error);
         localStorage.removeItem("telegramShopUser");
@@ -52,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       setUser(userData);
       setToken(jwt);
-      api.setAuthToken(jwt);                  // ← and here too
+      api.setAuthToken(jwt);
 
       toast.success(`Welcome back, ${userData.name}!`);
     } catch (error) {
@@ -68,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(null);
     localStorage.removeItem("telegramShopUser");
     localStorage.removeItem("jwtToken");
-    api.setAuthToken("");                     // ← clear the token
+    api.setAuthToken("");
     toast.info("You have been logged out.");
   };
 

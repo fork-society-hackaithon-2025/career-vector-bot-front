@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,7 +10,11 @@ import {
 import { useCart } from '@/contexts/CartContext';
 import { Badge } from '@/components/ui/badge';
 
-const Navbar = () => {
+interface NavbarProps {
+  isMerchant: boolean;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ isMerchant }) => {
   const { user, logout } = useAuth();
   const { itemCount } = useCart();
   const navigate = useNavigate();
@@ -21,8 +24,6 @@ const Navbar = () => {
     logout();
     navigate('/');
   };
-  
-  const isClientPath = user?.role === 'client' && !location.pathname.startsWith('/merchant');
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -34,7 +35,7 @@ const Navbar = () => {
         <div className="flex items-center gap-2">
           {user ? (
             <>
-              {isClientPath && (
+              {!isMerchant && (
                 <Button 
                   variant="ghost" 
                   size="icon"

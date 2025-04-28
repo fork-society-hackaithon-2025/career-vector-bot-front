@@ -34,7 +34,7 @@ const MobileNavbar: React.FC<MobileNavbarProps> = ({ isMerchant }) => {
     { icon: ShoppingBag, label: 'Orders', path: '/merchant/orders' },
     { icon: BarChart3, label: 'Analytics', path: '/merchant/analytics' },
   ];
-  
+
   const navItems = isMerchant ? merchantNavItems : clientNavItems;
 
   return (

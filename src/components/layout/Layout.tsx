@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,11 +8,11 @@ const Layout = () => {
   const { user } = useAuth();
   const location = useLocation();
   
-  const isMerchantPath = location.pathname.startsWith('/merchant');
+  const isMerchant = user?.role === 'ADMIN';
   
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <Navbar />
+      <Navbar isMerchant={isMerchant} />
       
       <main className="flex-1">
         <div className="container px-4 pt-4 pb-20 mx-auto">
@@ -22,7 +21,7 @@ const Layout = () => {
       </main>
       
       {user && (
-        <MobileNavbar isMerchant={isMerchantPath} />
+        <MobileNavbar isMerchant={isMerchant} />
       )}
     </div>
   );
