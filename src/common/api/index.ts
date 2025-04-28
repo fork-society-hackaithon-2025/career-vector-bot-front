@@ -1,5 +1,4 @@
 import axios, {AxiosInstance} from "axios";
-import cookie from "js-cookie";
 import {UsersService} from "@/common/api/services/users.service.ts";
 import {ProductsService} from "@/common/api/services/products.service.ts";
 import {AuthService} from "@/common/api/services/auth.service.ts";
@@ -23,25 +22,41 @@ export class Api {
             headers: {
                 "Content-Type": "application/json",
             },
-            withCredentials: true,
         });
 
         this.axios.interceptors.request.use(
-            async (config) => {
-                if (config?.headers) {
-                    config.headers["Authorization"] = `Bearer ${cookie.get(
-                        "accessToken",
-                    )}`;
+            (config) => {
+                const token = localStorage.getItem("jwtToken");
+                if (token) {
+                    config.headers.Authorization = `Bearer ${token}`;
                 }
                 return config;
             },
-            (error) => Promise.reject(error),
+            (error) => Promise.reject(error)
+        );
+
+        this.axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response?.status === 401) {
+                    localStorage.removeItem("jwtToken");
+                    localStorage.removeItem("telegramShopUser");
+                    this.axios.defaults.headers.common["Authorization"] = "";
+                }
+                return Promise.reject(error);
+            }
         );
 
         this.users = new UsersService(this.axios);
         this.products = new ProductsService(this.axios);
         this.auth = new AuthService(this.axios);
         this.orders = new OrdersService(this.axios);
+    }
+
+    /** call this immediately after you get your JWT */
+    public setAuthToken(token: string) {
+        // sets on .defaults so **all** subsequent requests have it
+        this.axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
 }
 

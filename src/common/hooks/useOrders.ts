@@ -2,14 +2,18 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/common/api';
 import { OrderStatus, CreateOrderDto } from '@/types/order';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const useOrders = () => {
+  const { token } = useAuth();
+  
   return useQuery({
     queryKey: ['orders'],
     queryFn: async () => {
       const response = await api.orders.list();
       return response.data.responseObject || [];
     },
+    enabled: !!token,
   });
 };
 
