@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { api } from "@/common/api";
 import { User } from "@/types/user";
+import WebApp from "@twa-dev/sdk";
 
 interface AuthContextType {
   user: User | null;
@@ -20,22 +21,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check for existing session on mount
+  // Check for existing session and Telegram WebApp data on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem("telegramShopUser");
-    const storedToken = localStorage.getItem("jwtToken");
-    if (storedUser && storedToken) {
+    const initAuth = async () => {
       try {
-        setUser(JSON.parse(storedUser));
-        setToken(storedToken);
-        api.setAuthToken(storedToken);
+        // First check for existing session
+        const storedUser = localStorage.getItem("telegramShopUser");
+        const storedToken = localStorage.getItem("jwtToken");
+        
+        if (storedUser && storedToken) {
+          setUser(JSON.parse(storedUser));
+          setToken(storedToken);
+          api.setAuthToken(storedToken);
+        } else {
+          // If no stored session, check for Telegram WebApp data
+          const webAppData = WebApp.initData;
+          if (webAppData) {
+            // Here you would typically make an API call to your backend
+            // to validate the Telegram WebApp data and get a JWT token
+            // For now, we'll just log it
+            console.log("Telegram WebApp data:", webAppData);
+          }
+        }
       } catch (error) {
-        console.error("Failed to parse stored user:", error);
+        console.error("Failed to initialize auth:", error);
         localStorage.removeItem("telegramShopUser");
         localStorage.removeItem("jwtToken");
+      } finally {
+        setIsLoading(false);
       }
-    }
-    setIsLoading(false);
+    };
+
+    initAuth();
   }, []);
 
   const login = async (userData: User, jwt: string) => {
