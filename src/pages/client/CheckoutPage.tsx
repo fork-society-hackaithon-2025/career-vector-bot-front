@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { ArrowLeft } from 'lucide-react';
 import { useCreateOrder } from '@/common/hooks/useOrders';
+import { PatternFormat } from 'react-number-format';
 
 const CheckoutPage = () => {
   const { items, totalPrice, clearCart } = useCart();
@@ -47,7 +48,7 @@ const CheckoutPage = () => {
     try {
       await createOrder.mutateAsync({
         name: formData.name,
-        phone: formData.phone,
+        phone: `7${formData.phone}`,
         deliveryDate: new Date(formData.deliveryDate),
         items: items.map(item => ({
           productId: item.product.id,
@@ -136,12 +137,21 @@ const CheckoutPage = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input
+                  <PatternFormat
                     id="phone"
                     name="phone"
                     value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="Enter your phone number"
+                    onValueChange={(values) => {
+                      const phoneNumber = values.value;
+                      setFormData(prev => ({ 
+                        ...prev, 
+                        phone: phoneNumber.startsWith('7') ? phoneNumber : `7${phoneNumber}`
+                      }));
+                    }}
+                    format="+7 (###) ###-####"
+                    mask="_"
+                    placeholder="+7 (___) ___-____"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     required
                   />
                 </div>
