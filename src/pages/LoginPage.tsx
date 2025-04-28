@@ -24,9 +24,7 @@ const LoginPage = () => {
   // If user is already logged in, redirect to appropriate page
   React.useEffect(() => {
     if (user) {
-      console.log(user);
       if (user?.role === "ADMIN") {
-        console.log('tippy and zelba')
         navigate('/merchant');
       } else {
         navigate('/catalogue');
