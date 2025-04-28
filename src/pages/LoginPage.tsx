@@ -4,17 +4,7 @@ import {useAuth} from '@/contexts/AuthContext';
 import {useTelegramLogin} from "@/common/hooks/useTelegramLogin.ts";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {UserResponse} from '@/types/user';
-
-declare global {
-  interface Window {
-    Telegram: {
-      WebApp: {
-        ready: () => void;
-        initData: string;
-      };
-    };
-  }
-}
+import WebApp from "@twa-dev/sdk";
 
 const LoginPage = () => {
   const { login, user } = useAuth();
@@ -32,21 +22,36 @@ const LoginPage = () => {
     }
   }, [user, navigate]);
 
+  // Handle Telegram WebApp authentication
   React.useEffect(() => {
-    const tg = window.Telegram.WebApp;
-    tg.ready();
+    const initTelegramAuth = async () => {
+      try {
+        // Initialize Telegram WebApp
+        WebApp.ready();
+        WebApp.expand();
 
-    console.log('tg.initData', tg.initData);
+        // Get Telegram WebApp data
+        const webAppData = WebApp.initData;
+        if (!webAppData) {
+          console.error('No Telegram WebApp data available');
+          return;
+        }
 
-    // auto-kick off login as soon as WebApp loads
-    mutate(tg.initData, {
-      onSuccess: (data: UserResponse) => {
-        login(data.user, data.token);
-      },
-      onError: (error) => {
-        console.error('Telegram login failed:', error);
+        // Attempt to login with Telegram data
+        mutate(webAppData, {
+          onSuccess: (data: UserResponse) => {
+            login(data.user, data.token);
+          },
+          onError: (error) => {
+            console.error('Telegram login failed:', error);
+          }
+        });
+      } catch (error) {
+        console.error('Failed to initialize Telegram WebApp:', error);
       }
-    });
+    };
+
+    initTelegramAuth();
   }, [mutate, login]);
 
   return (
