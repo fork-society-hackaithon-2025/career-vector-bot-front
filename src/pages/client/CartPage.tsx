@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
@@ -30,7 +29,7 @@ const CartPage = () => {
 
   const handleCheckout = () => {
     if (items.length === 0) {
-      toast.error('Your cart is empty');
+      toast.error('Ваша корзина пуста');
       return;
     }
     
@@ -48,13 +47,13 @@ const CartPage = () => {
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-bold">Your Cart</h1>
+        <h1 className="text-2xl font-bold">Ваша корзина</h1>
       </div>
 
       {hasCartTimeExpired && (
         <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
           <p className="text-yellow-700">
-            Your cart edit time has expired. You can no longer modify this order.
+            Время редактирования корзины истекло. Вы больше не можете изменять этот заказ.
           </p>
         </div>
       )}
@@ -64,10 +63,10 @@ const CartPage = () => {
           <CardContent>
             <div className="flex flex-col items-center justify-center space-y-4">
               <ShoppingBag className="h-12 w-12 text-muted-foreground" />
-              <h3 className="text-lg font-medium">Your cart is empty</h3>
-              <p className="text-muted-foreground">Add some products to your cart</p>
+              <h3 className="text-lg font-medium">Ваша корзина пуста</h3>
+              <p className="text-muted-foreground">Добавьте товары в корзину</p>
               <Button onClick={() => navigate('/catalogue')}>
-                Continue Shopping
+                Продолжить покупки
               </Button>
             </div>
           </CardContent>
@@ -76,7 +75,7 @@ const CartPage = () => {
         <>
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Items ({items.length})</CardTitle>
+              <CardTitle className="text-lg">Товары ({items.length})</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {items.map((item) => (
@@ -132,10 +131,10 @@ const CartPage = () => {
                   onClick={clearCart}
                   disabled={hasCartTimeExpired}
                 >
-                  Clear Cart
+                  Очистить корзину
                 </Button>
                 <Button onClick={handleCheckout}>
-                  Checkout
+                  Оформить заказ
                 </Button>
               </div>
             </CardFooter>

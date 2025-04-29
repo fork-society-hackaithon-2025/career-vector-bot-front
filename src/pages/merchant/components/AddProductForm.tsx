@@ -61,32 +61,32 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          Add Product
+          Добавить товар
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Product</DialogTitle>
+          <DialogTitle>Добавить новый товар</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Product Name</Label>
+            <Label htmlFor="name">Название товара</Label>
             <Input
               id="name"
               value={newProduct.name}
               onChange={(e) => handleNewProductChange('name', e.target.value)}
-              placeholder="Enter product name"
+              placeholder="Введите название товара"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="brand">Brand</Label>
+            <Label htmlFor="brand">Бренд</Label>
             <Select
               value={newProduct.brand}
               onValueChange={(value) => handleNewProductChange('brand', value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select brand" />
+                <SelectValue placeholder="Выберите бренд" />
               </SelectTrigger>
               <SelectContent>
                 {BRANDS.map((brand) => (
@@ -99,13 +99,13 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category">Категория</Label>
             <Select
               value={newProduct.category}
               onValueChange={(value) => handleNewProductChange('category', value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select category" />
+                <SelectValue placeholder="Выберите категорию" />
               </SelectTrigger>
               <SelectContent>
                 {CATEGORIES.map((category) => (
@@ -119,7 +119,7 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="grossPrice">Gross Price ($)</Label>
+              <Label htmlFor="grossPrice">Цена гросс</Label>
               <Input
                 id="grossPrice"
                 type="number"
@@ -132,7 +132,7 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="clientPrice">Client Price ($)</Label>
+              <Label htmlFor="clientPrice">Цена для клиента</Label>
               <Input
                 id="clientPrice"
                 type="number"
@@ -146,7 +146,7 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="availableAmount">Available Amount</Label>
+            <Label htmlFor="availableAmount">Количество товара в наличии</Label>
             <Input
               id="availableAmount"
               type="number"
@@ -159,10 +159,10 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">Отменить</Button>
           </DialogClose>
           <DialogClose asChild>
-            <Button onClick={handleAddProduct}>Add Product</Button>
+            <Button onClick={handleAddProduct}>Добавить товар</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

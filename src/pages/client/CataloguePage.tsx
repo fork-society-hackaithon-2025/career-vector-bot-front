@@ -78,13 +78,13 @@ const CataloguePage = () => {
   }, [products]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Загрузка...</div>;
   }
 
   return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Products</h1>
+          <h1 className="text-2xl font-bold">Товары</h1>
           <Button
               variant="outline"
               size="sm"
@@ -92,7 +92,7 @@ const CataloguePage = () => {
               className="flex items-center gap-2"
           >
             <ShoppingCart className="h-4 w-4" />
-            View Cart
+            Корзина
           </Button>
         </div>
 
@@ -137,7 +137,7 @@ const CataloguePage = () => {
                                   </Badge>
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                  In stock: {product.availableAmount}
+                                  В наличии: {product.availableAmount}
                                 </p>
                               </CardContent>
                               <CardFooter className="p-4 pt-0 flex flex-col space-y-2">
@@ -168,7 +168,7 @@ const CataloguePage = () => {
                                           className="w-full"
                                           onClick={() => handleAddToCartWithQuantity(product.id)}
                                       >
-                                        Add to Cart
+                                        Добавить в корзину
                                       </Button>
                                     </>
                                 ) : (
@@ -176,7 +176,7 @@ const CataloguePage = () => {
                                         className="w-full"
                                         onClick={() => handleAddToCart(product.id)}
                                     >
-                                      Add to Cart
+                                      Добавить в корзину
                                     </Button>
                                 )}
                               </CardFooter>

@@ -8,11 +8,11 @@ const MerchantDashboard = () => {
   const { data: orders = [], isLoading, error } = useOrders();
 
   if (isLoading) {
-    return <div>Loading dashboard...</div>;
+    return <div>Загрузка панели управления...</div>;
   }
 
   if (error) {
-    return <div>Error loading dashboard: {error.message}</div>;
+    return <div>Ошибка загрузки панели управления: {error.message}</div>;
   }
 
   const pendingOrders = orders.filter(order => order.orderStatus === 'PENDING');
@@ -20,25 +20,25 @@ const MerchantDashboard = () => {
     .filter(order => order.orderStatus === 'CONFIRMED' || order.orderStatus === 'DELIVERED')
     .reduce((total, order) => total + order.totalPrice, 0);
   const totalCustomers = new Set(orders.map(order => order.userId)).size;
-  
+
   // Calculate weekly revenue
   const today = new Date();
   const weekStart = new Date(today);
   weekStart.setDate(today.getDate() - 7);
-  
+
   const weeklyRevenue = orders
     .filter(order => {
       const orderDate = new Date(order.createdAt);
-      return orderDate >= weekStart && 
-             orderDate <= today && 
+      return orderDate >= weekStart &&
+             orderDate <= today &&
              (order.orderStatus === 'CONFIRMED' || order.orderStatus === 'DELIVERED');
     })
     .reduce((total, order) => total + order.totalPrice, 0);
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Merchant Dashboard</h1>
-      
+      <h1 className="text-2xl font-bold">Панель управления</h1>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
@@ -47,13 +47,13 @@ const MerchantDashboard = () => {
                 <Wallet className="h-6 w-6 text-blue-700" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Sales</p>
+                <p className="text-sm font-medium text-muted-foreground">Общие продажи</p>
                 <h3 className="text-2xl font-bold">${totalSales.toFixed(2)}</h3>
               </div>
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center space-x-2">
@@ -61,13 +61,13 @@ const MerchantDashboard = () => {
                 <ShoppingBag className="h-6 w-6 text-orange-700" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Pending Orders</p>
+                <p className="text-sm font-medium text-muted-foreground">Ожидающие заказы</p>
                 <h3 className="text-2xl font-bold">{pendingOrders.length}</h3>
               </div>
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center space-x-2">
@@ -75,13 +75,13 @@ const MerchantDashboard = () => {
                 <UserCheck className="h-6 w-6 text-green-700" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Customers</p>
+                <p className="text-sm font-medium text-muted-foreground">Всего клиентов</p>
                 <h3 className="text-2xl font-bold">{totalCustomers}</h3>
               </div>
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center space-x-2">
@@ -89,19 +89,19 @@ const MerchantDashboard = () => {
                 <BarChart className="h-6 w-6 text-purple-700" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Weekly Revenue</p>
+                <p className="text-sm font-medium text-muted-foreground">Доход за неделю</p>
                 <h3 className="text-2xl font-bold">${weeklyRevenue.toFixed(2)}</h3>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Recent Orders</CardTitle>
-            <CardDescription>Latest orders received</CardDescription>
+            <CardTitle>Последние заказы</CardTitle>
+            <CardDescription>Недавно полученные заказы</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -124,7 +124,10 @@ const MerchantDashboard = () => {
                         order.orderStatus === 'REJECTED' ? 'bg-red-100 text-red-800' :
                         'bg-blue-100 text-blue-800'
                       }`}>
-                        {order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1)}
+                        {order.orderStatus === 'PENDING' ? 'Ожидает' :
+                            order.orderStatus === 'CONFIRMED' ? 'Подтвержден' :
+                                order.orderStatus === 'REJECTED' ? 'Отклонен' :
+                                    order.orderStatus === 'DELIVERED' ? 'Доставлен' : order.orderStatus}
                       </span>
                     </div>
                   </div>

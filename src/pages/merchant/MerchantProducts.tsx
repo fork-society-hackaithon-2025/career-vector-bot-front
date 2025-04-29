@@ -43,17 +43,17 @@ const MerchantProducts = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Загрузка...</div>;
   }
 
   if (error) {
-    return <div>Error loading products: {error.message}</div>;
+    return <div>Ошибка загрузки товаров: {error.message}</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Products Management</h1>
+        <h1 className="text-2xl font-bold">Управление товарами</h1>
         <AddProductForm onSubmit={handleAddProduct} />
       </div>
 

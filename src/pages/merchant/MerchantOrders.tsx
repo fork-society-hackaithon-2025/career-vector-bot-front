@@ -103,9 +103,9 @@ const MerchantOrders = () => {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Orders Management</h1>
+        <h1 className="text-2xl font-bold">Управление заказами</h1>
         <div className="flex items-center justify-center h-64">
-          <p className="text-muted-foreground">Loading orders...</p>
+          <p className="text-muted-foreground">Загрузка заказов...</p>
         </div>
       </div>
     );
@@ -114,9 +114,9 @@ const MerchantOrders = () => {
   if (error) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Orders Management</h1>
+        <h1 className="text-2xl font-bold">Управление заказами</h1>
         <div className="flex items-center justify-center h-64">
-          <p className="text-red-500">Error loading orders: {error.message}</p>
+          <p className="text-red-500">Ошибка загрузки заказов: {error.message}</p>
         </div>
       </div>
     );
@@ -124,12 +124,12 @@ const MerchantOrders = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Orders Management</h1>
+      <h1 className="text-2xl font-bold">Управление заказами</h1>
       
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
           <Input
-            placeholder="Search by customer name or order ID"
+            placeholder="Поиск по имени клиента или ID заказа"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -137,14 +137,14 @@ const MerchantOrders = () => {
         <div className="w-full sm:w-48">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger>
-              <SelectValue placeholder="Filter by status" />
+              <SelectValue placeholder="Фильтр по статусу" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Orders</SelectItem>
-              <SelectItem value="PENDING">Pending</SelectItem>
-              <SelectItem value="CONFIRMED">Confirmed</SelectItem>
-              <SelectItem value="REJECTED">Rejected</SelectItem>
-              <SelectItem value="DELIVERED">Delivered</SelectItem>
+              <SelectItem value="all">Все заказы</SelectItem>
+              <SelectItem value="PENDING">Ожидающие</SelectItem>
+              <SelectItem value="CONFIRMED">Подтвержденные</SelectItem>
+              <SelectItem value="REJECTED">Отклоненные</SelectItem>
+              <SelectItem value="DELIVERED">Доставленные</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -159,13 +159,16 @@ const MerchantOrders = () => {
                 <div className="flex flex-col md:flex-row justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold">Order #{order.id}</h3>
+                      <h3 className="font-semibold">Заказ #{order.id}</h3>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(order.orderStatus)}`}>
-                        {order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1)}
+                        {order.orderStatus === 'PENDING' ? 'Ожидает' :
+                         order.orderStatus === 'CONFIRMED' ? 'Подтвержден' :
+                         order.orderStatus === 'REJECTED' ? 'Отклонен' :
+                         order.orderStatus === 'DELIVERED' ? 'Доставлен' : order.orderStatus}
                       </span>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
-                      {format(new Date(order.createdAt), 'PPp')}
+                      {format(new Date(order.createdAt), 'PPp', {})}
                     </p>
                     
                     <div className="flex items-center gap-2 mb-2">
@@ -180,14 +183,14 @@ const MerchantOrders = () => {
                     </div>
                     
                     <div className="text-sm">
-                      <p className="font-medium">Delivery Date:</p>
+                      <p className="font-medium">Дата доставки:</p>
                       <p>{format(new Date(order.deliveryDate), 'PPP')}</p>
                     </div>
                   </div>
                   
                   <div className="flex flex-col gap-2">
                     <div className="text-right">
-                      <p className="text-sm font-medium">Total Amount:</p>
+                      <p className="text-sm font-medium">Общая сумма:</p>
                       <p className="text-xl font-bold">${order.totalPrice.toFixed(2)}</p>
                     </div>
                     
@@ -198,7 +201,7 @@ const MerchantOrders = () => {
                         onClick={() => handlePrintOrder(order)}
                       >
                         <Download className="h-4 w-4 mr-1" />
-                        Print
+                        Печать
                       </Button>
                       
                       <Dialog>
@@ -208,30 +211,30 @@ const MerchantOrders = () => {
                             variant="outline"
                             onClick={() => setSelectedOrderId(Number(order.id))}
                           >
-                            View Details
+                            Детали
                           </Button>
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
-                            <DialogTitle>Order Details</DialogTitle>
+                            <DialogTitle>Детали заказа</DialogTitle>
                           </DialogHeader>
                           {isLoadingOrderDetails ? (
                             <div className="flex items-center justify-center h-32">
-                              <p className="text-muted-foreground">Loading order details...</p>
+                              <p className="text-muted-foreground">Загрузка деталей заказа...</p>
                             </div>
                           ) : selectedOrder ? (
                             <div className="space-y-4">
                               <div>
-                                <h3 className="font-medium">Customer Information</h3>
-                                <p>Name: {selectedOrder.clientName}</p>
-                                <p>Phone: {selectedOrder.clientPhone}</p>
+                                <h3 className="font-medium">Информация о клиенте</h3>
+                                <p>Имя: {selectedOrder.clientName}</p>
+                                <p>Телефон: {selectedOrder.clientPhone}</p>
                               </div>
                               
                               <div>
-                                <h3 className="font-medium">Order Items</h3>
+                                <h3 className="font-medium">Товары в заказе</h3>
                                 <div className="space-y-2 mt-2">
                                   {isLoadingProducts ? (
-                                    <p className="text-muted-foreground">Loading products...</p>
+                                    <p className="text-muted-foreground">Загрузка товаров...</p>
                                   ) : selectedOrder.orderItems?.map((item, index) => (
                                     <OrderItem
                                       key={index}
@@ -241,13 +244,13 @@ const MerchantOrders = () => {
                                       productName={productMap[item.productId]}
                                     />
                                   )) || (
-                                    <p className="text-muted-foreground">No items in this order</p>
+                                    <p className="text-muted-foreground">Нет товаров в этом заказе</p>
                                   )}
                                 </div>
                               </div>
                               
                               <div className="flex justify-between items-center pt-2 border-t">
-                                <p className="font-medium">Total Amount</p>
+                                <p className="font-medium">Общая сумма</p>
                                 <p className="font-bold text-lg">
                                   ${selectedOrder.totalPrice.toFixed(2)}
                                 </p>
@@ -275,7 +278,7 @@ const MerchantOrders = () => {
                             onClick={() => handleRejectOrder(order.id.toString())}
                           >
                             <X className="h-4 w-4 mr-1" />
-                            Reject
+                            Отклонить
                           </Button>
                           
                           <Button
@@ -284,7 +287,7 @@ const MerchantOrders = () => {
                             onClick={() => handleConfirmOrder(order.id.toString())}
                           >
                             <Check className="h-4 w-4 mr-1" />
-                            Confirm
+                            Подтвердить
                           </Button>
                         </>
                       )}
@@ -297,7 +300,7 @@ const MerchantOrders = () => {
         ) : (
           <Card className="py-8">
             <CardContent className="flex flex-col items-center justify-center text-center">
-              <p className="text-muted-foreground">No orders found matching your criteria</p>
+              <p className="text-muted-foreground">Заказов не найдено</p>
             </CardContent>
           </Card>
         )}

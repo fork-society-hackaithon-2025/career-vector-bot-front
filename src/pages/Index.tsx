@@ -30,7 +30,7 @@ const Index = () => {
               onClick={() => navigate("/catalogue")}
             >
               <ShoppingBag className="mr-2 h-5 w-5" />
-              Browse Products
+              Смотреть товары
             </Button>
           )}
           
@@ -41,7 +41,7 @@ const Index = () => {
               onClick={() => navigate("/merchant/dashboard")}
             >
               <LineChart className="mr-2 h-5 w-5" />
-              Merchant Dashboard
+              Панель управления
             </Button>
           )}
         </div>

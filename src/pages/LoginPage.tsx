@@ -41,10 +41,10 @@ const LoginPage = () => {
           window.history.replaceState({}, '', '/');
         }
 
-        if (!webAppData) {
-          console.error('No Telegram WebApp data available');
-          return;
-        }
+        // if (!webAppData) {
+        //   console.error('No Telegram WebApp data available');
+        //   return;
+        // }
 
         // Attempt to login with Telegram data
         mutate(webAppData, {
@@ -67,9 +67,9 @@ const LoginPage = () => {
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Loading...</CardTitle>
+          <CardTitle className="text-2xl text-center">Загрузка...</CardTitle>
           <CardDescription className="text-center">
-            Please wait while we authenticate you with Telegram
+            Пожалуйста, подождите, пока мы авторизуем вас через Telegram
           </CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center">

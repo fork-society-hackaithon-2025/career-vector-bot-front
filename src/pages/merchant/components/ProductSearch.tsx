@@ -12,7 +12,7 @@ export const ProductSearch: React.FC<ProductSearchProps> = ({ value, onChange })
     <div className="relative">
       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <Input
-        placeholder="Search products by name, brand, or category..."
+        placeholder="Поиск по названию, бренду, категории..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="pl-9"

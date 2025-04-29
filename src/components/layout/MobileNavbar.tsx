@@ -23,16 +23,16 @@ const MobileNavbar: React.FC<MobileNavbarProps> = ({ isMerchant }) => {
   const { itemCount } = useCart();
   
   const clientNavItems: NavItem[] = [
-    { icon: Home, label: 'Home', path: '/' },
-    { icon: ShoppingBag, label: 'Shop', path: '/catalogue' },
-    { icon: ShoppingCart, label: 'Cart', path: '/cart', badge: itemCount > 0 ? itemCount : undefined },
+    { icon: Home, label: 'Главная', path: '/' },
+    { icon: ShoppingBag, label: 'Товары', path: '/catalogue' },
+    { icon: ShoppingCart, label: 'Корзина', path: '/cart', badge: itemCount > 0 ? itemCount : undefined },
   ];
   
   const merchantNavItems: NavItem[] = [
-    { icon: Home, label: 'Dashboard', path: '/merchant' },
-    { icon: Package, label: 'Products', path: '/merchant/products' },
-    { icon: ShoppingBag, label: 'Orders', path: '/merchant/orders' },
-    { icon: BarChart3, label: 'Analytics', path: '/merchant/analytics' },
+    { icon: Home, label: 'Панель', path: '/merchant' },
+    { icon: Package, label: 'Товары', path: '/merchant/products' },
+    { icon: ShoppingBag, label: 'Заказы', path: '/merchant/orders' },
+    { icon: BarChart3, label: 'Аналитика', path: '/merchant/analytics' },
   ];
 
   const navItems = isMerchant ? merchantNavItems : clientNavItems;

@@ -39,7 +39,7 @@ const CheckoutPage = () => {
     e.preventDefault();
     
     if (!formData.name || !formData.phone || !formData.deliveryDate) {
-      toast.error('Please fill in all required fields');
+      toast.error('Пожалуйста, заполните все обязательные поля');
       return;
     }
 
@@ -60,7 +60,7 @@ const CheckoutPage = () => {
       clearCart();
       navigate('/order-confirmation');
     } catch (error) {
-      toast.error('Failed to create order');
+      toast.error('Не удалось создать заказ');
       console.error('Error creating order:', error);
     } finally {
       setIsSubmitting(false);
@@ -70,9 +70,9 @@ const CheckoutPage = () => {
   if (items.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-muted-foreground mb-4">Your cart is empty</p>
+        <p className="text-muted-foreground mb-4">Ваша корзина пуста</p>
         <Button onClick={() => navigate('/products')}>
-          Browse Products
+          Смотреть товары
         </Button>
       </div>
     );
@@ -88,14 +88,14 @@ const CheckoutPage = () => {
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-bold">Checkout</h1>
+        <h1 className="text-2xl font-bold">Оформление заказа</h1>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Order Summary</CardTitle>
+              <CardTitle className="text-lg">Ваш заказ</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {items.map((item) => (
@@ -110,7 +110,7 @@ const CheckoutPage = () => {
             </CardContent>
             <Separator />
             <CardFooter className="flex justify-between py-4">
-              <p className="font-medium text-lg">Total</p>
+              <p className="font-medium text-lg">Итого</p>
               <p className="font-bold text-lg">${totalPrice.toFixed(2)}</p>
             </CardFooter>
           </Card>
@@ -119,24 +119,24 @@ const CheckoutPage = () => {
         <div>
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Delivery Information</CardTitle>
+              <CardTitle className="text-lg">Информация о доставке</CardTitle>
             </CardHeader>
             <form onSubmit={handleSubmit}>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
+                  <Label htmlFor="name">Имя</Label>
                   <Input
                     id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    placeholder="Enter your full name"
+                    placeholder="Введите ваше имя"
                     required
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="phone">Номер телефона</Label>
                   <PatternFormat
                     id="phone"
                     name="phone"
@@ -157,13 +157,13 @@ const CheckoutPage = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="deliveryDate">Delivery Date</Label>
+                  <Label htmlFor="deliveryDate">Дата доставки</Label>
                   <Select
                     value={formData.deliveryDate}
                     onValueChange={handleSelectChange}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select delivery date" />
+                      <SelectValue placeholder="Выберите дату доставки" />
                     </SelectTrigger>
                     <SelectContent>
                       {availableDates.map((date) => (
@@ -181,10 +181,10 @@ const CheckoutPage = () => {
                   className="w-full"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Processing...' : 'Place Order'}
+                  {isSubmitting ? 'Обработка...' : 'Оформить заказ'}
                 </Button>
                 <p className="text-xs text-muted-foreground text-center mt-2">
-                  Note: You'll have 5 minutes to edit your order after submission.
+                  Примечание: У вас будет 5 минут на редактирование заказа после отправки.
                 </p>
               </CardFooter>
             </form>

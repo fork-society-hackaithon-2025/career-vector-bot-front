@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, LineChart, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
@@ -129,36 +128,36 @@ const MerchantAnalytics = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Analytics Dashboard</h1>
+      <h1 className="text-2xl font-bold">Аналитика</h1>
       
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="sales">Sales</TabsTrigger>
-          <TabsTrigger value="products">Products</TabsTrigger>
+          <TabsTrigger value="overview">Обзор</TabsTrigger>
+          <TabsTrigger value="sales">Продажи</TabsTrigger>
+          <TabsTrigger value="products">Товары</TabsTrigger>
         </TabsList>
         
         <TabsContent value="overview" className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-medium">Revenue Overview</h2>
+            <h2 className="text-lg font-medium">Обзор доходов</h2>
             <div className="flex border rounded-md overflow-hidden">
               <button 
                 className={`px-3 py-1 ${selectedPeriod === 'day' ? 'bg-primary text-white' : 'bg-white'}`}
                 onClick={() => setSelectedPeriod('day')}
               >
-                Day
+                День
               </button>
               <button 
                 className={`px-3 py-1 ${selectedPeriod === 'week' ? 'bg-primary text-white' : 'bg-white'}`}
                 onClick={() => setSelectedPeriod('week')}
               >
-                Week
+                Неделя
               </button>
               <button 
                 className={`px-3 py-1 ${selectedPeriod === 'month' ? 'bg-primary text-white' : 'bg-white'}`}
                 onClick={() => setSelectedPeriod('month')}
               >
-                Month
+                Месяц
               </button>
             </div>
           </div>
@@ -168,7 +167,7 @@ const MerchantAnalytics = () => {
               <CardContent className="pt-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Revenue</p>
+                    <p className="text-sm font-medium text-muted-foreground">Доход</p>
                     <h3 className="text-2xl font-bold">${currentRevenue.toFixed(2)}</h3>
                     <div className={`flex items-center text-sm ${revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                       {revenueChange >= 0 ? (
@@ -176,7 +175,7 @@ const MerchantAnalytics = () => {
                       ) : (
                         <ArrowDown className="h-4 w-4 mr-1" />
                       )}
-                      {Math.abs(revenueChange).toFixed(1)}% from last period
+                      {Math.abs(revenueChange).toFixed(1)}% от прошлого периода
                     </div>
                   </div>
                   <div className="p-2 bg-blue-100 rounded-full">
@@ -190,9 +189,9 @@ const MerchantAnalytics = () => {
               <CardContent className="pt-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Orders</p>
+                    <p className="text-sm font-medium text-muted-foreground">Заказы</p>
                     <h3 className="text-2xl font-bold">{confirmedOrders.length}</h3>
-                    <p className="text-sm text-muted-foreground">For {dateRange.label}</p>
+                    <p className="text-sm text-muted-foreground">За {dateRange.label}</p>
                   </div>
                   <div className="p-2 bg-green-100 rounded-full">
                     <LineChart className="h-6 w-6 text-green-700" />
@@ -205,13 +204,13 @@ const MerchantAnalytics = () => {
               <CardContent className="pt-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Average Order</p>
+                    <p className="text-sm font-medium text-muted-foreground">Средний заказ</p>
                     <h3 className="text-2xl font-bold">
                       ${confirmedOrders.length > 0 
                         ? (currentRevenue / confirmedOrders.length).toFixed(2) 
                         : '0.00'}
                     </h3>
-                    <p className="text-sm text-muted-foreground">Per transaction</p>
+                    <p className="text-sm text-muted-foreground">За транзакцию</p>
                   </div>
                   <div className="p-2 bg-purple-100 rounded-full">
                     <BarChart className="h-6 w-6 text-purple-700" />
@@ -224,9 +223,9 @@ const MerchantAnalytics = () => {
               <CardContent className="pt-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Monthly Projection</p>
+                    <p className="text-sm font-medium text-muted-foreground">Прогноз на месяц</p>
                     <h3 className="text-2xl font-bold">${analytics.monthlyTotal.toFixed(2)}</h3>
-                    <p className="text-sm text-muted-foreground">Based on current trends</p>
+                    <p className="text-sm text-muted-foreground">На основе текущих трендов</p>
                   </div>
                   <div className="p-2 bg-yellow-100 rounded-full">
                     <Calendar className="h-6 w-6 text-yellow-700" />
@@ -238,7 +237,7 @@ const MerchantAnalytics = () => {
           
           <Card>
             <CardHeader>
-              <CardTitle>Revenue Trends</CardTitle>
+              <CardTitle>Тренды доходов</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[300px] w-full">

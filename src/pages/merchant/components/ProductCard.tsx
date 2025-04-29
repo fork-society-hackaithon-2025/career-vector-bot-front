@@ -55,11 +55,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
           <div>
             <h3 className="text-lg font-medium">{product.name}</h3>
             <div className="flex flex-col text-sm">
-              <span>Brand: {product.brand}</span>
-              <span>Category: {product.category}</span>
-              <span>Gross: ${product.grossPrice.toFixed(2)}</span>
-              <span>Client: ${product.clientPrice.toFixed(2)}</span>
-              <span className="text-muted-foreground mt-1">Available: {product.availableAmount}</span>
+              <span>Бренд: {product.brand}</span>
+              <span>Категория: {product.category}</span>
+              <span>Цена гросс: ${product.grossPrice.toFixed(2)}</span>
+              <span>Цена для клиента: ${product.clientPrice.toFixed(2)}</span>
+              <span className="text-muted-foreground mt-1">В наличии: {product.availableAmount}</span>
             </div>
           </div>
           <div className="flex space-x-2">
@@ -75,12 +75,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Edit Product</DialogTitle>
+                  <DialogTitle>Изменить товар</DialogTitle>
                 </DialogHeader>
                 {editingProduct && (
                   <div className="space-y-4 py-4">
                     <div className="space-y-2">
-                      <Label htmlFor="edit-name">Product Name</Label>
+                      <Label htmlFor="edit-name">Название товара</Label>
                       <Input
                         id="edit-name"
                         value={editingProduct.name}
@@ -89,13 +89,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="edit-brand">Brand</Label>
+                      <Label htmlFor="edit-brand">Бренд</Label>
                       <Select
                         value={editingProduct.brand}
                         onValueChange={(value) => handleEditingChange('brand', value)}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select brand" />
+                          <SelectValue placeholder="Выберите бренд" />
                         </SelectTrigger>
                         <SelectContent>
                           {BRANDS.map((brand) => (
@@ -108,13 +108,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="edit-category">Category</Label>
+                      <Label htmlFor="edit-category">Категория</Label>
                       <Select
                         value={editingProduct.category}
                         onValueChange={(value) => handleEditingChange('category', value)}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
+                          <SelectValue placeholder="Выберите категорию" />
                         </SelectTrigger>
                         <SelectContent>
                           {CATEGORIES.map((category) => (
@@ -128,7 +128,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="edit-grossPrice">Gross Price ($)</Label>
+                        <Label htmlFor="edit-grossPrice">Цена гросс</Label>
                         <Input
                           id="edit-grossPrice"
                           type="number"
@@ -140,7 +140,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="edit-clientPrice">Client Price ($)</Label>
+                        <Label htmlFor="edit-clientPrice">Цена для клиента</Label>
                         <Input
                           id="edit-clientPrice"
                           type="number"
@@ -153,7 +153,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="edit-availableAmount">Available Amount</Label>
+                      <Label htmlFor="edit-availableAmount">Количество товара в наличии</Label>
                       <Input
                         id="edit-availableAmount"
                         type="number"
@@ -166,10 +166,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
                 )}
                 <DialogFooter>
                   <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
+                    <Button variant="outline">Отменить</Button>
                   </DialogClose>
                   <DialogClose asChild>
-                    <Button onClick={handleUpdateProduct}>Update</Button>
+                    <Button onClick={handleUpdateProduct}>Изменить товар</Button>
                   </DialogClose>
                 </DialogFooter>
               </DialogContent>
