@@ -32,7 +32,10 @@ export const useCreateOrder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (orderData: CreateOrderDto) => api.orders.create(orderData),
+    mutationFn: async (orderData: CreateOrderDto) => {
+      const response = await api.orders.create(orderData);
+      return response.data.responseObject;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       toast.success('Order created successfully');

@@ -63,7 +63,7 @@ const App = () => {
                       <CheckoutPage />
                     </ProtectedRoute>
                   } />
-                  <Route path="/order-confirmation" element={
+                  <Route path="/order-confirmation/:orderId" element={
                     <ProtectedRoute>
                       <OrderConfirmationPage />
                     </ProtectedRoute>

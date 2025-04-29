@@ -1,12 +1,38 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Check } from 'lucide-react';
+import { useOrder } from '@/common/hooks/useOrders';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
+import { PatternFormat } from 'react-number-format';
 
 const OrderConfirmationPage = () => {
   const navigate = useNavigate();
+  const { orderId } = useParams<{ orderId: string }>();
+  const { data: orderResponse, isLoading, error } = useOrder(Number(orderId));
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-full">Загрузка...</div>;
+  }
+
+  if (error || !orderResponse) {
+    return (
+      <div className="flex flex-col items-center text-center space-y-4 my-8">
+        <h1 className="text-2xl font-bold text-red-600">Ошибка загрузки заказа</h1>
+        <p className="text-muted-foreground">
+          Не удалось загрузить информацию о заказе
+        </p>
+        <Button onClick={() => navigate('/products')}>
+          Вернуться к покупкам
+        </Button>
+      </div>
+    );
+  }
+
+  const order = orderResponse;
 
   return (
     <div className="space-y-6">
@@ -27,20 +53,37 @@ const OrderConfirmationPage = () => {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Номер заказа</p>
-            <p className="font-medium">#12345</p>
+            <p className="font-medium">#{order.id}</p>
           </div>
           
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Дата доставки</p>
-            <p className="font-medium">Завтра, 14:00 - 16:00</p>
+            <p className="font-medium">
+              {format(new Date(order.deliveryDate), 'd MMMM, HH:mm', { locale: ru })}
+            </p>
           </div>
           
           <Separator />
           
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Адрес доставки</p>
-            <p className="font-medium">ул. Главная, 123</p>
-            <p className="font-medium">Город, Область 12345</p>
+            <p className="text-sm text-muted-foreground">Контактная информация</p>
+            <p className="font-medium">{order.clientName}</p>
+            <PatternFormat
+                id="phone"
+                name="phone"
+                value={order.clientPhone}
+                format="+# (###) ###-####"
+                mask="_"
+                placeholder="+7 (___) ___-____"
+                readOnly
+            />
+          </div>
+
+          <Separator />
+
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">Сумма заказа</p>
+            <p className="font-medium">{order.totalPrice} ₸</p>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
@@ -49,13 +92,6 @@ const OrderConfirmationPage = () => {
             onClick={() => navigate('/products')}
           >
             Продолжить покупки
-          </Button>
-          <Button 
-            variant="outline" 
-            className="w-full"
-            onClick={() => navigate('/orders')}
-          >
-            Статус заказа
           </Button>
         </CardFooter>
       </Card>

@@ -47,7 +47,7 @@ const CheckoutPage = () => {
     setIsSubmitting(true);
 
     try {
-      await createOrder.mutateAsync({
+      const order = await createOrder.mutateAsync({
         name: formData.name,
         phone: `7${formData.phone}`,
         deliveryDate: new Date(formData.deliveryDate),
@@ -59,7 +59,7 @@ const CheckoutPage = () => {
       });
 
       clearCart();
-      navigate('/order-confirmation');
+      navigate(`/order-confirmation/${order.id}`);
     } catch (error) {
       toast.error('Не удалось создать заказ');
       console.error('Error creating order:', error);
