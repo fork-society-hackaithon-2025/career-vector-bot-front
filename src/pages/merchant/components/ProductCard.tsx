@@ -57,8 +57,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
             <div className="flex flex-col text-sm">
               <span>Бренд: {product.brand}</span>
               <span>Категория: {product.category}</span>
-              <span>Цена гросс: ${product.grossPrice.toFixed(2)}</span>
-              <span>Цена для клиента: ${product.clientPrice.toFixed(2)}</span>
+              <span>Цена гросс: {product.grossPrice.toFixed(2)}₸</span>
+              <span>Цена для клиента: {product.clientPrice.toFixed(2)}₸</span>
               <span className="text-muted-foreground mt-1">В наличии: {product.availableAmount}</span>
             </div>
           </div>

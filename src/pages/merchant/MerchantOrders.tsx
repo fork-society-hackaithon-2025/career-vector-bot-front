@@ -35,11 +35,11 @@ const OrderItem: React.FC<OrderItemProps> = ({ productId, price, quantity, produ
           {productName || `Product #${productId}`}
         </p>
         <p className="text-sm text-muted-foreground">
-          ${price.toFixed(2)} × {quantity}
+          {price.toFixed(2)}₸ × {quantity}
         </p>
       </div>
       <p className="font-medium">
-        ${(price * quantity).toFixed(2)}
+        {(price * quantity).toFixed(2)}₸
       </p>
     </div>
   );
@@ -192,7 +192,7 @@ const MerchantOrders = () => {
                   <div className="flex flex-col gap-2">
                     <div className="text-right">
                       <p className="text-sm font-medium">Общая сумма:</p>
-                      <p className="text-xl font-bold">${order.totalPrice.toFixed(2)}</p>
+                      <p className="text-xl font-bold">{order.totalPrice.toFixed(2)}₸</p>
                     </div>
                     
                     <div className="w-full overflow-scroll flex gap-2 mt-2">
@@ -253,7 +253,7 @@ const MerchantOrders = () => {
                               <div className="flex justify-between items-center pt-2 border-t">
                                 <p className="font-medium">Общая сумма</p>
                                 <p className="font-bold text-lg">
-                                  ${selectedOrder.totalPrice.toFixed(2)}
+                                  {selectedOrder.totalPrice.toFixed(2)}₸
                                 </p>
                               </div>
                             </div>

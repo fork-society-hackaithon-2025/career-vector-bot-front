@@ -83,7 +83,7 @@ const CartPage = () => {
                   <div className="flex items-center space-x-4">
                     <div className="space-y-1">
                       <h3 className="font-medium">{item.product.name}</h3>
-                      <p className="text-sm text-muted-foreground">${item.product.clientPrice.toFixed(2)}</p>
+                      <p className="text-sm text-muted-foreground">{item.product.clientPrice.toFixed(2)}₸</p>
                     </div>
                   </div>
                   <div className="flex items-center">
@@ -120,12 +120,12 @@ const CartPage = () => {
               ))}
             </CardContent>
             <Separator />
-            <CardFooter className="flex justify-between py-4">
+            <CardFooter className="flex justify-between items-center py-4 gap-8">
               <div>
                 <p className="font-medium">Total</p>
-                <p className="text-2xl font-bold">${totalPrice.toFixed(2)}</p>
+                <p className="text-2xl font-bold">{totalPrice.toFixed(2)}₸</p>
               </div>
-              <div className="space-x-2">
+              <div className="flex flex-col gap-2">
                 <Button 
                   variant="outline" 
                   onClick={clearCart}

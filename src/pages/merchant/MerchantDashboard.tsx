@@ -49,7 +49,7 @@ const MerchantDashboard = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Общие продажи</p>
-                <h3 className="text-2xl font-bold">${totalSales.toFixed(2)}</h3>
+                <h3 className="text-2xl font-bold">{totalSales.toFixed(2)}₸</h3>
               </div>
             </div>
           </CardContent>
@@ -91,7 +91,7 @@ const MerchantDashboard = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Доход за неделю</p>
-                <h3 className="text-2xl font-bold">${weeklyRevenue.toFixed(2)}</h3>
+                <h3 className="text-2xl font-bold">{weeklyRevenue.toFixed(2)}₸</h3>
               </div>
             </div>
           </CardContent>
@@ -118,7 +118,7 @@ const MerchantDashboard = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium">${order.totalPrice.toFixed(2)}</p>
+                      <p className="font-medium">{order.totalPrice.toFixed(2)}₸</p>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
                         order.orderStatus === 'CONFIRMED' ? 'bg-green-100 text-green-800' :
                         order.orderStatus === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :

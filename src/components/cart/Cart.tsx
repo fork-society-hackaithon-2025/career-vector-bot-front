@@ -45,7 +45,7 @@ export const Cart: React.FC = () => {
                 <div>
                   <h3 className="font-medium">{item.product.name}</h3>
                   <p className="text-sm text-muted-foreground">
-                    ${item.product.clientPrice.toFixed(2)} each
+                    {item.product.clientPrice.toFixed(2)}₸ each
                   </p>
                 </div>
               </div>
@@ -90,7 +90,7 @@ export const Cart: React.FC = () => {
           <div className="border-t pt-4">
             <div className="flex justify-between items-center mb-4">
               <p className="font-medium">Total</p>
-              <p className="text-lg font-bold">${totalPrice.toFixed(2)}</p>
+              <p className="text-lg font-bold">{totalPrice.toFixed(2)}₸</p>
             </div>
             
             <div className="flex space-x-2">

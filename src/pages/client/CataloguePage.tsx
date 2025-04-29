@@ -133,7 +133,7 @@ const CataloguePage = () => {
                                 <div className="flex justify-between items-start mb-2">
                                   <h3 className="font-semibold">{product.name}</h3>
                                   <Badge variant="outline" className="ml-2">
-                                    ${product.clientPrice.toFixed(2)}
+                                    {product.clientPrice.toFixed(2)}₸
                                   </Badge>
                                 </div>
                                 <p className="text-sm text-muted-foreground">

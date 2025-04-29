@@ -169,7 +169,7 @@ const MerchantAnalytics = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Доход</p>
-                    <h3 className="text-2xl font-bold">${currentRevenue.toFixed(2)}</h3>
+                    <h3 className="text-2xl font-bold">{currentRevenue.toFixed(2)}₸</h3>
                     <div className={`flex items-center text-sm ${revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                       {revenueChange >= 0 ? (
                         <ArrowUp className="h-4 w-4 mr-1" />
@@ -207,9 +207,9 @@ const MerchantAnalytics = () => {
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Средний заказ</p>
                     <h3 className="text-2xl font-bold">
-                      ${confirmedOrders.length > 0 
+                      {confirmedOrders.length > 0 
                         ? (currentRevenue / confirmedOrders.length).toFixed(2) 
-                        : '0.00'}
+                        : '0.00'}₸
                     </h3>
                     <p className="text-sm text-muted-foreground">За транзакцию</p>
                   </div>
@@ -225,7 +225,7 @@ const MerchantAnalytics = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Прогноз на месяц</p>
-                    <h3 className="text-2xl font-bold">${analytics.monthlyTotal.toFixed(2)}</h3>
+                    <h3 className="text-2xl font-bold">{analytics.monthlyTotal.toFixed(2)}₸</h3>
                     <p className="text-sm text-muted-foreground">На основе текущих трендов</p>
                   </div>
                   <div className="p-2 bg-yellow-100 rounded-full">
@@ -301,7 +301,7 @@ const MerchantAnalytics = () => {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
                     <YAxis />
-                    <Tooltip formatter={(value) => [`$${value}`, 'Revenue']} />
+                    <Tooltip formatter={(value) => [`${value}₸`, 'Revenue']} />
                     <Legend />
                     <Bar dataKey="revenue" fill="#3b82f6" name="Revenue" />
                   </RechartBarChart>
@@ -361,7 +361,7 @@ const MerchantAnalytics = () => {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" />
                     <YAxis type="category" dataKey="name" width={100} />
-                    <Tooltip formatter={(value) => [`$${value}`, 'Revenue']} />
+                    <Tooltip formatter={(value) => [`${value}₸`, 'Revenue']} />
                     <Legend />
                     <Bar dataKey="revenue" fill="#3b82f6" name="Revenue" />
                   </RechartBarChart>

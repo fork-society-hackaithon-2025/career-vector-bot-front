@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { ShoppingBag, LineChart } from "lucide-react";
+import { User } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Navigate to appropriate page after login
+  useEffect(() => {
+    if (user) {
+      if (user.role === "ADMIN") {
+        navigate("/merchant");
+      } else {
+        navigate("/catalogue");
+      }
+    }
+  }, [user, navigate]);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center p-4 bg-gradient-to-b from-background to-muted/30">
@@ -22,29 +33,18 @@ const Index = () => {
           {user ? `Здравствуйте, ${user.name}!` : "Пожалуйста, войдите в аккаунт через Telegram"}
         </p>
 
-        <div className="grid gap-4 mt-8">
-          {user?.role === "USER" && (
+        {!user && (
+          <div className="mt-8">
             <Button 
               size="lg" 
               className="w-full text-lg h-14"
-              onClick={() => navigate("/catalogue")}
+              onClick={() => navigate("/login")}
             >
-              <ShoppingBag className="mr-2 h-5 w-5" />
-              Смотреть товары
+              <User className="mr-2 h-5 w-5" />
+              Войти через Telegram
             </Button>
-          )}
-          
-          {user?.role === "ADMIN" && (
-            <Button 
-              size="lg" 
-              className="w-full text-lg h-14"
-              onClick={() => navigate("/merchant/dashboard")}
-            >
-              <LineChart className="mr-2 h-5 w-5" />
-              Панель управления
-            </Button>
-          )}
-        </div>
+          </div>
+        )}
       </motion.div>
     </div>
   );
