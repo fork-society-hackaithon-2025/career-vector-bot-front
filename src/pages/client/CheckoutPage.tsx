@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getAvailableDeliveryDates } from '@/lib/mock-data';
 import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { ArrowLeft } from 'lucide-react';
 import { useCreateOrder } from '@/common/hooks/useOrders';
@@ -168,7 +169,7 @@ const CheckoutPage = () => {
                     <SelectContent>
                       {availableDates.map((date) => (
                         <SelectItem key={date.toISOString()} value={date.toISOString()}>
-                          {format(date, 'EEEE, MMMM d, yyyy')}
+                          {format(date, 'EEEE, MMMM d, yyyy', { locale: ru })}
                         </SelectItem>
                       ))}
                     </SelectContent>

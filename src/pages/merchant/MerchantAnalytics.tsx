@@ -18,6 +18,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { ru } from 'date-fns/locale';
 
 const MerchantAnalytics = () => {
   const today = new Date();
@@ -32,19 +33,19 @@ const MerchantAnalytics = () => {
         return {
           start: startOfDay(today),
           end: endOfDay(today),
-          label: format(today, 'MMMM d, yyyy')
+          label: format(today, 'MMMM d, yyyy', { locale: ru })
         };
       case 'week':
         return {
           start: startOfWeek(today),
           end: endOfWeek(today),
-          label: `${format(startOfWeek(today), 'MMM d')} - ${format(endOfWeek(today), 'MMM d, yyyy')}`
+          label: `${format(startOfWeek(today), 'MMM d', { locale: ru })} - ${format(endOfWeek(today), 'MMM d, yyyy', { locale: ru })}`
         };
       case 'month':
         return {
           start: startOfMonth(today),
           end: endOfMonth(today),
-          label: format(today, 'MMMM yyyy')
+          label: format(today, 'MMMM yyyy', { locale: ru })
         };
     }
   };
@@ -100,7 +101,7 @@ const MerchantAnalytics = () => {
     const profit = Math.floor(sales * 0.3);
     
     return {
-      date: format(date, 'MMM d'),
+      date: format(date, 'MMM d', { locale: ru }),
       sales,
       profit
     };

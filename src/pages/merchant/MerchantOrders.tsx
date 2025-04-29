@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dialog';
 import {Check, Download, Phone, X} from 'lucide-react';
 import {format} from 'date-fns';
+import {ru} from 'date-fns/locale';
 import {toast} from 'sonner';
 import {useOrder, useOrders, useUpdateOrderStatus} from '@/common/hooks/useOrders';
 import {useProductsBatch} from '@/common/hooks/useProducts';
@@ -141,7 +142,7 @@ const MerchantOrders = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Все заказы</SelectItem>
-              <SelectItem value="PENDING">Ожидающие</SelectItem>
+              <SelectItem value="PENDING">В ожидании</SelectItem>
               <SelectItem value="CONFIRMED">Подтвержденные</SelectItem>
               <SelectItem value="REJECTED">Отклоненные</SelectItem>
               <SelectItem value="DELIVERED">Доставленные</SelectItem>
@@ -168,7 +169,7 @@ const MerchantOrders = () => {
                       </span>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
-                      {format(new Date(order.createdAt), 'PPp', {})}
+                      {format(new Date(order.createdAt), 'PPp', { locale: ru })}
                     </p>
                     
                     <div className="flex items-center gap-2 mb-2">
@@ -184,7 +185,7 @@ const MerchantOrders = () => {
                     
                     <div className="text-sm">
                       <p className="font-medium">Дата доставки:</p>
-                      <p>{format(new Date(order.deliveryDate), 'PPP')}</p>
+                      <p>{format(new Date(order.deliveryDate), 'PPP', { locale: ru })}</p>
                     </div>
                   </div>
                   

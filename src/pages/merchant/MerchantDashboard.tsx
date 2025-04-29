@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { BarChart, Wallet, ShoppingBag, UserCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import { useOrders } from '@/common/hooks/useOrders';
+import { ru } from 'date-fns/locale';
 
 const MerchantDashboard = () => {
   const { data: orders = [], isLoading, error } = useOrders();
@@ -61,7 +62,7 @@ const MerchantDashboard = () => {
                 <ShoppingBag className="h-6 w-6 text-orange-700" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Ожидающие заказы</p>
+                <p className="text-sm font-medium text-muted-foreground">Заказы в ожидании</p>
                 <h3 className="text-2xl font-bold">{pendingOrders.length}</h3>
               </div>
             </div>
@@ -113,7 +114,7 @@ const MerchantDashboard = () => {
                     <div>
                       <p className="font-medium">{order.clientName}</p>
                       <p className="text-sm text-muted-foreground">
-                        {format(new Date(order.createdAt), 'PPp')}
+                        {format(new Date(order.createdAt), 'PPp', { locale: ru })}
                       </p>
                     </div>
                     <div className="text-right">
