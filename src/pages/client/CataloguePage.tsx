@@ -20,13 +20,13 @@ const CataloguePage = () => {
   useEffect(() => {
     if (products.length > 0) {
       setQuantities(
-          products.reduce((acc, product) => ({
-            ...acc,
-            [product.id]: items.find(item => item.product.id === product.id)?.quantity || 0
-          }), {})
+        products.reduce((acc, product) => ({
+          ...acc,
+          [product.id]: 0
+        }), {})
       );
     }
-  }, [products, items]);
+  }, [products]);
 
   const handleAddToCart = (productId: number) => {
     const product = products.find(p => p.id === productId);
