@@ -101,18 +101,27 @@ export const useExportToPDF = () => {
     return useMutation({
         mutationFn: async ({ startDate, endDate }: { startDate: string; endDate: string }) => {
             const blob = await api.orders.exportToPDF(startDate, endDate);
-            const url = window.URL.createObjectURL(blob);
+            
             if (window.Telegram?.WebApp) {
-                window.Telegram.WebApp.openLink(url);
+                // Convert blob to base64 data URL
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = function() {
+                    const base64data = reader.result as string;
+                    // Open the data URL in a new tab
+                    window.Telegram.WebApp.openLink(base64data);
+                };
             } else {
+                // Fallback for non-Telegram environment
+                const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = `orders-${startDate}-to-${endDate}.pdf`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
             }
-            setTimeout(() => window.URL.revokeObjectURL(url), 1000);
         },
         onError: (error) => {
             toast.error('Не удалось экспортировать заказы в PDF');
@@ -125,18 +134,27 @@ export const useExportToExcel = () => {
     return useMutation({
         mutationFn: async ({ startDate, endDate }: { startDate: string; endDate: string }) => {
             const blob = await api.orders.exportToExcel(startDate, endDate);
-            const url = window.URL.createObjectURL(blob);
+            
             if (window.Telegram?.WebApp) {
-                window.Telegram.WebApp.openLink(url);
+                // Convert blob to base64 data URL
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = function() {
+                    const base64data = reader.result as string;
+                    // Open the data URL in a new tab
+                    window.Telegram.WebApp.openLink(base64data);
+                };
             } else {
+                // Fallback for non-Telegram environment
+                const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = `orders-${startDate}-to-${endDate}.xlsx`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
             }
-            setTimeout(() => window.URL.revokeObjectURL(url), 1000);
         },
         onError: (error) => {
             toast.error('Не удалось экспортировать заказы в Excel');
