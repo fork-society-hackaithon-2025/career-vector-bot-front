@@ -69,13 +69,15 @@ const MerchantOrders = () => {
     }, {} as Record<number, string>);
   }, [products]);
 
-  const filteredOrders = orders.filter(order => {
-    const matchesStatus = statusFilter === 'all' || order.orderStatus === statusFilter;
-    const matchesSearch = order.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  const filteredOrders = orders
+    .filter(order => {
+      const matchesStatus = statusFilter === 'all' || order.orderStatus === statusFilter;
+      const matchesSearch = order.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           order.id.toString().includes(searchQuery);
-    
-    return matchesStatus && matchesSearch;
-  });
+      
+      return matchesStatus && matchesSearch;
+    })
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   
   const handleConfirmOrder = (orderId: string) => {
     updateOrderStatus.mutate({ id: Number(orderId), status: 'CONFIRMED' });
