@@ -7,25 +7,24 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getAvailableDeliveryDates } from '@/lib/mock-data';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { ArrowLeft } from 'lucide-react';
-import { useCreateOrder } from '@/common/hooks/useOrders';
+import { useCreateOrder, useAvailableDeliveryDates } from '@/common/hooks/useOrders';
 import { PatternFormat } from 'react-number-format';
 
 const CheckoutPage = () => {
   const { items, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
   const createOrder = useCreateOrder();
+  const { data: availableDates = [], isLoading: isLoadingDates, error: datesError } = useAvailableDeliveryDates();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     deliveryDate: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const availableDates = getAvailableDeliveryDates();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -162,16 +161,23 @@ const CheckoutPage = () => {
                   <Select
                     value={formData.deliveryDate}
                     onValueChange={handleSelectChange}
+                    disabled={isLoadingDates}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Выберите дату доставки" />
+                      <SelectValue placeholder={isLoadingDates ? "Загрузка дат..." : "Выберите дату доставки"} />
                     </SelectTrigger>
                     <SelectContent>
-                      {availableDates.map((date) => (
-                        <SelectItem key={date.toISOString()} value={date.toISOString()}>
-                          {format(date, 'EEEE, MMMM d, yyyy', { locale: ru })}
+                      {datesError ? (
+                        <SelectItem value="error" disabled>
+                          Ошибка загрузки дат
                         </SelectItem>
-                      ))}
+                      ) : (
+                        availableDates.map((date) => (
+                          <SelectItem key={date} value={date}>
+                            {format(new Date(date), 'EEEE, MMMM d, yyyy', { locale: ru })}
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                 </div>

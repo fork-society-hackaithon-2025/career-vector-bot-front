@@ -43,10 +43,10 @@ export function useCreateProduct() {
         mutationFn: (product: CreateProductDto) => api.products.create(product),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
-            toast.success("Product created successfully");
+            toast.success("Товар успешно создан");
         },
         onError: (error) => {
-            toast.error("Failed to create product");
+            toast.error("Не удалось создать товар");
             console.error("Error creating product:", error);
         }
     });
@@ -61,10 +61,10 @@ export function useUpdateProduct() {
         onSuccess: (_, { id }) => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
             queryClient.invalidateQueries({ queryKey: ["products", id] });
-            toast.success("Product updated successfully");
+            toast.success("Товар успешно обновлен");
         },
         onError: (error) => {
-            toast.error("Failed to update product");
+            toast.error("Не удалось обновить товар");
             console.error("Error updating product:", error);
         }
     });
@@ -77,10 +77,10 @@ export function useDeleteProduct() {
         mutationFn: (id: number) => api.products.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
-            toast.success("Product deleted successfully");
+            toast.success("Товар успешно удален");
         },
         onError: (error) => {
-            toast.error("Failed to delete product");
+            toast.error("Не удалось удалить товар");
             console.error("Error deleting product:", error);
         }
     });

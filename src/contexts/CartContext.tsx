@@ -65,7 +65,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const removeItem = (productId: number) => {
     setItems(prevItems => prevItems.filter(item => item.product.id !== productId));
-    toast.info("Item removed from cart");
+    toast.info("Товар удален из корзины");
   };
 
   const updateQuantity = (productId: number, quantity: number) => {
@@ -85,7 +85,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = () => {
     setItems([]);
-    toast.info("Cart has been cleared");
+    toast.info("Корзина очищена");
   };
 
   const itemCount = items.reduce((count, item) => count + item.quantity, 0);

@@ -38,10 +38,10 @@ export const useCreateOrder = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
-      toast.success('Order created successfully');
+      toast.success('Заказ успешно создан');
     },
     onError: (error) => {
-      toast.error('Failed to create order');
+      toast.error('Не удалось создать заказ');
       console.error('Error creating order:', error);
     },
   });
@@ -56,10 +56,10 @@ export const useUpdateOrderStatus = () => {
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       queryClient.invalidateQueries({ queryKey: ['orders', id] });
-      toast.success('Order status updated successfully');
+      toast.success('Статус заказа успешно обновлен');
     },
     onError: (error) => {
-      toast.error('Failed to update order status');
+      toast.error('Не получилось обновить статус заказа');
       console.error('Error updating order status:', error);
     },
   });
@@ -68,6 +68,10 @@ export const useUpdateOrderStatus = () => {
 export const useAvailableDeliveryDates = () => {
     return useQuery({
         queryKey: ['availableDeliveryDates'],
-        queryFn: () => api.orders.getAvailableDeliveryDates(),
+        queryFn: async () => {
+          const response = await api.orders.getAvailableDeliveryDates();
+          console.log(response);
+          return response.data.responseObject || [];
+        },
     });
 };

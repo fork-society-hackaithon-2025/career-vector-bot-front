@@ -86,9 +86,7 @@ const MerchantOrders = () => {
   };
   
   const handlePrintOrder = (order: Order) => {
-    // This would typically generate a PDF or connect to a printer
-    // For the demo, we'll just show a success message
-    toast.success(`Order ${order.id} has been sent to print`);
+    toast.success(`Заказ ${order.id} отправлен на печать`);
   };
   
   const getStatusColor = (status: OrderStatus) => {
@@ -196,14 +194,14 @@ const MerchantOrders = () => {
                     </div>
                     
                     <div className="w-full overflow-scroll flex gap-2 mt-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handlePrintOrder(order)}
-                      >
-                        <Download className="h-4 w-4 mr-1" />
-                        Печать
-                      </Button>
+                      {/*<Button*/}
+                      {/*  variant="outline"*/}
+                      {/*  size="sm"*/}
+                      {/*  onClick={() => handlePrintOrder(order)}*/}
+                      {/*>*/}
+                      {/*  <Download className="h-4 w-4 mr-1" />*/}
+                      {/*  Печать*/}
+                      {/*</Button>*/}
                       
                       <Dialog>
                         <DialogTrigger asChild>

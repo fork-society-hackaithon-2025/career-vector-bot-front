@@ -50,9 +50,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(jwt);
       api.setAuthToken(jwt);
 
-      toast.success(`Welcome back, ${userData.name}!`);
     } catch (error) {
-      toast.error("Login failed. Please try again.");
+      toast.error("Не получилось войти. Пожалуйста, попробуйте еще раз");
       throw error;
     } finally {
       setIsLoading(false);
@@ -65,7 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem("telegramShopUser");
     localStorage.removeItem("jwtToken");
     api.setAuthToken("");
-    toast.info("You have been logged out.");
+    toast.info("Вы вышли из аккаунта.");
   };
 
   const isMerchant = () => {

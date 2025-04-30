@@ -28,7 +28,7 @@ export class OrdersService extends ApiServiceClass {
         return this.PATCH(`/${id}/status`, {orderStatus});
     }
 
-    async getAvailableDeliveryDates(): Promise<Date[]> {
+    async getAvailableDeliveryDates(): Promise<ApiResponse<string[]>> {
         return this.GET('/available-dates');
     }
 }
