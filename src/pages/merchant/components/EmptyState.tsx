@@ -14,14 +14,14 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ searchQuery, onClearSear
       <CardContent className="flex flex-col items-center justify-center text-center">
         {searchQuery ? (
           <>
-            <p className="text-muted-foreground mb-4">No products found matching "{searchQuery}"</p>
+            <p className="text-muted-foreground mb-4">Нет товаров, соответствующих "{searchQuery}"</p>
             <Button variant="outline" onClick={onClearSearch}>
               Clear search
             </Button>
           </>
         ) : (
           <>
-            <p className="text-muted-foreground mb-4">No products available</p>
+            <p className="text-muted-foreground mb-4">Товаров не найдено</p>
             {onAddProduct}
           </>
         )}
