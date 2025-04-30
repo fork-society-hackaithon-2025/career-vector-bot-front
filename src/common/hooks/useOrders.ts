@@ -102,13 +102,17 @@ export const useExportToPDF = () => {
         mutationFn: async ({ startDate, endDate }: { startDate: string; endDate: string }) => {
             const blob = await api.orders.exportToPDF(startDate, endDate);
             const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `orders-${startDate}-to-${endDate}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.openLink(url);
+            } else {
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `orders-${startDate}-to-${endDate}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            setTimeout(() => window.URL.revokeObjectURL(url), 1000);
         },
         onError: (error) => {
             toast.error('Не удалось экспортировать заказы в PDF');
@@ -122,13 +126,17 @@ export const useExportToExcel = () => {
         mutationFn: async ({ startDate, endDate }: { startDate: string; endDate: string }) => {
             const blob = await api.orders.exportToExcel(startDate, endDate);
             const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `orders-${startDate}-to-${endDate}.xlsx`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.openLink(url);
+            } else {
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `orders-${startDate}-to-${endDate}.xlsx`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            setTimeout(() => window.URL.revokeObjectURL(url), 1000);
         },
         onError: (error) => {
             toast.error('Не удалось экспортировать заказы в Excel');
