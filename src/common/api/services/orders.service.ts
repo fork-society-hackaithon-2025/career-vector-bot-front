@@ -35,21 +35,4 @@ export class OrdersService extends ApiServiceClass {
     async update(id: number, orderData: Partial<UpdateOrderDto>): Promise<ApiResponse<Order>> {
         return this.PATCH(`/${id}`, orderData);
     }
-
-    async exportToPDF(startDate: string, endDate: string): Promise<Blob> {
-        console.log(endDate);
-        const response = await this.GET('/export/pdf', { 
-            startDate: startDate,
-            endDate: endDate,
-        }, {}, "blob");
-        return response.data;
-    }
-
-    async exportToExcel(startDate: string, endDate: string): Promise<Blob> {
-        const response = await this.GET('/export/excel', { 
-            startDate: startDate,
-            endDate: endDate,
-        }, {}, "blob");
-        return response.data;
-    }
 }

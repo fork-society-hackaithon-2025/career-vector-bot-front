@@ -13,16 +13,13 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
-import {Check, Edit2, Download, Phone, X, FileText, Table, Calendar} from 'lucide-react';
+import {Check, Edit2, Phone, X} from 'lucide-react';
 import {format} from 'date-fns';
 import {ru} from 'date-fns/locale';
 import {toast} from 'sonner';
-import {useOrder, useOrders, useUpdateOrderStatus, useExportToPDF, useExportToExcel} from '@/common/hooks/useOrders';
+import {useOrder, useOrders, useUpdateOrderStatus} from '@/common/hooks/useOrders';
 import {useProductsBatch} from '@/common/hooks/useProducts';
 import { OrderEditDialog } from './components/OrderEditDialog';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import { DateRange } from 'react-day-picker';
 
 interface OrderItemProps {
   productId: number;
@@ -52,14 +49,11 @@ const OrderItem: React.FC<OrderItemProps> = ({ productId, price, quantity, produ
 const MerchantOrders = () => {
   const { data: orders = [], isLoading, error } = useOrders();
   const updateOrderStatus = useUpdateOrderStatus();
-  const exportToPDF = useExportToPDF();
-  const exportToExcel = useExportToExcel();
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
   const { data: selectedOrder, isLoading: isLoadingOrderDetails } = useOrder(selectedOrderId || 0);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   
   const productIds = useMemo(() => {
     if (!selectedOrder?.orderItems) {
@@ -113,22 +107,6 @@ const MerchantOrders = () => {
     }
   };
 
-  const handleExport = (type: 'pdf' | 'excel') => {
-    if (!dateRange?.from || !dateRange?.to) {
-      toast.error('Выберите период для экспорта');
-      return;
-    }
-
-    const startDate = format(dateRange.from, 'yyyy-MM-dd');
-    const endDate = format(dateRange.to, 'yyyy-MM-dd');
-
-    if (type === 'pdf') {
-      exportToPDF.mutate( {startDate, endDate} );
-    } else {
-      exportToExcel.mutate({startDate, endDate} );
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -176,56 +154,6 @@ const MerchantOrders = () => {
               <SelectItem value="DELIVERED">Доставленные</SelectItem>
             </SelectContent>
           </Select>
-        </div>
-      </div>
-
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-lg font-medium">Список заказов</h2>
-        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                <Calendar className="h-4 w-4 mr-2" />
-                {dateRange?.from && dateRange?.to ? (
-                  `${format(dateRange.from, 'dd.MM.yyyy')} - ${format(dateRange.to, 'dd.MM.yyyy')}`
-                ) : (
-                  'Выберите период'
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <CalendarComponent
-                initialFocus
-                mode="range"
-                defaultMonth={dateRange?.from}
-                selected={dateRange}
-                onSelect={setDateRange}
-                numberOfMonths={2}
-              />
-            </PopoverContent>
-          </Popover>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleExport('pdf')}
-              disabled={exportToPDF.isPending || !dateRange?.from || !dateRange?.to}
-              className="flex-1 sm:flex-none"
-            >
-              <FileText className="h-4 w-4 mr-2" />
-              PDF
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleExport('excel')}
-              disabled={exportToExcel.isPending || !dateRange?.from || !dateRange?.to}
-              className="flex-1 sm:flex-none"
-            >
-              <Table className="h-4 w-4 mr-2" />
-              Excel
-            </Button>
-          </div>
         </div>
       </div>
       
