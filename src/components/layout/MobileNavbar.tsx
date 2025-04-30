@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, ShoppingBag, ShoppingCart, Package } from 'lucide-react';
+import {Home, ShoppingBag, ShoppingCart, Package, BarChart3} from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -30,6 +30,7 @@ const MobileNavbar: React.FC<MobileNavbarProps> = ({ isMerchant }) => {
     { icon: Home, label: 'Панель', path: '/merchant' },
     { icon: Package, label: 'Товары', path: '/merchant/products' },
     { icon: ShoppingBag, label: 'Заказы', path: '/merchant/orders' },
+    { icon: BarChart3, label: 'Аналитика', path: '/merchant/analytics' },
   ];
 
   const navItems = isMerchant ? merchantNavItems : clientNavItems;
