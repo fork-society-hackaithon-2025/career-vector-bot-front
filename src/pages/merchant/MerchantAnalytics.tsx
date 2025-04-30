@@ -1,26 +1,25 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, LineChart, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
-import { format } from 'date-fns';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import React, {useState} from 'react';
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import {ArrowDown, ArrowUp, BarChart, Calendar, LineChart} from 'lucide-react';
+import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {
   Area,
   AreaChart,
-  CartesianGrid,
-  Legend,
-  Line,
   Bar,
   BarChart as RechartBarChart,
+  CartesianGrid,
+  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
-import { ru } from 'date-fns/locale';
-import { useProfitOverview, useSalesBreakdown, useTopProducts } from '@/hooks/useAnalytics';
+import {useProfitOverview, useSalesBreakdown, useTopProducts} from '@/hooks/useAnalytics';
+import {DateRange} from 'react-day-picker';
 
 const MerchantAnalytics = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<'day' | 'week' | 'month'>('week');
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   
   const { data: profitData, isLoading: isProfitLoading } = useProfitOverview();
   const { data: salesData, isLoading: isSalesLoading } = useSalesBreakdown();

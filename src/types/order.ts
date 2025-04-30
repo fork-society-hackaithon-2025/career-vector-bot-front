@@ -18,6 +18,7 @@ export interface Order {
   orderStatus: OrderStatus;
   createdAt: Date;
   updatedAt: Date;
+  editDeadline: string;
 }
 
 export type OrderStatus = "PENDING" | "CONFIRMED" | "REJECTED" | "DELIVERED";
@@ -31,4 +32,15 @@ export interface CreateOrderDto {
     quantity: number;
   }[];
   totalPrice: number;
+}
+
+export interface UpdateOrderDto {
+  clientName?: string;
+  clientPhone?: string;
+  deliveryDate?: Date;
+  items?: {
+    productId: number;
+    quantity: number;
+  }[];
+  totalPrice?: number;
 }

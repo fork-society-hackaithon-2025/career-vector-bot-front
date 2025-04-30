@@ -23,6 +23,7 @@ const MobileNavbar: React.FC<MobileNavbarProps> = ({ isMerchant }) => {
   
   const clientNavItems: NavItem[] = [
     { icon: ShoppingBag, label: 'Товары', path: '/catalogue' },
+    { icon: Package, label: 'Заказы', path: '/my-orders' },
     { icon: ShoppingCart, label: 'Корзина', path: '/cart', badge: itemCount > 0 ? itemCount : undefined },
   ];
   

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/common/api';
-import { OrderStatus, CreateOrderDto } from '@/types/order';
+import { OrderStatus, CreateOrderDto, UpdateOrderDto } from '@/types/order';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -56,11 +56,33 @@ export const useUpdateOrderStatus = () => {
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       queryClient.invalidateQueries({ queryKey: ['orders', id] });
-      toast.success('Статус заказа успешно обновлен');
+      toast.success('Статус заказа обновлен');
     },
     onError: (error) => {
-      toast.error('Не получилось обновить статус заказа');
+      toast.error('Не удалось обновить статус заказа');
       console.error('Error updating order status:', error);
+    },
+  });
+};
+
+export const useUpdateOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<UpdateOrderDto> }) =>
+      api.orders.update(id, data),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      queryClient.invalidateQueries({ queryKey: ['orders', id] });
+      toast.success('Заказ успешно обновлен');
+    },
+    onError: (error: any) => {
+      if (error.response?.status === 403) {
+        toast.error('Время на редактирование заказа истекло');
+      } else {
+        toast.error('Не удалось обновить заказ');
+      }
+      console.error('Error updating order:', error);
     },
   });
 };
@@ -70,8 +92,47 @@ export const useAvailableDeliveryDates = () => {
         queryKey: ['availableDeliveryDates'],
         queryFn: async () => {
           const response = await api.orders.getAvailableDeliveryDates();
-          console.log(response);
           return response.data.responseObject || [];
+        },
+    });
+};
+
+export const useExportToPDF = () => {
+    return useMutation({
+        mutationFn: async ({ startDate, endDate }: { startDate: string; endDate: string }) => {
+            const blob = await api.orders.exportToPDF(startDate, endDate);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `orders-${startDate}-to-${endDate}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        },
+        onError: (error) => {
+            toast.error('Не удалось экспортировать заказы в PDF');
+            console.error('Error exporting orders to PDF:', error);
+        },
+    });
+};
+
+export const useExportToExcel = () => {
+    return useMutation({
+        mutationFn: async ({ startDate, endDate }: { startDate: string; endDate: string }) => {
+            const blob = await api.orders.exportToExcel(startDate, endDate);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `orders-${startDate}-to-${endDate}.xlsx`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        },
+        onError: (error) => {
+            toast.error('Не удалось экспортировать заказы в Excel');
+            console.error('Error exporting orders to Excel:', error);
         },
     });
 };

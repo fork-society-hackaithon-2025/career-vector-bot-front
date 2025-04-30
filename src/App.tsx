@@ -13,6 +13,7 @@ import CataloguePage from "./pages/client/CataloguePage";
 import CartPage from "./pages/client/CartPage";
 import CheckoutPage from "./pages/client/CheckoutPage";
 import OrderConfirmationPage from "./pages/client/OrderConfirmationPage";
+import MyOrdersPage from "./pages/client/MyOrdersPage";
 import MerchantDashboard from "./pages/merchant/MerchantDashboard";
 import MerchantProducts from "./pages/merchant/MerchantProducts";
 import MerchantOrders from "./pages/merchant/MerchantOrders";
@@ -66,6 +67,11 @@ const App = () => {
                   <Route path="/order-confirmation/:orderId" element={
                     <ProtectedRoute>
                       <OrderConfirmationPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/my-orders" element={
+                    <ProtectedRoute>
+                      <MyOrdersPage />
                     </ProtectedRoute>
                   } />
 

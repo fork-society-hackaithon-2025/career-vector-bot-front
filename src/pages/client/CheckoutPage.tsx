@@ -191,7 +191,7 @@ const CheckoutPage = () => {
                   {isSubmitting ? 'Обработка...' : 'Оформить заказ'}
                 </Button>
                 <p className="text-xs text-muted-foreground text-center mt-2">
-                  Примечание: У вас будет 5 минут на редактирование заказа после отправки.
+                  Примечание: У вас будет 60 минут на редактирование заказа после отправки.
                 </p>
               </CardFooter>
             </form>

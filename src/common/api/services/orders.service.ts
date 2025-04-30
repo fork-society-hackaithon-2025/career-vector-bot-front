@@ -1,6 +1,6 @@
 import { ApiServiceClass } from '@/common/api/ApiServiceClass';
 import { AxiosInstance } from 'axios';
-import {CreateOrderDto, Order, OrderStatus} from '@/types/order';
+import {CreateOrderDto, Order, OrderStatus, UpdateOrderDto} from '@/types/order';
 import {ApiResponse} from "@/types/api.ts";
 
 export class OrdersService extends ApiServiceClass {
@@ -30,5 +30,26 @@ export class OrdersService extends ApiServiceClass {
 
     async getAvailableDeliveryDates(): Promise<ApiResponse<string[]>> {
         return this.GET('/available-dates');
+    }
+
+    async update(id: number, orderData: Partial<UpdateOrderDto>): Promise<ApiResponse<Order>> {
+        return this.PATCH(`/${id}`, orderData);
+    }
+
+    async exportToPDF(startDate: string, endDate: string): Promise<Blob> {
+        console.log(endDate);
+        const response = await this.GET('/export/pdf', { 
+            startDate: startDate,
+            endDate: endDate,
+        }, {}, "blob");
+        return response.data;
+    }
+
+    async exportToExcel(startDate: string, endDate: string): Promise<Blob> {
+        const response = await this.GET('/export/excel', { 
+            startDate: startDate,
+            endDate: endDate,
+        }, {}, "blob");
+        return response.data;
     }
 }
