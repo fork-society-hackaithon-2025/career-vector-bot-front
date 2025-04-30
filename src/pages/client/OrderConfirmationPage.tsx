@@ -57,6 +57,22 @@ const OrderConfirmationPage = () => {
           </div>
           
           <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">Статус заказа</p>
+            <span className={`text-xs px-2 py-0.5 rounded-full ${
+              order.orderStatus === 'CONFIRMED' ? 'bg-green-100 text-green-800' :
+              order.orderStatus === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+              order.orderStatus === 'REJECTED' ? 'bg-red-100 text-red-800' :
+              order.orderStatus === 'DELIVERED' ? 'bg-blue-100 text-blue-800' :
+              'bg-gray-100 text-gray-800'
+            }`}>
+              {order.orderStatus === 'PENDING' ? 'Ожидает' :
+               order.orderStatus === 'CONFIRMED' ? 'Подтвержден' :
+               order.orderStatus === 'REJECTED' ? 'Отклонен' :
+               order.orderStatus === 'DELIVERED' ? 'Доставлен' : order.orderStatus}
+            </span>
+          </div>
+          
+          <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Дата доставки</p>
             <p className="font-medium">
               {format(new Date(order.deliveryDate), 'd MMMM', { locale: ru })}

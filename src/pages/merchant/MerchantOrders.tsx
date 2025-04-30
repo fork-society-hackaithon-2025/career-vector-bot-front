@@ -86,6 +86,10 @@ const MerchantOrders = () => {
   const handleRejectOrder = (orderId: string) => {
     updateOrderStatus.mutate({ id: Number(orderId), status: 'REJECTED' });
   };
+
+  const handleMarkAsDelivered = (orderId: string) => {
+    updateOrderStatus.mutate({ id: Number(orderId), status: 'DELIVERED' });
+  };
   
   const handlePrintOrder = (order: Order) => {
     toast.success(`Заказ ${order.id} отправлен на печать`);
@@ -291,6 +295,16 @@ const MerchantOrders = () => {
                             Подтвердить
                           </Button>
                         </>
+                      )}
+                      {order.orderStatus === 'CONFIRMED' && (
+                        <Button
+                          size="sm"
+                          className="bg-blue-500 hover:bg-blue-600"
+                          onClick={() => handleMarkAsDelivered(order.id.toString())}
+                        >
+                          <Check className="h-4 w-4 mr-1" />
+                          Отметить доставленным
+                        </Button>
                       )}
                     </div>
                   </div>
