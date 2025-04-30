@@ -10,7 +10,7 @@ import {BRANDS} from '@/data/brands';
 import {useProducts} from '@/common/hooks/useProducts';
 
 const CataloguePage = () => {
-  const { addItem, items } = useCart();
+  const { addItem } = useCart();
   const navigate = useNavigate();
   const { data: products = [], isLoading } = useProducts();
   const [quantities, setQuantities] = useState<Record<number, number>>({});
@@ -22,25 +22,14 @@ const CataloguePage = () => {
       setQuantities(
         products.reduce((acc, product) => ({
           ...acc,
-          [product.id]: 0
+          [product.id]: 1
         }), {})
       );
     }
   }, [products]);
 
-  const handleAddToCart = (productId: number) => {
-    const product = products.find(p => p.id === productId);
-    if (product) {
-      addItem(product, 1);
-      setQuantities(prev => ({
-        ...prev,
-        [productId]: (prev[productId] || 0) + 1
-      }));
-    }
-  };
-
   const handleDecreaseQuantity = (productId: number) => {
-    if (quantities[productId] > 0) {
+    if (quantities[productId] > 1) {
       setQuantities(prev => ({
         ...prev,
         [productId]: prev[productId] - 1
@@ -49,20 +38,19 @@ const CataloguePage = () => {
   };
 
   const handleIncreaseQuantity = (productId: number) => {
-    setQuantities(prev => ({
-      ...prev,
-      [productId]: (prev[productId] || 0) + 1
-    }));
-  };
-
-  const handleAddToCartWithQuantity = (productId: number) => {
     const product = products.find(p => p.id === productId);
-    if (product && quantities[productId] > 0) {
-      addItem(product, quantities[productId]);
+    if (product && quantities[productId] < product.availableAmount) {
       setQuantities(prev => ({
         ...prev,
-        [productId]: 0
+        [productId]: prev[productId] + 1
       }));
+    }
+  };
+
+  const handleAddToCart = (productId: number) => {
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      addItem(product, quantities[productId]);
     }
   };
 
@@ -140,45 +128,38 @@ const CataloguePage = () => {
                                   В наличии: {product.availableAmount}
                                 </p>
                               </CardContent>
-                              <CardFooter className="p-4 pt-0 flex flex-col space-y-2">
-                                {quantities[product.id] > 0 ? (
-                                    <>
-                                      <div className="flex items-center justify-between w-full">
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            onClick={() => handleDecreaseQuantity(product.id)}
-                                            disabled={quantities[product.id] <= 0}
-                                        >
-                                          <Minus className="h-4 w-4" />
-                                        </Button>
-                                        <span className="mx-2 w-8 text-center">
-                                {quantities[product.id]}
-                              </span>
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            onClick={() => handleIncreaseQuantity(product.id)}
-                                            disabled={quantities[product.id] >= product.availableAmount}
-                                        >
-                                          <Plus className="h-4 w-4" />
-                                        </Button>
-                                      </div>
-                                      <Button
-                                          className="w-full"
-                                          onClick={() => handleAddToCartWithQuantity(product.id)}
-                                      >
-                                        Добавить в корзину
-                                      </Button>
-                                    </>
-                                ) : (
+                              <CardFooter className="p-4 pt-0">
+                                <div className="flex items-center gap-2 w-full">
+                                  <div className="flex items-center border rounded-md">
                                     <Button
-                                        className="w-full"
-                                        onClick={() => handleAddToCart(product.id)}
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => handleDecreaseQuantity(product.id)}
+                                        disabled={quantities[product.id] <= 1}
+                                        className="h-8 w-8"
                                     >
-                                      Добавить в корзину
+                                      <Minus className="h-4 w-4" />
                                     </Button>
-                                )}
+                                    <span className="w-8 text-center">
+                                      {quantities[product.id]}
+                                    </span>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => handleIncreaseQuantity(product.id)}
+                                        disabled={quantities[product.id] >= product.availableAmount}
+                                        className="h-8 w-8"
+                                    >
+                                      <Plus className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                  <Button
+                                      className="flex-1"
+                                      onClick={() => handleAddToCart(product.id)}
+                                  >
+                                    Добавить в корзину
+                                  </Button>
+                                </div>
                               </CardFooter>
                             </Card>
                           </motion.div>
