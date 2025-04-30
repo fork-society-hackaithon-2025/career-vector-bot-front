@@ -121,11 +121,11 @@ const CartPage = () => {
             </CardContent>
             <Separator />
             <CardFooter className="flex justify-between items-center py-4 gap-8">
-              <div>
-                <p className="font-medium">Total</p>
-                <p className="text-2xl font-bold">{totalPrice.toFixed(2)}₸</p>
+              <div className="min-w-[120px] max-w-[200px]">
+                <p className="font-medium">Итого</p>
+                <p className="text-2xl font-bold truncate">{totalPrice.toFixed(2)}₸</p>
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 shrink-0">
                 <Button 
                   variant="outline" 
                   onClick={clearCart}
