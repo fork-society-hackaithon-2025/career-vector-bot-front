@@ -12,6 +12,7 @@ export interface Order {
   userId: string;
   clientName: string;
   clientPhone: string;
+  address: string;
   deliveryDate: string;
   orderItems: OrderItem[];
   totalPrice: number;
@@ -26,6 +27,7 @@ export type OrderStatus = "PENDING" | "CONFIRMED" | "REJECTED" | "DELIVERED";
 export interface CreateOrderDto {
   name: string;
   phone: string;
+  address: string;
   deliveryDate: Date;
   items: {
     productId: number;
@@ -37,6 +39,7 @@ export interface CreateOrderDto {
 export interface UpdateOrderDto {
   clientName?: string;
   clientPhone?: string;
+  address?: string;
   deliveryDate?: Date;
   items?: {
     productId: number;

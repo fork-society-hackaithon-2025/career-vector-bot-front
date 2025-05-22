@@ -8,6 +8,8 @@ import {Badge} from '@/components/ui/badge';
 import {motion} from 'framer-motion';
 import {BRANDS} from '@/data/brands';
 import {useProducts} from '@/common/hooks/useProducts';
+import { formatPrice } from '@/lib/utils';
+import {Input} from '@/components/ui/input';
 
 const CataloguePage = () => {
   const { addItem } = useCart();
@@ -22,17 +24,22 @@ const CataloguePage = () => {
       setQuantities(
         products.reduce((acc, product) => ({
           ...acc,
-          [product.id]: 1
+          [product.id]: 5
         }), {})
       );
     }
   }, [products]);
 
   const handleDecreaseQuantity = (productId: number) => {
-    if (quantities[productId] > 1) {
+    if (quantities[productId] > 5) {
       setQuantities(prev => ({
         ...prev,
-        [productId]: prev[productId] - 1
+        [productId]: prev[productId] - 5
+      }));
+    } else {
+      setQuantities(prev => ({
+        ...prev,
+        [productId]: 5
       }));
     }
   };
@@ -42,7 +49,7 @@ const CataloguePage = () => {
     if (product && quantities[productId] < product.availableAmount) {
       setQuantities(prev => ({
         ...prev,
-        [productId]: prev[productId] + 1
+        [productId]: Math.min(prev[productId] + 5, product.availableAmount)
       }));
     }
   };
@@ -113,42 +120,53 @@ const CataloguePage = () => {
                               transition={{ duration: 0.3 }}
                           >
                             <Card className="h-full flex flex-col overflow-hidden">
-                              <div
-                                  className="h-48 bg-cover bg-center"
-                                  style={{ backgroundImage: `url('/placeholder.svg')` }}
-                              />
                               <CardContent className="flex-grow p-4">
                                 <div className="flex justify-between items-start mb-2">
                                   <h3 className="font-semibold">{product.name}</h3>
                                   <Badge variant="outline" className="ml-2">
-                                    {product.clientPrice.toFixed(2)}₸
+                                    {formatPrice(product.clientPrice)}
                                   </Badge>
                                 </div>
-                                <p className="text-sm text-muted-foreground">
-                                  В наличии: {product.availableAmount}
+                                <p className={`text-sm ${product.availableAmount === 0 ? 'text-red-500' : 'text-muted-foreground'}`}>
+                                  {product.availableAmount === 0 ? 'Нет в наличии' : `В наличии: ${product.availableAmount}`}
                                 </p>
                               </CardContent>
                               <CardFooter className="p-4 pt-0">
                                 <div className="flex items-center gap-2 w-full">
                                   <div className="flex items-center border rounded-md">
                                     <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => handleDecreaseQuantity(product.id)}
-                                        disabled={quantities[product.id] <= 1}
-                                        className="h-8 w-8"
+                                      variant="outline"
+                                      size="icon"
+                                      className="h-8 w-8 rounded-none"
+                                      onClick={() => handleDecreaseQuantity(product.id)}
+                                      disabled={quantities[product.id] <= 5 || product.availableAmount === 0}
                                     >
                                       <Minus className="h-4 w-4" />
                                     </Button>
-                                    <span className="w-8 text-center">
-                                      {quantities[product.id]}
-                                    </span>
+                                    <Input
+                                      type="number"
+                                      min="5"
+                                      max={product.availableAmount}
+                                      step="5"
+                                      value={quantities[product.id]}
+                                      onChange={(e) => {
+                                        const value = Math.max(5, Math.min(product.availableAmount, parseInt(e.target.value) || 5));
+                                        // Round to nearest multiple of 5
+                                        const roundedValue = Math.round(value / 5) * 5;
+                                        setQuantities(prev => ({
+                                          ...prev,
+                                          [product.id]: roundedValue
+                                        }));
+                                      }}
+                                      className="h-8 w-16 rounded-none border-x-0 text-center"
+                                      disabled={product.availableAmount === 0}
+                                    />
                                     <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => handleIncreaseQuantity(product.id)}
-                                        disabled={quantities[product.id] >= product.availableAmount}
-                                        className="h-8 w-8"
+                                      variant="outline"
+                                      size="icon"
+                                      className="h-8 w-8 rounded-none"
+                                      onClick={() => handleIncreaseQuantity(product.id)}
+                                      disabled={quantities[product.id] >= product.availableAmount || product.availableAmount === 0}
                                     >
                                       <Plus className="h-4 w-4" />
                                     </Button>
@@ -156,8 +174,9 @@ const CataloguePage = () => {
                                   <Button
                                       className="flex-1"
                                       onClick={() => handleAddToCart(product.id)}
+                                      disabled={product.availableAmount === 0}
                                   >
-                                    Добавить в корзину
+                                    {product.availableAmount === 0 ? 'Нет в наличии' : 'Добавить в корзину'}
                                   </Button>
                                 </div>
                               </CardFooter>

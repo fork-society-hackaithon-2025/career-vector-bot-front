@@ -175,7 +175,7 @@ const MerchantOrders = () => {
                       </span>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
-                      {format(new Date(order.createdAt), 'PPp', { locale: ru })}
+                      {format(new Date(order.createdAt), 'dd.MM.yyyy HH:mm', { locale: ru })}
                     </p>
                     
                     <div className="flex items-center gap-2 mb-2">
@@ -191,7 +191,7 @@ const MerchantOrders = () => {
                     
                     <div className="text-sm">
                       <p className="font-medium">Дата доставки:</p>
-                      <p>{format(new Date(order.deliveryDate), 'PPP', { locale: ru })}</p>
+                      <p>{format(new Date(order.deliveryDate), 'dd.MM.yyyy', { locale: ru })}</p>
                     </div>
                   </div>
                   
@@ -267,34 +267,43 @@ const MerchantOrders = () => {
                         </DialogContent>
                       </Dialog>
 
-                      <Dialog open={!!editingOrder} onOpenChange={(open) => !open && setEditingOrder(null)}>
-                        <DialogTrigger asChild>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setEditingOrder(order)}
-                            disabled={order.orderStatus !== 'PENDING'}
-                          >
-                            <Edit2 className="h-4 w-4 mr-1" />
-                            Редактировать
-                          </Button>
-                        </DialogTrigger>
-                        {editingOrder && (
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Редактирование заказа #{editingOrder.id}</DialogTitle>
-                            </DialogHeader>
-                            <OrderEditDialog
-                              order={editingOrder}
-                              onClose={() => setEditingOrder(null)}
-                              onSave={() => setEditingOrder(null)}
-                            />
-                          </DialogContent>
-                        )}
-                      </Dialog>
-                      
                       {order.orderStatus === 'PENDING' && (
                         <>
+                          <Button
+                            size="sm"
+                            className="bg-green-500 hover:bg-green-600"
+                            onClick={() => handleConfirmOrder(order.id.toString())}
+                          >
+                            <Check className="h-4 w-4 mr-1" />
+                            Подтвердить
+                          </Button>
+
+                          <Dialog open={!!editingOrder} onOpenChange={(open) => !open && setEditingOrder(null)}>
+                            <DialogTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setEditingOrder(order)}
+                                disabled={order.orderStatus !== 'PENDING'}
+                              >
+                                <Edit2 className="h-4 w-4 mr-1" />
+                                Редактировать
+                              </Button>
+                            </DialogTrigger>
+                            {editingOrder && (
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Редактирование заказа #{editingOrder.id}</DialogTitle>
+                                </DialogHeader>
+                                <OrderEditDialog
+                                  order={editingOrder}
+                                  onClose={() => setEditingOrder(null)}
+                                  onSave={() => setEditingOrder(null)}
+                                />
+                              </DialogContent>
+                            )}
+                          </Dialog>
+
                           <Button
                             variant="outline"
                             size="sm"
@@ -303,15 +312,6 @@ const MerchantOrders = () => {
                           >
                             <X className="h-4 w-4 mr-1" />
                             Отклонить
-                          </Button>
-                          
-                          <Button
-                            size="sm"
-                            className="bg-green-500 hover:bg-green-600"
-                            onClick={() => handleConfirmOrder(order.id.toString())}
-                          >
-                            <Check className="h-4 w-4 mr-1" />
-                            Подтвердить
                           </Button>
                         </>
                       )}

@@ -108,7 +108,7 @@ const OrderConfirmationPage = () => {
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Дата доставки</p>
             <p className="font-medium">
-              {format(new Date(order.deliveryDate), 'd MMMM', { locale: ru })}
+              {format(new Date(order.deliveryDate), 'dd.MM.yyyy', { locale: ru })}
             </p>
           </div>
           
