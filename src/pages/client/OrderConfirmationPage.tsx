@@ -131,6 +131,13 @@ const OrderConfirmationPage = () => {
           <Separator />
 
           <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">Адрес доставки</p>
+            <p className="font-medium">{order.deliveryAddress || 'Не указан'}</p>
+          </div>
+
+          <Separator />
+
+          <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Сумма заказа</p>
             <p className="font-medium">{order.totalPrice} ₸</p>
           </div>

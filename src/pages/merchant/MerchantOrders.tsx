@@ -193,6 +193,11 @@ const MerchantOrders = () => {
                       <p className="font-medium">Дата доставки:</p>
                       <p>{format(new Date(order.deliveryDate), 'dd.MM.yyyy', { locale: ru })}</p>
                     </div>
+                    
+                    <div className="text-sm">
+                      <p className="font-medium">Адрес доставки:</p>
+                      <p>{order.deliveryAddress || 'Не указан'}</p>
+                    </div>
                   </div>
                   
                   <div className="flex flex-col gap-2">
@@ -226,6 +231,7 @@ const MerchantOrders = () => {
                                 <h3 className="font-medium">Информация о клиенте</h3>
                                 <p>Имя: {selectedOrder.clientName}</p>
                                 <p>Телефон: {selectedOrder.clientPhone}</p>
+                                <p>Адрес доставки: {selectedOrder.deliveryAddress || 'Не указан'}</p>
                               </div>
                               
                               <div>

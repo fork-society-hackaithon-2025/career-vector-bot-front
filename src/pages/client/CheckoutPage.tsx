@@ -22,7 +22,7 @@ const CheckoutPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    address: '',
+    deliveryAddress: '',
     deliveryDate: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,7 +50,7 @@ const CheckoutPage = () => {
       const order = await createOrder.mutateAsync({
         name: formData.name,
         phone: `7${formData.phone}`,
-        address: formData.address,
+        deliveryAddress: formData.deliveryAddress,
         deliveryDate: new Date(formData.deliveryDate),
         items: items.map(item => ({
           productId: item.product.id,
@@ -159,11 +159,11 @@ const CheckoutPage = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="address">Адрес доставки</Label>
+                  <Label htmlFor="deliveryAddress">Адрес доставки</Label>
                   <Input
-                    id="address"
-                    name="address"
-                    value={formData.address}
+                    id="deliveryAddress"
+                    name="deliveryAddress"
+                    value={formData.deliveryAddress}
                     onChange={handleInputChange}
                     placeholder="Введите адрес доставки"
                     required
