@@ -115,7 +115,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
                     <div className="space-y-2">
                       <Label htmlFor="edit-category">Категория</Label>
                       <Select
-                        value={editingProduct.categoryId.toString()}
+                        value={editingProduct.categoryId?.toString() ?? ''}
                         onValueChange={(value) => handleEditingChange('categoryId', parseInt(value))}
                         disabled={isLoadingCategories}
                       >

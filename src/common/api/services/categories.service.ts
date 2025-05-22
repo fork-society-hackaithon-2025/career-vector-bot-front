@@ -25,7 +25,7 @@ export class CategoriesService extends ApiServiceClass {
     }
 
     async update(id: number, categoryData: Partial<CreateCategoryDto>): Promise<ApiResponse<Category>> {
-        return this.PATCH(`/${id}`, categoryData);
+        return this.PUT(`/${id}`, categoryData);
     }
 
     async delete(id: number): Promise<ApiResponse<string>> {
