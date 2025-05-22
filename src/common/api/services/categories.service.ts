@@ -7,7 +7,7 @@ export class CategoriesService extends ApiServiceClass {
     constructor(axios: AxiosInstance) {
         super({
             axios,
-            serviceUrl: 'orders',
+            serviceUrl: 'categories',
             urlPrefix: '',
         });
     }

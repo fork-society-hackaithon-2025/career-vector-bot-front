@@ -1,11 +1,10 @@
 import { Brand } from '@/data/brands';
-import { Category } from '@/data/categories';
 
 export interface Product {
   id: number;
   name: string;
   brand: Brand;
-  category: Category;
+  categoryId: number;
   grossPrice: number;
   clientPrice: number;
   availableAmount: number;
@@ -16,7 +15,7 @@ export interface Product {
 export interface CreateProductDto {
   name: string;
   brand: Brand;
-  category: Category;
+  categoryId: number;
   grossPrice: number;
   clientPrice: number;
   availableAmount: number;
@@ -25,7 +24,7 @@ export interface CreateProductDto {
 export interface UpdateProductDto {
   name?: string;
   brand?: Brand;
-  category?: Category;
+  categoryId?: number;
   grossPrice?: number;
   clientPrice?: number;
   availableAmount?: number;

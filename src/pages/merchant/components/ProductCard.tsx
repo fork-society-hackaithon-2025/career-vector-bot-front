@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Edit, Trash2 } from 'lucide-react';
 import { BRANDS } from '@/data/brands';
-import { CATEGORIES } from '@/data/categories';
+import { useCategories } from '@/common/hooks/useCategories';
 import {
   Select,
   SelectContent,
@@ -31,14 +31,19 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onDelete }) => {
+  const { categories, isLoading: isLoadingCategories } = useCategories();
   const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
 
-  const handleEditingChange = (field: keyof Product, value: string) => {
+  const getCategoryName = (categoryId: number) => {
+    return categories.find(c => c.id === categoryId)?.name || 'Unknown Category';
+  };
+
+  const handleEditingChange = (field: keyof Product, value: string | number) => {
     if (!editingProduct) return;
     
     setEditingProduct({
       ...editingProduct,
-      [field]: field === 'name' || field === 'brand' || field === 'category' ? value : Number(value)
+      [field]: field === 'name' || field === 'brand' ? value : Number(value)
     });
   };
 
@@ -56,7 +61,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
             <h3 className="text-lg font-medium">{product.name}</h3>
             <div className="flex flex-col text-sm">
               <span>Бренд: {product.brand}</span>
-              <span>Категория: {product.category}</span>
+              <span>Категория: {getCategoryName(product.categoryId)}</span>
               <span>Цена гросс: {product.grossPrice.toFixed(2)}₸</span>
               <span>Цена для клиента: {product.clientPrice.toFixed(2)}₸</span>
               <span className="text-muted-foreground mt-1">В наличии: {product.availableAmount}</span>
@@ -110,16 +115,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
                     <div className="space-y-2">
                       <Label htmlFor="edit-category">Категория</Label>
                       <Select
-                        value={editingProduct.category}
-                        onValueChange={(value) => handleEditingChange('category', value)}
+                        value={editingProduct.categoryId.toString()}
+                        onValueChange={(value) => handleEditingChange('categoryId', parseInt(value))}
+                        disabled={isLoadingCategories}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Выберите категорию" />
                         </SelectTrigger>
                         <SelectContent>
-                          {CATEGORIES.map((category) => (
-                            <SelectItem key={category.value} value={category.value}>
-                              {category.label}
+                          {categories.map((category) => (
+                            <SelectItem key={category.id} value={category.id.toString()}>
+                              {category.name}
                             </SelectItem>
                           ))}
                         </SelectContent>

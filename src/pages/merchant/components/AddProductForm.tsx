@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
 import { BRANDS } from '@/data/brands';
-import { CATEGORIES } from '@/data/categories';
+import { useCategories } from '@/common/hooks/useCategories';
 import {
   Select,
   SelectContent,
@@ -28,19 +28,30 @@ interface AddProductFormProps {
 }
 
 export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
+  const { categories, isLoading: isLoadingCategories } = useCategories();
   const [newProduct, setNewProduct] = React.useState<CreateProductDto>({
     name: '',
     brand: BRANDS[0].value,
-    category: CATEGORIES[0].value,
+    categoryId: categories[0]?.id || 0,
     grossPrice: undefined,
     clientPrice: undefined,
     availableAmount: undefined
   });
 
+  // Update category when categories are loaded
+  React.useEffect(() => {
+    if (categories.length > 0 && !newProduct.categoryId) {
+      setNewProduct(prev => ({
+        ...prev,
+        categoryId: categories[0].id
+      }));
+    }
+  }, [categories]);
+
   const handleNewProductChange = (field: keyof CreateProductDto, value: string) => {
     setNewProduct({
       ...newProduct,
-      [field]: field === 'name' || field === 'brand' || field === 'category' ? value : value === '' ? undefined : Number(value)
+      [field]: field === 'name' || field === 'brand' ? value : value === '' ? undefined : Number(value)
     });
   };
 
@@ -49,7 +60,7 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
     setNewProduct({
       name: '',
       brand: BRANDS[0].value,
-      category: CATEGORIES[0].value,
+      categoryId: categories[0]?.id || 0,
       grossPrice: undefined,
       clientPrice: undefined,
       availableAmount: undefined
@@ -101,16 +112,17 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
           <div className="space-y-2">
             <Label htmlFor="category">Категория</Label>
             <Select
-              value={newProduct.category}
-              onValueChange={(value) => handleNewProductChange('category', value)}
+              value={newProduct.categoryId.toString()}
+              onValueChange={(value) => handleNewProductChange('categoryId', value)}
+              disabled={isLoadingCategories}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Выберите категорию" />
               </SelectTrigger>
               <SelectContent>
-                {CATEGORIES.map((category) => (
-                  <SelectItem key={category.value} value={category.value}>
-                    {category.label}
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id.toString()}>
+                    {category.name}
                   </SelectItem>
                 ))}
               </SelectContent>
