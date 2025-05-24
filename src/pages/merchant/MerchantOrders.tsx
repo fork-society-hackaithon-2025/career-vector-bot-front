@@ -110,8 +110,7 @@ const MerchantOrders = () => {
 
   const handlePhoneClick = (phone: string) => {
     const cleanPhone = phone.replace(/\D/g, '');
-    const telegramLink = `https://t.me/+${cleanPhone}`;
-    window.Telegram.WebApp.openTelegramLink(telegramLink);
+    window.open(`tel:+7${cleanPhone}`, '_self');
   };
 
   if (isLoading) {
@@ -187,15 +186,13 @@ const MerchantOrders = () => {
                     
                     <div className="flex items-center gap-2 mb-2">
                       <span className="font-medium">{order.clientName}</span>
-                      <a 
-                        href={`tel:+7${order.clientPhone.replace(/\D/g, '')}`}
-                        target="_self"
-                        rel="noopener noreferrer"
+                      <button 
+                        onClick={() => handlePhoneClick(order.clientPhone)}
                         className="inline-flex items-center text-sm text-primary hover:text-primary/80 active:text-primary/90 px-2 py-1 rounded-md hover:bg-primary/5 active:bg-primary/10 transition-colors"
                       >
                         <Phone className="h-3.5 w-3.5 mr-1.5" />
                         {order.clientPhone}
-                      </a>
+                      </button>
                     </div>
                     
                     <div className="text-sm">
@@ -239,15 +236,13 @@ const MerchantOrders = () => {
                               <div>
                                 <h3 className="font-medium">Информация о клиенте</h3>
                                 <p>Имя: {selectedOrder.clientName}</p>
-                                <p>Телефон: <a 
-                                  href={`tel:+7${selectedOrder.clientPhone.replace(/\D/g, '')}`}
-                                  target="_self"
-                                  rel="noopener noreferrer"
+                                <p>Телефон: <button 
+                                  onClick={() => handlePhoneClick(selectedOrder.clientPhone)}
                                   className="inline-flex items-center text-primary hover:text-primary/80 active:text-primary/90 px-2 py-1 rounded-md hover:bg-primary/5 active:bg-primary/10 transition-colors"
                                 >
                                   <Phone className="h-3.5 w-3.5 mr-1.5" />
                                   {selectedOrder.clientPhone}
-                                </a></p>
+                                </button></p>
                                 <p>Адрес доставки: {selectedOrder.deliveryAddress || 'Не указан'}</p>
                               </div>
                               
