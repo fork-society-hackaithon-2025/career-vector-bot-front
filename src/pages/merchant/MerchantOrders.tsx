@@ -286,49 +286,93 @@ const MerchantOrders = () => {
                         </DialogContent>
                       </Dialog>
 
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                              size="sm"
-                              variant="outline"
-                              className="w-full"
-                              disabled={order.orderStatus !== 'PENDING'}
-                          >
-                            <Edit2 className="h-4 w-4 mr-1" />
-                            Редактировать
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Редактирование заказа #{order.id}</DialogTitle>
-                          </DialogHeader>
-                          <OrderEditDialog
-                              order={order}
-                              onClose={() => {}}
-                          />
-                        </DialogContent>
-                      </Dialog>
-
                       {order.orderStatus === 'PENDING' && (
                         <>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="border-red-500 hover:bg-red-50 text-red-500 w-full"
-                            onClick={() => handleRejectOrder(order.id.toString())}
-                          >
-                            <X className="h-4 w-4 mr-1" />
-                            Отклонить
-                          </Button>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="w-full"
+                                  disabled={order.orderStatus !== 'PENDING'}
+                              >
+                                <Edit2 className="h-4 w-4 mr-1" />
+                                Редактировать
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Редактирование заказа #{order.id}</DialogTitle>
+                              </DialogHeader>
+                              <OrderEditDialog
+                                  order={order}
+                                  onClose={() => {}}
+                              />
+                            </DialogContent>
+                          </Dialog>
 
-                          <Button
-                              size="sm"
-                              className="bg-green-500 hover:bg-green-600 w-full"
-                              onClick={() => handleConfirmOrder(order.id.toString())}
-                          >
-                            <Check className="h-4 w-4 mr-1" />
-                            Подтвердить
-                          </Button>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="border-red-500 hover:bg-red-50 text-red-500 w-full"
+                              >
+                                <X className="h-4 w-4 mr-1" />
+                                Отменить
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Подтверждение отмены заказа</DialogTitle>
+                              </DialogHeader>
+                              <p>Вы уверены, что хотите отменить заказ #{order.id}?</p>
+                              <DialogFooter>
+                                <DialogClose asChild>
+                                  <Button variant="outline">Отмена</Button>
+                                </DialogClose>
+                                <Button
+                                  variant="destructive"
+                                  onClick={() => {
+                                    handleRejectOrder(order.id.toString());
+                                  }}
+                                >
+                                  Да
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                size="sm"
+                                className="bg-green-500 hover:bg-green-600 w-full"
+                              >
+                                <Check className="h-4 w-4 mr-1" />
+                                Подтвердить
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Подтверждение заказа</DialogTitle>
+                              </DialogHeader>
+                              <p>Вы уверены, что хотите подтвердить заказ #{order.id}?</p>
+                              <DialogFooter>
+                                <DialogClose asChild>
+                                  <Button variant="outline">Отмена</Button>
+                                </DialogClose>
+                                <Button
+                                  className="bg-green-500 hover:bg-green-600"
+                                  onClick={() => {
+                                    handleConfirmOrder(order.id.toString());
+                                  }}
+                                >
+                                  Да
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
                         </>
                       )}
                       {order.orderStatus === 'CONFIRMED' && (
