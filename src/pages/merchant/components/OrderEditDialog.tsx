@@ -112,11 +112,32 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
   };
 
   const updateItemQuantity = (itemId: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
+    // Ensure quantity is in multiples of 5 and minimum is 5
+    const roundedQuantity = Math.max(5, Math.round(newQuantity / 5) * 5);
+    const product = orderProducts.find(p => p.id === formData.items.find(item => item.id === itemId)?.productId);
+    
+    if (product && roundedQuantity <= product.availableAmount) {
+      setFormData(prev => ({
+        ...prev,
+        items: prev.items.map(item =>
+            item.id === itemId ? { ...item, quantity: roundedQuantity } : item
+        )
+      }));
+    }
+  };
+
+  const handleQuantityChange = (itemId: number, inputValue: string) => {
+    const product = orderProducts.find(p => p.id === formData.items.find(item => item.id === itemId)?.productId);
+    if (!product) return;
+
+    const numericValue = Math.max(5, Math.min(product.availableAmount, parseInt(inputValue) || 5));
+    // Round to nearest multiple of 5
+    const roundedValue = Math.round(numericValue / 5) * 5;
+    
     setFormData(prev => ({
       ...prev,
       items: prev.items.map(item =>
-          item.id === itemId ? { ...item, quantity: newQuantity } : item
+          item.id === itemId ? { ...item, quantity: roundedValue } : item
       )
     }));
   };
@@ -186,25 +207,38 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
                     <p className="text-sm text-muted-foreground">{formatPrice(item.price)} × {item.quantity}</p>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => updateItemQuantity(item.id, item.quantity - 1)}
-                        disabled={isEditDisabled}
-                    >
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                    <span className="w-8 text-center">{item.quantity}</span>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => updateItemQuantity(item.id, item.quantity + 1)}
-                        disabled={isEditDisabled}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center border rounded-md">
+                      <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 rounded-none"
+                          onClick={() => updateItemQuantity(item.id, item.quantity - 5)}
+                          disabled={isEditDisabled || item.quantity <= 5}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <Input
+                          type="number"
+                          min="5"
+                          max={productMap[item.productId]?.availableAmount}
+                          step="5"
+                          value={item.quantity}
+                          onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                          className="h-8 w-16 rounded-none border-x-0 text-center"
+                          disabled={isEditDisabled}
+                      />
+                      <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 rounded-none"
+                          onClick={() => updateItemQuantity(item.id, item.quantity + 5)}
+                          disabled={isEditDisabled || item.quantity >= (productMap[item.productId]?.availableAmount || 0)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
                     <Button
                         type="button"
                         variant="outline"
