@@ -110,7 +110,7 @@ const MerchantOrders = () => {
 
   const handlePhoneClick = (phone: string) => {
     const cleanPhone = phone.replace(/\D/g, '');
-    window.open(`tel:+7${cleanPhone}`, '_self');
+    window.open(`tel:+7${cleanPhone}`, '_blank');
   };
 
   if (isLoading) {
