@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { PatternFormat } from 'react-number-format';
 import { DialogClose } from '@/components/ui/dialog';
+import {formatPrice} from "@/lib/utils.ts";
 
 interface OrderEditDialogProps {
   order: Order;
@@ -182,7 +183,7 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
                 <div key={item.id} className="flex items-center gap-2">
                   <div className="flex-1 min-w-0">
                     <p className="truncate">{productMap[item.productId]?.name || 'Загрузка...'}</p>
-                    <p className="text-sm text-muted-foreground">{item.price}₸ × {item.quantity}</p>
+                    <p className="text-sm text-muted-foreground">{formatPrice(item.price)} × {item.quantity}</p>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <Button
@@ -232,7 +233,7 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
                 <SelectContent>
                   {availableProducts.map((product) => (
                       <SelectItem key={product.id} value={product.id.toString()}>
-                        {product.name} - {product.clientPrice}₸
+                        {product.name} - {formatPrice(product.clientPrice)}
                       </SelectItem>
                   ))}
                 </SelectContent>
@@ -244,7 +245,7 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
           <div className="text-right">
             <p className="text-sm text-muted-foreground">Итого:</p>
             <p className="text-xl font-bold">
-              {formData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0)}₸
+              {formatPrice(formData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0))}
             </p>
           </div>
           <div className="flex gap-2">

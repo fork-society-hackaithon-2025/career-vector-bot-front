@@ -18,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { OrderEditDialog } from '@/pages/merchant/components/OrderEditDialog';
+import {formatPrice} from "@/lib/utils.ts";
 
 const OrderConfirmationPage = () => {
   const navigate = useNavigate();
@@ -139,7 +140,7 @@ const OrderConfirmationPage = () => {
 
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Сумма заказа</p>
-            <p className="font-medium">{order.totalPrice} ₸</p>
+            <p className="font-medium">{formatPrice(order.totalPrice)}</p>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">

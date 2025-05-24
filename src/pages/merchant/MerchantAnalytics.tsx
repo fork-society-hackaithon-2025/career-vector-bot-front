@@ -16,6 +16,7 @@ import {
 } from 'recharts';
 import {useProfitOverview, useSalesBreakdown, useTopProducts} from '@/hooks/useAnalytics';
 import {DateRange} from 'react-day-picker';
+import {formatPrice} from "@/lib/utils.ts";
 
 const MerchantAnalytics = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<'day' | 'week' | 'month'>('week');
@@ -109,7 +110,7 @@ const MerchantAnalytics = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Доход</p>
-                    <h3 className="text-2xl font-bold">{currentPeriodData.stats.revenue.toFixed(2)}₸</h3>
+                    <h3 className="text-2xl font-bold">{formatPrice(currentPeriodData.stats.revenue)}</h3>
                     <div className={`flex items-center text-sm ${currentPeriodData.comparison >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                       {currentPeriodData.comparison >= 0 ? (
                         <ArrowUp className="h-4 w-4 mr-1" />
@@ -148,8 +149,8 @@ const MerchantAnalytics = () => {
                     <p className="text-sm font-medium text-muted-foreground">Средний заказ</p>
                     <h3 className="text-2xl font-bold">
                       {currentPeriodData.stats.orders > 0 
-                        ? (currentPeriodData.stats.revenue / currentPeriodData.stats.orders).toFixed(2) 
-                        : '0.00'}₸
+                        ? formatPrice((currentPeriodData.stats.revenue / currentPeriodData.stats.orders))
+                        : '0.00₸'}
                     </h3>
                     <p className="text-sm text-muted-foreground">За транзакцию</p>
                   </div>
@@ -165,7 +166,7 @@ const MerchantAnalytics = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Прибыль</p>
-                    <h3 className="text-2xl font-bold">{currentPeriodData.profit.toFixed(2)}₸</h3>
+                    <h3 className="text-2xl font-bold">{formatPrice(currentPeriodData.profit)}</h3>
                     <p className="text-sm text-muted-foreground">Чистая прибыль</p>
                   </div>
                   <div className="p-2 bg-yellow-100 rounded-full">

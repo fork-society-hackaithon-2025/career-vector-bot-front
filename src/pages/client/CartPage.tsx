@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { formatPrice } from '@/lib/utils';
 
 const CartPage = () => {
-  const { items, updateQuantity, removeItem, clearCart, totalPrice, hasCartTimeExpired } = useCart();
+  const { items, updateQuantity, removeItem, clearCart, totalPrice } = useCart();
   const navigate = useNavigate();
 
   const handleIncreaseQuantity = (productId: number, currentQuantity: number) => {
@@ -50,14 +50,6 @@ const CartPage = () => {
         </Button>
         <h1 className="text-2xl font-bold">Ваша корзина</h1>
       </div>
-
-      {hasCartTimeExpired && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
-          <p className="text-yellow-700">
-            Время редактирования корзины истекло. Вы больше не можете изменять этот заказ.
-          </p>
-        </div>
-      )}
       
       {items.length === 0 ? (
         <Card className="text-center py-8">
@@ -93,7 +85,6 @@ const CartPage = () => {
                       size="icon"
                       className="h-8 w-8"
                       onClick={() => handleDecreaseQuantity(item.product.id, item.quantity)}
-                      disabled={hasCartTimeExpired}
                     >
                       <Minus className="h-3 w-3" />
                     </Button>
@@ -103,7 +94,6 @@ const CartPage = () => {
                       size="icon"
                       className="h-8 w-8"
                       onClick={() => handleIncreaseQuantity(item.product.id, item.quantity)}
-                      disabled={hasCartTimeExpired}
                     >
                       <Plus className="h-3 w-3" />
                     </Button>
@@ -112,7 +102,6 @@ const CartPage = () => {
                       size="icon"
                       className="h-8 w-8 ml-2 text-destructive hover:text-destructive/90 hover:bg-destructive/10"
                       onClick={() => handleRemoveItem(item.product.id)}
-                      disabled={hasCartTimeExpired}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -124,13 +113,12 @@ const CartPage = () => {
             <CardFooter className="flex justify-between items-center py-4 gap-8">
               <div className="min-w-[120px] max-w-[200px]">
                 <p className="font-medium">Итого</p>
-                <p className="text-2xl font-bold truncate">{totalPrice.toFixed(2)}₸</p>
+                <p className="text-2xl font-bold truncate">{ formatPrice(totalPrice) }</p>
               </div>
               <div className="flex flex-col gap-2 shrink-0">
                 <Button 
                   variant="outline" 
                   onClick={clearCart}
-                  disabled={hasCartTimeExpired}
                 >
                   Очистить корзину
                 </Button>
