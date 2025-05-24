@@ -285,30 +285,26 @@ const MerchantOrders = () => {
                             Подтвердить
                           </Button>
 
-                          <Dialog open={!!editingOrder} onOpenChange={(open) => !open && setEditingOrder(null)}>
+                          <Dialog>
                             <DialogTrigger asChild>
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => setEditingOrder(order)}
-                                disabled={order.orderStatus !== 'PENDING'}
+                                disabled={order.orderStatus !== 'PENDING' || new Date(order.editDeadline) <= new Date()}
                               >
                                 <Edit2 className="h-4 w-4 mr-1" />
                                 Редактировать
                               </Button>
                             </DialogTrigger>
-                            {editingOrder && (
-                              <DialogContent>
-                                <DialogHeader>
-                                  <DialogTitle>Редактирование заказа #{editingOrder.id}</DialogTitle>
-                                </DialogHeader>
-                                <OrderEditDialog
-                                  order={editingOrder}
-                                  onClose={() => setEditingOrder(null)}
-                                  onSave={() => setEditingOrder(null)}
-                                />
-                              </DialogContent>
-                            )}
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Редактирование заказа #{order.id}</DialogTitle>
+                              </DialogHeader>
+                              <OrderEditDialog
+                                order={order}
+                                onClose={() => {}}
+                              />
+                            </DialogContent>
                           </Dialog>
 
                           <Button
