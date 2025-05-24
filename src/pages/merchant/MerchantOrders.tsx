@@ -188,7 +188,9 @@ const MerchantOrders = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <span className="font-medium">{order.clientName}</span>
                       <a 
-                        href={`tel:${order.clientPhone.startsWith('7') ? '+' + order.clientPhone : '+7' + order.clientPhone.replace(/\D/g, '')}`}
+                        href={`tel:+7${order.clientPhone.replace(/\D/g, '')}`}
+                        target="_self"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center text-sm text-primary hover:text-primary/80 active:text-primary/90 px-2 py-1 rounded-md hover:bg-primary/5 active:bg-primary/10 transition-colors"
                       >
                         <Phone className="h-3.5 w-3.5 mr-1.5" />
@@ -238,7 +240,9 @@ const MerchantOrders = () => {
                                 <h3 className="font-medium">Информация о клиенте</h3>
                                 <p>Имя: {selectedOrder.clientName}</p>
                                 <p>Телефон: <a 
-                                  href={`tel:${selectedOrder.clientPhone.startsWith('7') ? '+' + selectedOrder.clientPhone : '+7' + selectedOrder.clientPhone.replace(/\D/g, '')}`}
+                                  href={`tel:+7${selectedOrder.clientPhone.replace(/\D/g, '')}`}
+                                  target="_self"
+                                  rel="noopener noreferrer"
                                   className="inline-flex items-center text-primary hover:text-primary/80 active:text-primary/90 px-2 py-1 rounded-md hover:bg-primary/5 active:bg-primary/10 transition-colors"
                                 >
                                   <Phone className="h-3.5 w-3.5 mr-1.5" />
