@@ -183,9 +183,9 @@ const MerchantOrders = () => {
                       <span className="font-medium">{order.clientName}</span>
                       <a 
                         href={`tel:${order.clientPhone}`}
-                        className="inline-flex items-center text-sm text-primary hover:underline"
+                        className="inline-flex items-center text-sm text-primary hover:text-primary/80 active:text-primary/90 px-2 py-1 rounded-md hover:bg-primary/5 active:bg-primary/10 transition-colors"
                       >
-                        <Phone className="h-3 w-3 mr-1" />
+                        <Phone className="h-3.5 w-3.5 mr-1.5" />
                         {order.clientPhone}
                       </a>
                     </div>
@@ -231,7 +231,13 @@ const MerchantOrders = () => {
                               <div>
                                 <h3 className="font-medium">Информация о клиенте</h3>
                                 <p>Имя: {selectedOrder.clientName}</p>
-                                <p>Телефон: {selectedOrder.clientPhone}</p>
+                                <p>Телефон: <a 
+                                  href={`tel:${selectedOrder.clientPhone}`}
+                                  className="inline-flex items-center text-primary hover:text-primary/80 active:text-primary/90 px-2 py-1 rounded-md hover:bg-primary/5 active:bg-primary/10 transition-colors"
+                                >
+                                  <Phone className="h-3.5 w-3.5 mr-1.5" />
+                                  {selectedOrder.clientPhone}
+                                </a></p>
                                 <p>Адрес доставки: {selectedOrder.deliveryAddress || 'Не указан'}</p>
                               </div>
                               
