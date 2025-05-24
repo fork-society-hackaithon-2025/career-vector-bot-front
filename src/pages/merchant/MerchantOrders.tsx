@@ -212,12 +212,13 @@ const MerchantOrders = () => {
                       <p className="text-xl font-bold">{formatPrice(order.totalPrice)}</p>
                     </div>
                     
-                    <div className="w-full overflow-scroll flex gap-2 mt-2">
+                    <div className="flex flex-col w-full gap-2 mt-2">
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button 
                             size="sm"
                             variant="outline"
+                            className="w-full"
                             onClick={() => setSelectedOrderId(Number(order.id))}
                           >
                             Детали
@@ -285,54 +286,55 @@ const MerchantOrders = () => {
                         </DialogContent>
                       </Dialog>
 
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                              size="sm"
+                              variant="outline"
+                              className="w-full"
+                              disabled={order.orderStatus !== 'PENDING'}
+                          >
+                            <Edit2 className="h-4 w-4 mr-1" />
+                            Редактировать
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Редактирование заказа #{order.id}</DialogTitle>
+                          </DialogHeader>
+                          <OrderEditDialog
+                              order={order}
+                              onClose={() => {}}
+                          />
+                        </DialogContent>
+                      </Dialog>
+
                       {order.orderStatus === 'PENDING' && (
                         <>
                           <Button
-                            size="sm"
-                            className="bg-green-500 hover:bg-green-600"
-                            onClick={() => handleConfirmOrder(order.id.toString())}
-                          >
-                            <Check className="h-4 w-4 mr-1" />
-                            Подтвердить
-                          </Button>
-
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                disabled={order.orderStatus !== 'PENDING'}
-                              >
-                                <Edit2 className="h-4 w-4 mr-1" />
-                                Редактировать
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Редактирование заказа #{order.id}</DialogTitle>
-                              </DialogHeader>
-                              <OrderEditDialog
-                                order={order}
-                                onClose={() => {}}
-                              />
-                            </DialogContent>
-                          </Dialog>
-
-                          <Button
                             variant="outline"
                             size="sm"
-                            className="border-red-500 hover:bg-red-50 text-red-500"
+                            className="border-red-500 hover:bg-red-50 text-red-500 w-full"
                             onClick={() => handleRejectOrder(order.id.toString())}
                           >
                             <X className="h-4 w-4 mr-1" />
                             Отклонить
+                          </Button>
+
+                          <Button
+                              size="sm"
+                              className="bg-green-500 hover:bg-green-600 w-full"
+                              onClick={() => handleConfirmOrder(order.id.toString())}
+                          >
+                            <Check className="h-4 w-4 mr-1" />
+                            Подтвердить
                           </Button>
                         </>
                       )}
                       {order.orderStatus === 'CONFIRMED' && (
                         <Button
                           size="sm"
-                          className="bg-blue-500 hover:bg-blue-600"
+                          className="bg-blue-500 hover:bg-blue-600 w-full"
                           onClick={() => handleMarkAsDelivered(order.id.toString())}
                         >
                           <Check className="h-4 w-4 mr-1" />
