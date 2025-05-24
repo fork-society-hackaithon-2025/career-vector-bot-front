@@ -22,7 +22,7 @@ export interface CreateProductDto {
   grossPrice: number;
   clientPrice: number;
   availableAmount: number;
-  quantityType: QuantityType;
+  quantityType?: QuantityType;
 }
 
 export interface UpdateProductDto {
