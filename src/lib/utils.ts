@@ -7,9 +7,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat('ru-RU', {
-    style: 'currency',
-    currency: 'KZT',
+    style: 'decimal',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(price);
+  }).format(price) + ' ₸';
 }

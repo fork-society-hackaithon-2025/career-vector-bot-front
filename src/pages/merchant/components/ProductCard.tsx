@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { formatPrice } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
@@ -62,9 +63,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
             <div className="flex flex-col text-sm">
               <span>Бренд: {product.brand}</span>
               <span>Категория: {getCategoryName(product.categoryId)}</span>
-              <span>Цена гросс: {product.grossPrice.toFixed(2)}₸</span>
-              <span>Цена для клиента: {product.clientPrice.toFixed(2)}₸</span>
-              <span className="text-muted-foreground mt-1">В наличии: {product.availableAmount}</span>
+              <span>Цена гросс: {formatPrice(product.grossPrice)}</span>
+              <span>Цена для клиента: {formatPrice(product.clientPrice)}</span>
+              <span className="text-muted-foreground mt-1">В наличии: {product.availableAmount} блоков</span>
             </div>
           </div>
           <div className="flex space-x-2">

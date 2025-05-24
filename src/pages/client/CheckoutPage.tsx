@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { ArrowLeft } from 'lucide-react';
 import { useCreateOrder, useAvailableDeliveryDates } from '@/common/hooks/useOrders';
 import { PatternFormat } from 'react-number-format';
+import { formatPrice } from '@/lib/utils';
 
 const CheckoutPage = () => {
   const { items, totalPrice, clearCart } = useCart();
@@ -104,16 +105,16 @@ const CheckoutPage = () => {
                 <div key={item.product.id} className="flex justify-between">
                   <div>
                     <p className="font-medium">{item.product.name}</p>
-                    <p className="text-sm text-muted-foreground">{item.product.clientPrice.toFixed(2)}₸ × {item.quantity}</p>
+                    <p className="text-sm text-muted-foreground">{formatPrice(item.product.clientPrice)} × {item.quantity}</p>
                   </div>
-                  <p className="font-medium">{(item.product.clientPrice * item.quantity).toFixed(2)}₸</p>
+                  <p className="font-medium">{formatPrice(item.product.clientPrice * item.quantity)}</p>
                 </div>
               ))}
             </CardContent>
             <Separator />
             <CardFooter className="flex justify-between py-4">
               <p className="font-medium text-lg">Итого</p>
-              <p className="font-bold text-lg">{totalPrice.toFixed(2)}₸</p>
+              <p className="font-bold text-lg">{formatPrice(totalPrice)}</p>
             </CardFooter>
           </Card>
         </div>

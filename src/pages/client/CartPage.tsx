@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Minus, Plus, Trash2, ArrowLeft, ShoppingBag } from 'lucide-react';
 import { toast } from 'sonner';
+import { formatPrice } from '@/lib/utils';
 
 const CartPage = () => {
   const { items, updateQuantity, removeItem, clearCart, totalPrice, hasCartTimeExpired } = useCart();
@@ -83,7 +84,7 @@ const CartPage = () => {
                   <div className="flex items-center space-x-4">
                     <div className="space-y-1">
                       <h3 className="font-medium">{item.product.name}</h3>
-                      <p className="text-sm text-muted-foreground">{item.product.clientPrice.toFixed(2)}₸</p>
+                      <p className="text-sm text-muted-foreground">{formatPrice(item.product.clientPrice)}</p>
                     </div>
                   </div>
                   <div className="flex items-center">

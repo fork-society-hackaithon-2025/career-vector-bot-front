@@ -128,7 +128,7 @@ const CataloguePage = () => {
                                   </Badge>
                                 </div>
                                 <p className={`text-sm ${product.availableAmount === 0 ? 'text-red-500' : 'text-muted-foreground'}`}>
-                                  {product.availableAmount === 0 ? 'Нет в наличии' : `В наличии: ${product.availableAmount}`}
+                                  {product.availableAmount === 0 ? 'Нет в наличии' : `В наличии: ${product.availableAmount} блоков`}
                                 </p>
                               </CardContent>
                               <CardFooter className="p-4 pt-0">
