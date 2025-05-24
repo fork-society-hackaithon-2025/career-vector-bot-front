@@ -1,23 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Check, Edit2 } from 'lucide-react';
-import { useOrder, useUpdateOrder } from '@/common/hooks/useOrders';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
-import { PatternFormat } from 'react-number-format';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { OrderEditDialog } from '@/pages/merchant/components/OrderEditDialog';
+import React, {useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+import {Separator} from '@/components/ui/separator';
+import {Check, Edit2} from 'lucide-react';
+import {useOrder} from '@/common/hooks/useOrders';
+import {format} from 'date-fns';
+import {ru} from 'date-fns/locale';
+import {PatternFormat} from 'react-number-format';
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,} from '@/components/ui/dialog';
+import {OrderEditDialog} from '@/pages/merchant/components/OrderEditDialog';
 import {formatPrice} from "@/lib/utils.ts";
 
 const OrderConfirmationPage = () => {
@@ -45,7 +37,7 @@ const OrderConfirmationPage = () => {
   }
 
   const order = orderResponse;
-  const canEdit = order.orderStatus === 'PENDING' && new Date(order.editDeadline) > new Date();
+  const canEdit = order.orderStatus === 'PENDING';
 
   return (
     <div className="space-y-6">

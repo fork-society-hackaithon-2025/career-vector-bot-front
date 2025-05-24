@@ -78,7 +78,7 @@ export const useUpdateOrder = () => {
     },
     onError: (error: any) => {
       if (error.response?.status === 403) {
-        toast.error('Время на редактирование заказа истекло');
+        toast.error('Не удалось обновить заказ');
       } else {
         toast.error('Не удалось обновить заказ');
       }

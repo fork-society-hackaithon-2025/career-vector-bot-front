@@ -121,7 +121,7 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
     }));
   };
 
-  const isEditDisabled = order.orderStatus !== 'PENDING' || new Date(order.editDeadline) <= new Date();
+  const isEditDisabled = order.orderStatus !== 'PENDING';
 
   return (
       <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-full overflow-hidden">

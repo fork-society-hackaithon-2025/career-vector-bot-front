@@ -290,7 +290,7 @@ const MerchantOrders = () => {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                disabled={order.orderStatus !== 'PENDING' || new Date(order.editDeadline) <= new Date()}
+                                disabled={order.orderStatus !== 'PENDING'}
                               >
                                 <Edit2 className="h-4 w-4 mr-1" />
                                 Редактировать

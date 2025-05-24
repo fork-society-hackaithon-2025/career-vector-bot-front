@@ -53,7 +53,7 @@ const MyOrdersPage = () => {
       <div className="space-y-4">
         {userOrders.length > 0 ? (
           userOrders.map((order) => {
-            const canEdit = order.orderStatus === 'PENDING' && new Date(order.editDeadline) > new Date();
+            const canEdit = order.orderStatus === 'PENDING';
             
             return (
               <Card key={order.id}>
@@ -109,12 +109,6 @@ const MyOrdersPage = () => {
                     <p className="text-sm text-muted-foreground">Сумма заказа</p>
                     <p className="font-medium">{formatPrice(order.totalPrice)}</p>
                   </div>
-
-                  {canEdit && (
-                    <p className="text-sm text-yellow-600">
-                      Возможность редактирования до: {format(new Date(order.editDeadline), 'd MMMM HH:mm', { locale: ru })}
-                    </p>
-                  )}
                 </CardContent>
               </Card>
             );
