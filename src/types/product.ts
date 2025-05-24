@@ -1,5 +1,7 @@
 import { Brand } from '@/data/brands';
 
+export type QuantityType = 'BLOCK' | 'CRATE';
+
 export interface Product {
   id: number;
   name: string;
@@ -8,6 +10,7 @@ export interface Product {
   grossPrice: number;
   clientPrice: number;
   availableAmount: number;
+  quantityType: QuantityType;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,6 +22,7 @@ export interface CreateProductDto {
   grossPrice: number;
   clientPrice: number;
   availableAmount: number;
+  quantityType: QuantityType;
 }
 
 export interface UpdateProductDto {
@@ -28,4 +32,5 @@ export interface UpdateProductDto {
   grossPrice?: number;
   clientPrice?: number;
   availableAmount?: number;
+  quantityType?: QuantityType;
 }
