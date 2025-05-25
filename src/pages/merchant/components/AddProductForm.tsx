@@ -49,9 +49,15 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
   }, [categories]);
 
   const handleNewProductChange = (field: keyof CreateProductDto, value: string) => {
+    let processedValue = value;
+    if (field === 'availableAmount' && value !== '') {
+      // Round to nearest multiple of 5
+      processedValue = (Math.round(Number(value) / 5) * 5).toString();
+    }
+    
     setNewProduct({
       ...newProduct,
-      [field]: field === 'name' || field === 'brand' ? value : value === '' ? undefined : Number(value)
+      [field]: field === 'name' || field === 'brand' ? value : processedValue === '' ? undefined : Number(processedValue)
     });
   };
 
@@ -163,6 +169,7 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
               id="availableAmount"
               type="number"
               min="0"
+              step="5"
               value={newProduct.availableAmount?.toString() || ''}
               onChange={(e) => handleNewProductChange('availableAmount', e.target.value)}
               placeholder="0"

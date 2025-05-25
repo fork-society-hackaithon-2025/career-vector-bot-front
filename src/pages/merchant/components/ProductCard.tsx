@@ -42,9 +42,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
   const handleEditingChange = (field: keyof Product, value: string | number) => {
     if (!editingProduct) return;
     
+    let processedValue = value;
+    if (field === 'availableAmount') {
+      // Round to nearest multiple of 5
+      processedValue = Math.round(Number(value) / 5) * 5;
+    } else if (field !== 'name' && field !== 'brand') {
+      processedValue = Number(value);
+    }
+    
     setEditingProduct({
       ...editingProduct,
-      [field]: field === 'name' || field === 'brand' ? value : Number(value)
+      [field]: field === 'name' || field === 'brand' ? value : processedValue
     });
   };
 
@@ -165,6 +173,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
                         id="edit-availableAmount"
                         type="number"
                         min="0"
+                        step="5"
                         value={editingProduct.availableAmount.toString()}
                         onChange={(e) => handleEditingChange('availableAmount', e.target.value)}
                       />
