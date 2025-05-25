@@ -199,7 +199,7 @@ const MerchantAnalytics = () => {
                       </linearGradient>
                     </defs>
                     <XAxis dataKey="date" />
-                    <YAxis />
+                    <YAxis tickFormatter={(value) => formatPrice(value)} />
                     <CartesianGrid strokeDasharray="3 3" />
                     <Tooltip />
                     <Legend />
@@ -240,8 +240,8 @@ const MerchantAnalytics = () => {
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip formatter={(value) => [`${value}₸`, 'Доход']} />
+                    <YAxis tickFormatter={(value) => formatPrice(value)} />
+                    <Tooltip formatter={(value) => [formatPrice(value as number), 'Доход']} />
                     <Legend />
                     <Bar dataKey="sales" fill="#3b82f6" name="Доход" />
                   </RechartBarChart>
@@ -265,9 +265,9 @@ const MerchantAnalytics = () => {
                     layout="vertical"
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" />
+                    <XAxis type="number" tickFormatter={(value) => formatPrice(value)} />
                     <YAxis type="category" dataKey="name" width={100} />
-                    <Tooltip formatter={(value) => [`${value}₸`, 'Прибыль']} />
+                    <Tooltip formatter={(value) => [formatPrice(value as number), 'Прибыль']} />
                     <Legend />
                     <Bar dataKey="profit" fill="#3b82f6" name="Прибыль" />
                   </RechartBarChart>
@@ -290,8 +290,8 @@ const MerchantAnalytics = () => {
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip formatter={(value) => [`${value}`, 'Продажи']} />
+                      <YAxis tickFormatter={(value) => formatPrice(value)} />
+                      <Tooltip formatter={(value) => [formatPrice(value as number), 'Продажи']} />
                       <Legend />
                       <Bar dataKey="totalSales" fill="#8884d8" name="Продажи" />
                     </RechartBarChart>
@@ -313,7 +313,7 @@ const MerchantAnalytics = () => {
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
-                      <YAxis />
+                      <YAxis tickFormatter={(value) => `${value}%`} />
                       <Tooltip formatter={(value) => [`${value}%`, 'Маржа']} />
                       <Legend />
                       <Bar dataKey="margin" fill="#10b981" name="Маржа" />
