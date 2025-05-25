@@ -37,6 +37,7 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
     clientPrice: undefined,
     availableAmount: undefined
   });
+  const [availableAmountInput, setAvailableAmountInput] = React.useState<string>('');
 
   // Update category when categories are loaded
   React.useEffect(() => {
@@ -49,20 +50,33 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
   }, [categories]);
 
   const handleNewProductChange = (field: keyof CreateProductDto, value: string) => {
-    let processedValue = value;
-    if (field === 'availableAmount' && value !== '') {
-      // Round to nearest multiple of 5
-      processedValue = (Math.round(Number(value) / 5) * 5).toString();
+    if (field === 'availableAmount') {
+      setAvailableAmountInput(value);
+    } else {
+      setNewProduct({
+        ...newProduct,
+        [field]: field === 'name' || field === 'brand' ? value : value === '' ? undefined : Number(value)
+      });
     }
-    
-    setNewProduct({
-      ...newProduct,
-      [field]: field === 'name' || field === 'brand' ? value : processedValue === '' ? undefined : Number(processedValue)
-    });
+  };
+
+  const handleAvailableAmountBlur = () => {
+    if (availableAmountInput === '') {
+      setNewProduct(prev => ({ ...prev, availableAmount: undefined }));
+      return;
+    }
+    const roundedValue = Math.round(Number(availableAmountInput) / 5) * 5;
+    setAvailableAmountInput(roundedValue.toString());
+    setNewProduct(prev => ({ ...prev, availableAmount: roundedValue }));
   };
 
   const handleAddProduct = () => {
-    onSubmit(newProduct);
+    // Ensure the final value is rounded before submit
+    const roundedValue = availableAmountInput === '' ? undefined : Math.round(Number(availableAmountInput) / 5) * 5;
+    onSubmit({
+      ...newProduct,
+      availableAmount: roundedValue
+    });
     setNewProduct({
       name: '',
       brand: BRANDS[0].value,
@@ -71,6 +85,7 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
       clientPrice: undefined,
       availableAmount: undefined
     });
+    setAvailableAmountInput('');
   };
 
   return (
@@ -170,8 +185,9 @@ export const AddProductForm: React.FC<AddProductFormProps> = ({ onSubmit }) => {
               type="number"
               min="0"
               step="5"
-              value={newProduct.availableAmount?.toString() || ''}
+              value={availableAmountInput}
               onChange={(e) => handleNewProductChange('availableAmount', e.target.value)}
+              onBlur={handleAvailableAmountBlur}
               placeholder="0"
             />
           </div>

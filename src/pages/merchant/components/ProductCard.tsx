@@ -34,31 +34,50 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onDelete }) => {
   const { categories, isLoading: isLoadingCategories } = useCategories();
   const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
+  const [availableAmountInput, setAvailableAmountInput] = React.useState<string>('');
 
   const getCategoryName = (categoryId: number) => {
     return categories.find(c => c.id === categoryId)?.name || 'Unknown Category';
   };
 
+  // Update availableAmountInput when editingProduct changes
+  React.useEffect(() => {
+    if (editingProduct) {
+      setAvailableAmountInput(editingProduct.availableAmount.toString());
+    }
+  }, [editingProduct]);
+
   const handleEditingChange = (field: keyof Product, value: string | number) => {
     if (!editingProduct) return;
     
-    let processedValue = value;
     if (field === 'availableAmount') {
-      // Round to nearest multiple of 5
-      processedValue = Math.round(Number(value) / 5) * 5;
-    } else if (field !== 'name' && field !== 'brand') {
-      processedValue = Number(value);
+      setAvailableAmountInput(value.toString());
+    } else {
+      setEditingProduct({
+        ...editingProduct,
+        [field]: field === 'name' || field === 'brand' ? value : Number(value)
+      });
     }
-    
+  };
+
+  const handleAvailableAmountBlur = () => {
+    if (!editingProduct) return;
+    const roundedValue = Math.round(Number(availableAmountInput) / 5) * 5;
+    setAvailableAmountInput(roundedValue.toString());
     setEditingProduct({
       ...editingProduct,
-      [field]: field === 'name' || field === 'brand' ? value : processedValue
+      availableAmount: roundedValue
     });
   };
 
   const handleUpdateProduct = () => {
     if (!editingProduct) return;
-    onUpdate(editingProduct);
+    // Ensure the final value is rounded before update
+    const roundedValue = Math.round(Number(availableAmountInput) / 5) * 5;
+    onUpdate({
+      ...editingProduct,
+      availableAmount: roundedValue
+    });
     setEditingProduct(null);
   };
 
@@ -174,8 +193,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
                         type="number"
                         min="0"
                         step="5"
-                        value={editingProduct.availableAmount.toString()}
+                        value={availableAmountInput}
                         onChange={(e) => handleEditingChange('availableAmount', e.target.value)}
+                        onBlur={handleAvailableAmountBlur}
                       />
                     </div>
                   </div>
