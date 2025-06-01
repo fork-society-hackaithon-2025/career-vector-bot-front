@@ -41,11 +41,6 @@ const LoginPage = () => {
           window.history.replaceState({}, '', '/');
         }
 
-        if (!webAppData) {
-          console.error('No Telegram WebApp data available');
-          return;
-        }
-
         // Attempt to login with Telegram data
         mutate(webAppData, {
           onSuccess: (data: UserResponse) => {
