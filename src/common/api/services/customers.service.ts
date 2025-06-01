@@ -11,6 +11,10 @@ export class CustomersService extends ApiServiceClass {
         });
     }
 
+    async list(): Promise<ApiResponse<never>> {
+        return this.GET(`/financial-list`);
+    }
+
     async getFinancialSummary(telegramId: string): Promise<ApiResponse<never>> {
         return this.GET(`/${telegramId}/financial-summary`);
     }

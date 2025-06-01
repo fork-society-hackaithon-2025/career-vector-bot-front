@@ -51,8 +51,8 @@ export const useUpdateOrderStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, status }: { id: number; status: OrderStatus }) =>
-      api.orders.updateStatus(id, status),
+    mutationFn: ({ id, status, paymentAmount }: { id: number; status: OrderStatus, paymentAmount?: number }) =>
+      api.orders.updateStatus(id, status, paymentAmount),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       queryClient.invalidateQueries({ queryKey: ['orders', id] });
