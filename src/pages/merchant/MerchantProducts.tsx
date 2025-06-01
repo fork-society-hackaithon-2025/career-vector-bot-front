@@ -24,28 +24,36 @@ const MerchantProducts = () => {
     // First filter products based on search query
     const filtered = !searchQuery.trim() ? products : products.filter(product => {
       const query = searchQuery.toLowerCase();
-      const categoryName = categories.find(c => c.id === product.categoryId)?.name || '';
+      const categoryName = categories.find(c => c.id === product.categoryId)?.name || 'Неизвестная категория';
       return product.name.toLowerCase().includes(query) ||
         product.brand.toLowerCase().includes(query) ||
         categoryName.toLowerCase().includes(query);
     });
 
-    // Group products by category
-    const groupedByCategory = filtered.reduce((acc, product) => {
+    // Group products by category and then by brand
+    const groupedByCategoryAndBrand = filtered.reduce((acc, product) => {
       const categoryName = categories.find(c => c.id === product.categoryId)?.name || 'Неизвестная категория';
       if (!acc[categoryName]) {
-        acc[categoryName] = [];
+        acc[categoryName] = {};
       }
-      acc[categoryName].push(product);
+      if (!acc[categoryName][product.brand]) {
+        acc[categoryName][product.brand] = [];
+      }
+      acc[categoryName][product.brand].push(product);
       return acc;
-    }, {} as Record<string, Product[]>);
+    }, {} as Record<string, Record<string, Product[]>>);
 
-    // Sort categories alphabetically and sort products within each category by brand
-    return Object.entries(groupedByCategory)
+    // Sort categories alphabetically, brands within categories, and products within brands
+    return Object.entries(groupedByCategoryAndBrand)
       .sort(([categoryA], [categoryB]) => categoryA.localeCompare(categoryB))
-      .map(([category, products]) => ({
+      .map(([category, brands]) => ({
         category,
-        products: products.sort((a, b) => a.brand.localeCompare(b.brand))
+        brands: Object.entries(brands)
+          .sort(([brandA], [brandB]) => brandA.localeCompare(brandB))
+          .map(([brand, products]) => ({
+            brand,
+            products: products.sort((a, b) => a.name.localeCompare(b.name))
+          }))
       }));
   }, [products, searchQuery, categories]);
 
@@ -84,19 +92,24 @@ const MerchantProducts = () => {
       
       {organizedProducts.length > 0 ? (
         <div className="space-y-8">
-          {organizedProducts.map(({ category, products }) => (
-            <div key={category} className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-800">{category}</h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                {products.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onUpdate={handleUpdateProduct}
-                    onDelete={handleDeleteProduct}
-                  />
-                ))}
-              </div>
+          {organizedProducts.map(({ category, brands }) => (
+            <div key={category} className="space-y-6">
+              <h2 className="text-xl font-bold text-gray-800">{category}</h2>
+              {brands.map(({ brand, products }) => (
+                <div key={`${category}-${brand}`} className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-800">{brand}</h3>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {products.map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        onUpdate={handleUpdateProduct}
+                        onDelete={handleDeleteProduct}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           ))}
         </div>
