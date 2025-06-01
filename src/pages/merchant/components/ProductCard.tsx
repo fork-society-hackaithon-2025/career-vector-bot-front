@@ -92,7 +92,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onD
               <span>Категория: {getCategoryName(product.categoryId)}</span>
               <span>Цена гросс: {formatPrice(product.grossPrice)}</span>
               <span>Цена для клиента: {formatPrice(product.clientPrice)}</span>
-              <span className="text-muted-foreground mt-1">В наличии: {product.availableAmount} блоков</span>
             </div>
           </div>
           <div className="flex space-x-2">
