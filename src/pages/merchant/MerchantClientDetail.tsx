@@ -36,7 +36,7 @@ const MerchantClientDetail = () => {
   const { data: client, isLoading: isLoadingClient } = useClient(clientId);
   const { data: orders = [], isLoading: isLoadingOrders } = useClientOrders(clientId);
   const { data: payments = [], isLoading: isLoadingPayments } = useClientPayments(clientId);
-  const { mutate: addRepayment, isLoading: isAddingRepayment } = useAddRepayment();
+  const { mutate: addRepayment } = useAddRepayment();
 
   const [repaymentAmount, setRepaymentAmount] = useState('');
   const [repaymentDate, setRepaymentDate] = useState<Date | undefined>(new Date());
@@ -83,7 +83,6 @@ const MerchantClientDetail = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">{client.name}</h1>
-          <p className="text-muted-foreground">{client.phone || 'Не указан'}</p>
         </div>
         <div className="text-right">
           <p className="text-sm text-muted-foreground">Текущий долг</p>
@@ -140,7 +139,7 @@ const MerchantClientDetail = () => {
             <Button
               className="w-full"
               onClick={handleAddRepayment}
-              disabled={!repaymentAmount || !repaymentDate || isAddingRepayment}
+              disabled={client.totalDebt === "0"}
             >
               Добавить платеж
             </Button>
@@ -186,18 +185,9 @@ const MerchantClientDetail = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <p className="font-medium">Заказ #{order.orderId}</p>
-                    <Badge variant={
-                      order.orderStatus === 'DELIVERED' ? 'default' :
-                      order.orderStatus === 'PENDING' ? 'secondary' :
-                      'destructive'
-                    }>
-                      {order.orderStatus === 'DELIVERED' ? 'Доставлен' :
-                       order.orderStatus === 'PENDING' ? 'В ожидании' :
-                       'Отменен'}
-                    </Badge>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {formatDate(order.deliveryDate)}
+                    Дата доставки - {formatDate(order.deliveryDate)}
                   </p>
                 </div>
                 <div className="text-right">

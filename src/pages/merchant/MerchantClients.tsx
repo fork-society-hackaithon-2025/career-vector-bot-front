@@ -38,10 +38,8 @@ const MerchantClients = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Имя</TableHead>
-                <TableHead>Телефон</TableHead>
                 <TableHead>Текущий долг</TableHead>
                 <TableHead>Последний платеж</TableHead>
-                <TableHead>Количество заказов</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -52,7 +50,6 @@ const MerchantClients = () => {
                   onClick={() => navigate(`/merchant/clients/${client.userId}`)}
                 >
                   <TableCell>{client.name}</TableCell>
-                  <TableCell>{client.phone || 'Не указан'}</TableCell>
                   <TableCell>
                     {client.totalDebt > 0 ? (
                       <Badge variant="destructive" className="text-sm">
@@ -69,7 +66,6 @@ const MerchantClients = () => {
                       ? format(new Date(client.lastPaymentDate), 'dd.MM.yyyy', { locale: ru })
                       : 'Нет платежей'}
                   </TableCell>
-                  <TableCell>{client.orderCount}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

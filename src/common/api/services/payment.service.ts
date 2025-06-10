@@ -18,16 +18,16 @@ interface UnpaidOrder {
     deliveryDate: Date;
 }
 
-interface RepaymentHistory {
+export interface DebtPayment {
     id: number;
     amount: number;
     paymentDate: Date;
 }
 
-interface ClientDebt {
+export interface ClientDebt {
     totalDebt: number;
     unpaidOrders: UnpaidOrder[];
-    repaymentHistory: RepaymentHistory[];
+    debtPayments: DebtPayment[];
 }
 
 interface ClientDebtSummary {
