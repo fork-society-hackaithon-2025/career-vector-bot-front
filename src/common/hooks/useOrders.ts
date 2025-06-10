@@ -3,7 +3,6 @@ import { api } from '@/common/api';
 import { OrderStatus, CreateOrderDto, UpdateOrderDto } from '@/types/order';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { formatOrderError } from '@/lib/error-utils';
 
 export const useOrders = () => {
   const { token } = useAuth();

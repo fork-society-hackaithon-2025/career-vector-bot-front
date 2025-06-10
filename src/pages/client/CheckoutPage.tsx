@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useCart } from '@/contexts/CartContext';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
-import { toast } from 'sonner';
-import { ArrowLeft, AlertCircle } from 'lucide-react';
-import { useCreateOrder, useAvailableDeliveryDates } from '@/common/hooks/useOrders';
-import { useProductsBatch } from '@/common/hooks/useProducts';
-import { PatternFormat } from 'react-number-format';
-import { formatPrice } from '@/lib/utils';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { validateProductAvailability, roundToNearestMultiple, clampQuantity } from '@/lib/error-utils';
+import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useCart} from '@/contexts/CartContext';
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {Separator} from '@/components/ui/separator';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
+import {format} from 'date-fns';
+import {ru} from 'date-fns/locale';
+import {AlertCircle, ArrowLeft} from 'lucide-react';
+import {useAvailableDeliveryDates, useCreateOrder} from '@/common/hooks/useOrders';
+import {useProductsBatch} from '@/common/hooks/useProducts';
+import {PatternFormat} from 'react-number-format';
+import {formatPrice} from '@/lib/utils';
+import {Alert, AlertDescription} from '@/components/ui/alert';
 
 const CheckoutPage = () => {
   const { items, totalPrice, clearCart, updateQuantity } = useCart();
@@ -43,35 +41,6 @@ const CheckoutPage = () => {
     }, {} as Record<number, any>);
   }, [products]);
 
-  // Validate cart items against available stock
-  const validateCartItems = React.useCallback(() => {
-    const errors: string[] = [];
-    
-    // Validate product availability only
-    const availabilityErrors = validateProductAvailability(
-      items.map(item => ({ productId: item.product.id, quantity: item.quantity })),
-      productMap
-    );
-    errors.push(...availabilityErrors);
-
-    setValidationErrors(errors);
-    return errors.length === 0;
-  }, [items, productMap]);
-
-  // Auto-update quantities if products are out of stock
-  useEffect(() => {
-    items.forEach((item) => {
-      const product = productMap[item.product.id];
-      if (product && item.quantity > product.availableAmount) {
-        const newQuantity = roundToNearestMultiple(clampQuantity(product.availableAmount, 5, product.availableAmount));
-        if (newQuantity !== item.quantity) {
-          updateQuantity(item.product.id, newQuantity);
-          toast.error(`Количество товара "${product.name}" автоматически уменьшено до ${newQuantity}`);
-        }
-      }
-    });
-  }, [productMap, items, updateQuantity]);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -86,12 +55,6 @@ const CheckoutPage = () => {
     
     // Clear previous validation errors
     setValidationErrors([]);
-    
-    // Validate before submitting
-    if (!validateCartItems()) {
-      toast.error('Пожалуйста, исправьте ошибки в заказе');
-      return;
-    }
 
     setIsSubmitting(true);
 
