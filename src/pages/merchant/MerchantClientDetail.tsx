@@ -193,7 +193,7 @@ const MerchantClientDetail = () => {
                 <div className="text-right">
                   <p className="font-medium">{formatPrice(order.totalAmount)}</p>
                   <p className="text-sm text-muted-foreground">
-                    Оплачено: {formatPrice(order.paidAmount)}
+                    Оплачено при получении: {formatPrice(order.paidAmount)}
                   </p>
                   {order.orderStatus === 'DELIVERED' && order.remainingAmount > 0 && (
                     <Badge variant="destructive" className="mt-1">

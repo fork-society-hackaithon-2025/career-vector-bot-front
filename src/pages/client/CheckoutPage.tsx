@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,13 +10,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { toast } from 'sonner';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, AlertCircle } from 'lucide-react';
 import { useCreateOrder, useAvailableDeliveryDates } from '@/common/hooks/useOrders';
+import { useProductsBatch } from '@/common/hooks/useProducts';
 import { PatternFormat } from 'react-number-format';
 import { formatPrice } from '@/lib/utils';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { validateProductAvailability, roundToNearestMultiple, clampQuantity } from '@/lib/error-utils';
 
 const CheckoutPage = () => {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, updateQuantity } = useCart();
   const navigate = useNavigate();
   const createOrder = useCreateOrder();
   const { data: availableDates = [], isLoading: isLoadingDates, error: datesError } = useAvailableDeliveryDates();
@@ -27,6 +30,47 @@ const CheckoutPage = () => {
     deliveryDate: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
+  // Get product details for validation
+  const productIds = items.map(item => item.product.id);
+  const { data: products = [] } = useProductsBatch(productIds);
+
+  const productMap = React.useMemo(() => {
+    return products.reduce((acc, product) => {
+      acc[product.id] = product;
+      return acc;
+    }, {} as Record<number, any>);
+  }, [products]);
+
+  // Validate cart items against available stock
+  const validateCartItems = React.useCallback(() => {
+    const errors: string[] = [];
+    
+    // Validate product availability only
+    const availabilityErrors = validateProductAvailability(
+      items.map(item => ({ productId: item.product.id, quantity: item.quantity })),
+      productMap
+    );
+    errors.push(...availabilityErrors);
+
+    setValidationErrors(errors);
+    return errors.length === 0;
+  }, [items, productMap]);
+
+  // Auto-update quantities if products are out of stock
+  useEffect(() => {
+    items.forEach((item) => {
+      const product = productMap[item.product.id];
+      if (product && item.quantity > product.availableAmount) {
+        const newQuantity = roundToNearestMultiple(clampQuantity(product.availableAmount, 5, product.availableAmount));
+        if (newQuantity !== item.quantity) {
+          updateQuantity(item.product.id, newQuantity);
+          toast.error(`Количество товара "${product.name}" автоматически уменьшено до ${newQuantity}`);
+        }
+      }
+    });
+  }, [productMap, items, updateQuantity]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,8 +84,12 @@ const CheckoutPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.phone || !formData.deliveryDate) {
-      toast.error('Пожалуйста, заполните все обязательные поля');
+    // Clear previous validation errors
+    setValidationErrors([]);
+    
+    // Validate before submitting
+    if (!validateCartItems()) {
+      toast.error('Пожалуйста, исправьте ошибки в заказе');
       return;
     }
 
@@ -63,8 +111,7 @@ const CheckoutPage = () => {
       clearCart();
       navigate(`/order-confirmation/${order.id}`);
     } catch (error) {
-      toast.error('Не удалось создать заказ');
-      console.error('Error creating order:', error);
+      // Error handling is done in the hook
     } finally {
       setIsSubmitting(false);
     }
@@ -94,6 +141,20 @@ const CheckoutPage = () => {
         <h1 className="text-2xl font-bold">Оформление заказа</h1>
       </div>
       
+      {/* Validation Errors */}
+      {validationErrors.length > 0 && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <div className="space-y-1">
+              {validationErrors.map((error, index) => (
+                <div key={index}>{error}</div>
+              ))}
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-6">
           <Card>
@@ -101,15 +162,26 @@ const CheckoutPage = () => {
               <CardTitle className="text-lg">Ваш заказ</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {items.map((item) => (
-                <div key={item.product.id} className="flex justify-between">
-                  <div>
-                    <p className="font-medium">{item.product.name}</p>
-                    <p className="text-sm text-muted-foreground">{formatPrice(item.product.clientPrice)} × {item.quantity}</p>
+              {items.map((item) => {
+                const product = productMap[item.product.id];
+                const isOutOfStock = product?.availableAmount === 0;
+                const isOverLimit = product && item.quantity > product.availableAmount;
+                
+                return (
+                  <div key={item.product.id} className={`flex justify-between p-2 rounded-md ${isOutOfStock || isOverLimit ? 'bg-red-50 border border-red-200' : ''}`}>
+                    <div>
+                      <p className="font-medium">{item.product.name}</p>
+                      <p className="text-sm text-muted-foreground">{formatPrice(item.product.clientPrice)} × {item.quantity}</p>
+                      {product && (
+                        <p className={`text-xs ${isOutOfStock ? 'text-red-600' : isOverLimit ? 'text-orange-600' : 'text-muted-foreground'}`}>
+                          {isOutOfStock ? 'Нет в наличии' : `Доступно`}
+                        </p>
+                      )}
+                    </div>
+                    <p className="font-medium">{formatPrice(item.product.clientPrice * item.quantity)}</p>
                   </div>
-                  <p className="font-medium">{formatPrice(item.product.clientPrice * item.quantity)}</p>
-                </div>
-              ))}
+                );
+              })}
             </CardContent>
             <Separator />
             <CardFooter className="flex justify-between py-4">
@@ -134,7 +206,6 @@ const CheckoutPage = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Введите ваше имя"
-                    required
                   />
                 </div>
                 
@@ -155,7 +226,6 @@ const CheckoutPage = () => {
                     mask="_"
                     placeholder="+7 (___) ___-____"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    required
                   />
                 </div>
                 
@@ -167,7 +237,6 @@ const CheckoutPage = () => {
                     value={formData.deliveryAddress}
                     onChange={handleInputChange}
                     placeholder="Введите адрес доставки"
-                    required
                   />
                 </div>
                 
@@ -182,26 +251,21 @@ const CheckoutPage = () => {
                       <SelectValue placeholder={isLoadingDates ? "Загрузка дат..." : "Выберите дату доставки"} />
                     </SelectTrigger>
                     <SelectContent>
-                      {datesError ? (
-                        <SelectItem value="error" disabled>
-                          Ошибка загрузки дат
+                      {availableDates.map((date) => (
+                        <SelectItem key={date} value={date}>
+                          {format(new Date(date), 'EEEE, MMMM d, yyyy', { locale: ru })}
                         </SelectItem>
-                      ) : (
-                        availableDates.map((date) => (
-                          <SelectItem key={date} value={date}>
-                            {format(new Date(date), 'EEEE, MMMM d, yyyy', { locale: ru })}
-                          </SelectItem>
-                        ))
-                      )}
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
               </CardContent>
+              
               <CardFooter className="flex flex-col space-y-4">
                 <Button 
                   type="submit" 
                   className="w-full"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || validationErrors.length > 0}
                 >
                   {isSubmitting ? 'Обработка...' : 'Оформить заказ'}
                 </Button>

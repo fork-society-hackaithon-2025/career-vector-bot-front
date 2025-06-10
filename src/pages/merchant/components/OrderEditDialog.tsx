@@ -17,7 +17,8 @@ import {
 } from "@/components/ui/select";
 import { PatternFormat } from 'react-number-format';
 import { DialogClose } from '@/components/ui/dialog';
-import {formatPrice} from "@/lib/utils.ts";
+import { formatPrice } from "@/lib/utils.ts";
+import { toast } from 'sonner';
 
 interface OrderEditDialogProps {
   order: Order;
@@ -61,6 +62,7 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     updateOrder.mutate(
         {
           id: Number(order.id),
@@ -80,6 +82,9 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
             onSave?.();
             onClose();
           },
+          onError: () => {
+            // Error handling is done in the hook
+          },
         }
     );
   };
@@ -95,7 +100,7 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
         {
           id: Date.now(),
           productId: product.id,
-          quantity: 1,
+          quantity: 5,
           price: product.clientPrice,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
@@ -114,23 +119,17 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
   const updateItemQuantity = (itemId: number, newQuantity: number) => {
     // Ensure quantity is in multiples of 5 and minimum is 5
     const roundedQuantity = Math.max(5, Math.round(newQuantity / 5) * 5);
-    const product = orderProducts.find(p => p.id === formData.items.find(item => item.id === itemId)?.productId);
     
-    if (product && roundedQuantity <= product.availableAmount) {
-      setFormData(prev => ({
-        ...prev,
-        items: prev.items.map(item =>
-            item.id === itemId ? { ...item, quantity: roundedQuantity } : item
-        )
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      items: prev.items.map(item =>
+          item.id === itemId ? { ...item, quantity: roundedQuantity } : item
+      )
+    }));
   };
 
   const handleQuantityChange = (itemId: number, inputValue: string) => {
-    const product = orderProducts.find(p => p.id === formData.items.find(item => item.id === itemId)?.productId);
-    if (!product) return;
-
-    const numericValue = Math.max(5, Math.min(product.availableAmount, parseInt(inputValue) || 5));
+    const numericValue = Math.max(5, parseInt(inputValue) || 5);
     // Round to nearest multiple of 5
     const roundedValue = Math.round(numericValue / 5) * 5;
     
@@ -200,10 +199,13 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
         <div className="space-y-2 w-full px-1">
           <Label>Товары в заказе</Label>
           <div className="space-y-2">
-            {formData.items.map((item) => (
-                <div key={item.id} className="flex items-center gap-2">
+            {formData.items.map((item) => {
+              const product = productMap[item.productId];
+              
+              return (
+                <div key={item.id} className="flex items-center gap-2 p-2 rounded-md">
                   <div className="flex-1 min-w-0">
-                    <p className="truncate">{productMap[item.productId]?.name || 'Загрузка...'}</p>
+                    <p className="truncate">{product?.name || 'Загрузка...'}</p>
                     <p className="text-sm text-muted-foreground">{formatPrice(item.price)} × {item.quantity}</p>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
@@ -214,14 +216,13 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
                           size="icon"
                           className="h-8 w-8 rounded-none"
                           onClick={() => updateItemQuantity(item.id, item.quantity - 5)}
-                          disabled={isEditDisabled || item.quantity <= 5}
+                          disabled={isEditDisabled}
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
                       <Input
                           type="number"
                           min="5"
-                          max={productMap[item.productId]?.availableAmount}
                           step="5"
                           value={item.quantity}
                           onChange={(e) => handleQuantityChange(item.id, e.target.value)}
@@ -234,7 +235,7 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
                           size="icon"
                           className="h-8 w-8 rounded-none"
                           onClick={() => updateItemQuantity(item.id, item.quantity + 5)}
-                          disabled={isEditDisabled || item.quantity >= (productMap[item.productId]?.availableAmount || 0)}
+                          disabled={isEditDisabled}
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
@@ -250,7 +251,8 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
                     </Button>
                   </div>
                 </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -288,11 +290,13 @@ export const OrderEditDialog: React.FC<OrderEditDialogProps> = ({ order, onClose
                 Отмена
               </Button>
             </DialogClose>
-            <DialogClose asChild>
-              <Button type="submit" disabled={isEditDisabled} className="flex-1">
-                Сохранить изменения
-              </Button>
-            </DialogClose>
+            <Button 
+              type="submit" 
+              disabled={isEditDisabled} 
+              className="flex-1"
+            >
+              Сохранить изменения
+            </Button>
           </div>
         </div>
       </form>

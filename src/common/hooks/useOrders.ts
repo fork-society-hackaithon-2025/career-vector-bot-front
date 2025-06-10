@@ -3,6 +3,7 @@ import { api } from '@/common/api';
 import { OrderStatus, CreateOrderDto, UpdateOrderDto } from '@/types/order';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
+import { formatOrderError } from '@/lib/error-utils';
 
 export const useOrders = () => {
   const { token } = useAuth();
@@ -34,14 +35,21 @@ export const useCreateOrder = () => {
   return useMutation({
     mutationFn: async (orderData: CreateOrderDto) => {
       const response = await api.orders.create(orderData);
+      
+      if (!response.success || !response.data.success) {
+        const error = new Error(response.data.message || 'Failed to create order');
+        error.response = { data: response.data };
+        throw error;
+      }
+      
       return response.data.responseObject;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       toast.success('Заказ успешно создан');
     },
-    onError: (error) => {
-      toast.error('Не удалось создать заказ');
+    onError: (error: any) => {
+      toast.error("Ошибка при создании заказа");
       console.error('Error creating order:', error);
     },
   });
@@ -51,8 +59,20 @@ export const useUpdateOrderStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, status, paymentAmount }: { id: number; status: OrderStatus, paymentAmount?: number }) =>
-      api.orders.updateStatus(id, status, paymentAmount),
+    mutationFn: async ({ id, status, paymentAmount }: { id: number; status: OrderStatus, paymentAmount?: number }) => {
+      const response = await api.orders.updateStatus(id, status, paymentAmount);
+      
+      // Check if the API response indicates success
+      if (!response.success || !response.data.success) {
+        // Create an error object that preserves the original response structure
+        const error = new Error(response.data.message || 'Failed to update order status');
+        // @ts-ignore - Add the response data to the error for formatOrderError to use
+        error.response = { data: response.data };
+        throw error;
+      }
+      
+      return response.data.responseObject;
+    },
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       queryClient.invalidateQueries({ queryKey: ['orders', id] });
@@ -69,19 +89,27 @@ export const useUpdateOrder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<UpdateOrderDto> }) =>
-      api.orders.update(id, data),
+    mutationFn: async ({ id, data }: { id: number; data: Partial<UpdateOrderDto> }) => {
+      const response = await api.orders.update(id, data);
+      
+      // Check if the API response indicates success
+      if (!response.success || !response.data.success) {
+        // Create an error object that preserves the original response structure
+        const error = new Error(response.data.message || 'Failed to update order');
+        // @ts-ignore - Add the response data to the error for formatOrderError to use
+        error.response = { data: response.data };
+        throw error;
+      }
+      
+      return response.data.responseObject;
+    },
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       queryClient.invalidateQueries({ queryKey: ['orders', id] });
       toast.success('Заказ успешно обновлен');
     },
     onError: (error: any) => {
-      if (error.response?.status === 403) {
-        toast.error('Не удалось обновить заказ');
-      } else {
-        toast.error('Не удалось обновить заказ');
-      }
+      toast.error("Ошибка при обновлении заказа");
       console.error('Error updating order:', error);
     },
   });

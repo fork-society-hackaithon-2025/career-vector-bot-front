@@ -18,6 +18,7 @@ import {format} from 'date-fns';
 import {ru} from 'date-fns/locale';
 import {toast} from 'sonner';
 import {useOrder, useOrders, useUpdateOrderStatus} from '@/common/hooks/useOrders';
+import {useUpdateOrderPayment} from '@/common/hooks/useUpdateOrderPayment';
 import {useProductsBatch} from '@/common/hooks/useProducts';
 import { OrderEditDialog } from './components/OrderEditDialog';
 import { formatPrice } from '@/lib/utils';
@@ -51,6 +52,7 @@ const OrderItem: React.FC<OrderItemProps> = ({ productId, price, quantity, produ
 const MerchantOrders = () => {
   const { data: orders = [], isLoading, error } = useOrders();
   const updateOrderStatus = useUpdateOrderStatus();
+  const updateOrderPayment = useUpdateOrderPayment();
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
   const { data: selectedOrder, isLoading: isLoadingOrderDetails } = useOrder(selectedOrderId || 0);
@@ -97,21 +99,29 @@ const MerchantOrders = () => {
   };
 
   const handleMarkAsDelivered = async (orderId: string) => {
+    // Show the payment dialog first, don't make any API calls yet
+    const order = orders.find(o => o.id.toString() === orderId);
+    if (order) {
+      setPaymentDialogOrder({
+        id: order.id,
+        total: order.totalPrice,
+        clientName: order.clientName,
+      });
+    }
+  };
+
+  const handlePaymentComplete = async (orderId: number, paymentAmount: number) => {
     try {
-      // First mark the order as delivered
-      await updateOrderStatus.mutateAsync({ id: Number(orderId), status: 'DELIVERED' });
+      // First update the order status to delivered
+      await updateOrderStatus.mutateAsync({ id: orderId, status: 'DELIVERED' });
       
-      // Then show the payment dialog
-      const order = orders.find(o => o.id.toString() === orderId);
-      if (order) {
-        setPaymentDialogOrder({
-          id: order.id,
-          total: order.totalPrice,
-          clientName: order.clientName,
-        });
-      }
+      // Then record the payment
+      await updateOrderPayment.mutateAsync({ orderId, amount: paymentAmount });
+      
+      toast.success('Заказ отмечен как доставленный и оплата зарегистрирована');
     } catch (error) {
-      toast.error('Не удалось отметить заказ как доставленный');
+      toast.error('Не удалось обработать доставку заказа');
+      console.error('Error processing delivery:', error);
     }
   };
   
@@ -411,7 +421,7 @@ const MerchantOrders = () => {
                             <DialogHeader>
                               <DialogTitle>Подтверждение доставки</DialogTitle>
                             </DialogHeader>
-                            <p>Вы уверены, что заказ #{order.id} был доставлен?</p>
+                            <p>Вы уверены, что заказ #{order.id} был доставлен? После подтверждения потребуется ввести информацию об оплате.</p>
                             <DialogFooter>
                               <DialogClose asChild>
                                 <Button variant="outline">Отмена</Button>
@@ -450,6 +460,7 @@ const MerchantOrders = () => {
           orderId={paymentDialogOrder.id}
           orderTotal={paymentDialogOrder.total}
           clientName={paymentDialogOrder.clientName}
+          onPaymentComplete={handlePaymentComplete}
         />
       )}
     </div>

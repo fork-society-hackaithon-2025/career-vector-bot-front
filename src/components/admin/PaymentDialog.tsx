@@ -10,7 +10,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formatPrice } from '@/lib/utils';
-import { useUpdateOrderPayment } from '@/common/hooks/useUpdateOrderPayment';
 
 interface PaymentDialogProps {
   isOpen: boolean;
@@ -18,6 +17,7 @@ interface PaymentDialogProps {
   orderId: number;
   orderTotal: number;
   clientName: string;
+  onPaymentComplete?: (orderId: number, paymentAmount: number) => void;
 }
 
 export const PaymentDialog = ({
@@ -26,26 +26,30 @@ export const PaymentDialog = ({
   orderId,
   orderTotal,
   clientName,
+  onPaymentComplete,
 }: PaymentDialogProps) => {
   const [paymentAmount, setPaymentAmount] = useState('');
-  const { mutate: updatePayment, isLoading } = useUpdateOrderPayment();
 
   const handleSubmit = () => {
     const amount = Number(paymentAmount);
     if (isNaN(amount) || amount < 0) return;
 
-    updatePayment(
-      {
-        orderId,
-        amount,
-      },
-      {
-        onSuccess: () => {
-          onClose();
-          setPaymentAmount('');
-        },
-      }
-    );
+    if (onPaymentComplete) {
+      onPaymentComplete(orderId, amount);
+    }
+    
+    onClose();
+    setPaymentAmount('');
+  };
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const numValue = Number(value);
+    
+    // Allow empty string or valid non-negative numbers
+    if (value === '' || (!isNaN(numValue) && numValue >= 0)) {
+      setPaymentAmount(value);
+    }
   };
 
   return (
@@ -55,6 +59,7 @@ export const PaymentDialog = ({
           <DialogTitle>Оплата заказа</DialogTitle>
           <DialogDescription>
             Введите сумму, которую оплатил клиент {clientName} при получении заказа.
+            При подтверждении заказ будет отмечен как доставленный и оплата будет зарегистрирована.
             Общая сумма заказа: {formatPrice(orderTotal)}
           </DialogDescription>
         </DialogHeader>
@@ -65,7 +70,7 @@ export const PaymentDialog = ({
             <Input
               type="number"
               value={paymentAmount}
-              onChange={(e) => setPaymentAmount(e.target.value)}
+              onChange={handleAmountChange}
               placeholder="Введите сумму"
               min="0"
               max={orderTotal}
@@ -84,7 +89,7 @@ export const PaymentDialog = ({
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={!paymentAmount || isLoading}
+            disabled={!paymentAmount}
           >
             Подтвердить
           </Button>

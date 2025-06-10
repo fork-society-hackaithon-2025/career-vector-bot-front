@@ -24,7 +24,7 @@ export class OrdersService extends ApiServiceClass {
         return this.POST('', orderData);
     }
 
-    async updateStatus(id: number, orderStatus: OrderStatus, paymentAmount?: number): Promise<Order> {
+    async updateStatus(id: number, orderStatus: OrderStatus, paymentAmount?: number): Promise<ApiResponse<Order>> {
         return this.PATCH(`/${id}/status`, {orderStatus, paymentAmount});
     }
 
