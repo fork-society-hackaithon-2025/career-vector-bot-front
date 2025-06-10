@@ -5,6 +5,7 @@ import {AuthService} from "@/common/api/services/auth.service.ts";
 import {OrdersService} from "@/common/api/services/orders.service.ts";
 import {AnalyticsService} from "@/common/api/services/analytics.service.ts";
 import {CategoriesService} from "@/common/api/services/categories.service.ts";
+import {PaymentService} from "@/common/api/services/payment.service.ts";
 
 export const apiConfig = {
     baseUrl: import.meta.env.VITE_API_URL
@@ -19,6 +20,7 @@ export class Api {
     public orders: OrdersService;
     public analytics: AnalyticsService;
     public categories: CategoriesService;
+    public payments: PaymentService;
 
     constructor() {
         this.axios = axios.create({
@@ -57,6 +59,7 @@ export class Api {
         this.orders = new OrdersService(this.axios);
         this.analytics = new AnalyticsService(this.axios);
         this.categories = new CategoriesService(this.axios);
+        this.payments = new PaymentService(this.axios);
     }
 
     /** call this immediately after you get your JWT */

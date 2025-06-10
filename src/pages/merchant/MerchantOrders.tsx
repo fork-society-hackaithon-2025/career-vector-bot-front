@@ -21,6 +21,7 @@ import {useOrder, useOrders, useUpdateOrderStatus} from '@/common/hooks/useOrder
 import {useProductsBatch} from '@/common/hooks/useProducts';
 import { OrderEditDialog } from './components/OrderEditDialog';
 import { formatPrice } from '@/lib/utils';
+import { PaymentDialog } from '@/components/admin/PaymentDialog';
 
 interface OrderItemProps {
   productId: number;
@@ -55,6 +56,11 @@ const MerchantOrders = () => {
   const { data: selectedOrder, isLoading: isLoadingOrderDetails } = useOrder(selectedOrderId || 0);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [paymentDialogOrder, setPaymentDialogOrder] = useState<{
+    id: number;
+    total: number;
+    clientName: string;
+  } | null>(null);
   
   const productIds = useMemo(() => {
     if (!selectedOrder?.orderItems) {
@@ -90,8 +96,23 @@ const MerchantOrders = () => {
     updateOrderStatus.mutate({ id: Number(orderId), status: 'REJECTED' });
   };
 
-  const handleMarkAsDelivered = (orderId: string) => {
-    updateOrderStatus.mutate({ id: Number(orderId), status: 'DELIVERED' });
+  const handleMarkAsDelivered = async (orderId: string) => {
+    try {
+      // First mark the order as delivered
+      await updateOrderStatus.mutateAsync({ id: Number(orderId), status: 'DELIVERED' });
+      
+      // Then show the payment dialog
+      const order = orders.find(o => o.id.toString() === orderId);
+      if (order) {
+        setPaymentDialogOrder({
+          id: order.id,
+          total: order.totalPrice,
+          clientName: order.clientName,
+        });
+      }
+    } catch (error) {
+      toast.error('Не удалось отметить заказ как доставленный');
+    }
   };
   
   const handlePrintOrder = (order: Order) => {
@@ -376,14 +397,36 @@ const MerchantOrders = () => {
                         </>
                       )}
                       {order.orderStatus === 'CONFIRMED' && (
-                        <Button
-                          size="sm"
-                          className="bg-blue-500 hover:bg-blue-600 w-full"
-                          onClick={() => handleMarkAsDelivered(order.id.toString())}
-                        >
-                          <Check className="h-4 w-4 mr-1" />
-                          Отметить доставленным
-                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              className="bg-blue-500 hover:bg-blue-600 w-full"
+                            >
+                              <Check className="h-4 w-4 mr-1" />
+                              Отметить доставленным
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Подтверждение доставки</DialogTitle>
+                            </DialogHeader>
+                            <p>Вы уверены, что заказ #{order.id} был доставлен?</p>
+                            <DialogFooter>
+                              <DialogClose asChild>
+                                <Button variant="outline">Отмена</Button>
+                              </DialogClose>
+                              <Button
+                                className="bg-blue-500 hover:bg-blue-600"
+                                onClick={() => {
+                                  handleMarkAsDelivered(order.id.toString());
+                                }}
+                              >
+                                Да, заказ доставлен
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
                       )}
                     </div>
                   </div>
@@ -399,6 +442,16 @@ const MerchantOrders = () => {
           </Card>
         )}
       </div>
+
+      {paymentDialogOrder && (
+        <PaymentDialog
+          isOpen={!!paymentDialogOrder}
+          onClose={() => setPaymentDialogOrder(null)}
+          orderId={paymentDialogOrder.id}
+          orderTotal={paymentDialogOrder.total}
+          clientName={paymentDialogOrder.clientName}
+        />
+      )}
     </div>
   );
 };

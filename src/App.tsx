@@ -19,6 +19,8 @@ import MerchantProducts from "./pages/merchant/MerchantProducts";
 import MerchantOrders from "./pages/merchant/MerchantOrders";
 import MerchantAnalytics from "./pages/merchant/MerchantAnalytics";
 import { CategoriesPage } from "./pages/merchant/CategoriesPage";
+import MerchantClients from "./pages/merchant/MerchantClients";
+import MerchantClientDetail from "./pages/merchant/MerchantClientDetail";
 
 import Layout from "./components/layout/Layout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -95,6 +97,16 @@ const App = () => {
                   <Route path="/merchant/orders" element={
                     <MerchantRoute>
                       <MerchantOrders />
+                    </MerchantRoute>
+                  } />
+                  <Route path="/merchant/clients" element={
+                    <MerchantRoute>
+                      <MerchantClients />
+                    </MerchantRoute>
+                  } />
+                  <Route path="/merchant/clients/:clientId" element={
+                    <MerchantRoute>
+                      <MerchantClientDetail />
                     </MerchantRoute>
                   } />
                   <Route path="/merchant/analytics" element={
