@@ -33,6 +33,7 @@ const queryClient = new QueryClient();
 const App = () => {
   useEffect(() => {
     // Initialize Telegram WebApp
+    console.log('test commit');
     WebApp.ready();
     WebApp.expand();
   }, []);
