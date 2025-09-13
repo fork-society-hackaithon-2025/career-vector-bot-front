@@ -138,11 +138,6 @@ function Dashboard() {
           <p className="text-gray-600 dark:text-gray-400 mb-6">
             Начните использовать Telegram бота для появления данных
           </p>
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            API: <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-              localhost:8080/api/*
-            </code>
-          </div>
         </div>
       )}
     </div>
