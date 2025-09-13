@@ -12,7 +12,7 @@ function CategoryPieChart({ categories }) {
   }
 
   const data = Object.entries(categories).map(([category, count]) => ({
-    name: `${category} points`,
+    name: getCategoryLabel(category),
     value: count,
     category: category,
     description: getCategoryDescription(category),

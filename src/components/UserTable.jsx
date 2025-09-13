@@ -20,7 +20,7 @@ import {
   Filter,
   Eye
 } from 'lucide-react'
-import { formatDate, getCategoryClass, getStatusInfo, formatUserName } from '../utils/formatters'
+import { formatDate, getCategoryClass, getStatusInfo, formatUserName, getCategoryLabel } from '../utils/formatters'
 
 function UserTable({ users }) {
   const [sorting, setSorting] = useState([])
@@ -143,7 +143,7 @@ function UserTable({ users }) {
           }
           return (
             <span className={getCategoryClass(user.category)}>
-              {user.category}
+              {getCategoryLabel(user.category)}
             </span>
           )
         },
@@ -270,7 +270,7 @@ function UserTable({ users }) {
           <option value="all">All Categories</option>
           {categories.slice(1).map((category) => (
             <option key={category} value={category}>
-              {category} points
+              {getCategoryLabel(category)}
             </option>
           ))}
         </select>

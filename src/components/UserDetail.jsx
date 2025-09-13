@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, User, Calendar, Trophy, MessageSquare } from 'lucide-react'
 import { adminApi } from '../api/adminApi'
-import { formatDate, getCategoryClass, getCategoryDescription, getCategoryColor } from '../utils/formatters'
+import { formatDate, getCategoryClass, getCategoryDescription, getCategoryColor, getCategoryLabel } from '../utils/formatters'
 
 function UserDetail() {
   const { id } = useParams()
@@ -98,7 +98,7 @@ function UserDetail() {
             Category
           </div>
           <div className={`text-3xl font-bold mb-2 ${getCategoryClass(category).replace('badge', '').trim()}`}>
-            {category}
+            {getCategoryLabel(category)}
           </div>
           <div className="text-sm text-gray-600 dark:text-gray-400">
             score range
