@@ -87,6 +87,22 @@ export const getCategoryColor = (category) => {
   }
 }
 
+// Получение короткого описания категории для легенды
+export const getCategoryLabel = (category) => {
+  switch (category) {
+    case '0-24':
+      return 'Высокое соответствие'
+    case '25-49':
+      return 'Частичное соответствие'
+    case '50-73':
+      return 'Заметное различие'
+    case '74-98':
+      return 'Не соответствует'
+    default:
+      return 'Неизвестная категория'
+  }
+}
+
 // Форматирование имени пользователя
 export const formatUserName = (user) => {
   if (user.username) {

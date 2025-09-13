@@ -1,6 +1,6 @@
 import React from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
-import { getCategoryColor, getCategoryDescription } from '../../utils/formatters'
+import { getCategoryColor, getCategoryDescription, getCategoryLabel } from '../../utils/formatters'
 
 function CategoryPieChart({ categories }) {
   if (!categories || Object.keys(categories).length === 0) {
@@ -16,6 +16,7 @@ function CategoryPieChart({ categories }) {
     value: count,
     category: category,
     description: getCategoryDescription(category),
+    label: getCategoryLabel(category),
     color: getCategoryColor(category)
   }))
 
@@ -49,7 +50,7 @@ function CategoryPieChart({ categories }) {
               style={{ backgroundColor: entry.color }}
             />
             <span className="text-sm text-gray-600 dark:text-gray-400">
-              {entry.value} ({entry.payload.value})
+              {entry.payload.label} ({entry.payload.value})
             </span>
           </li>
         ))}
