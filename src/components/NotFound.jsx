@@ -11,7 +11,7 @@ function NotFound() {
           404
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-          Страница не найдена
+          Page not found
         </p>
         <div className="flex items-center justify-center gap-4">
           <Link 
@@ -19,14 +19,14 @@ function NotFound() {
             className="btn-primary"
           >
             <Home className="w-4 h-4" />
-            На главную
+            To main
           </Link>
           <button 
             onClick={() => window.history.back()} 
             className="btn-secondary"
           >
             <ArrowLeft className="w-4 h-4" />
-            Назад
+            Back
           </button>
         </div>
       </div>

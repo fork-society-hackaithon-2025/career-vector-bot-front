@@ -27,22 +27,22 @@ class AdminAPI {
     }
   }
 
-  // Получить данные для дашборда (пользователи + статистика)
+  // Get dashboard data (users + statistics)
   async getDashboard() {
     return this.request('/dashboard')
   }
 
-  // Получить список всех пользователей
+  // Get list of all users
   async getUsers() {
     return this.request('/users')
   }
 
-  // Получить детальный отчет пользователя
+  // Get detailed user report
   async getUserReport(userId) {
     return this.request(`/users/${userId}/report`)
   }
 
-  // Получить общую статистику
+  // Get general statistics
   async getStats() {
     return this.request('/stats')
   }
@@ -50,7 +50,7 @@ class AdminAPI {
 
 export const adminApi = new AdminAPI()
 
-// Хуки для React Query (если захотите добавить позже)
+// React Query hooks (if you want to add later)
 export const API_KEYS = {
   dashboard: 'dashboard',
   users: 'users',

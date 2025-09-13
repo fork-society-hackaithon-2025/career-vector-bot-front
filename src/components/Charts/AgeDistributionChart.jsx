@@ -5,7 +5,7 @@ function AgeDistributionChart({ users }) {
   const data = useMemo(() => {
     if (!users || users.length === 0) return []
     
-    // Группируем пользователей по возрасту
+    // Group users by age
     const ageGroups = users.reduce((acc, user) => {
       const age = user.age
       if (!acc[age]) {
@@ -26,7 +26,7 @@ function AgeDistributionChart({ users }) {
   if (data.length === 0) {
     return (
       <div className="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-        📊 Нет данных для отображения
+        📊 No data to display
       </div>
     )
   }
@@ -36,7 +36,7 @@ function AgeDistributionChart({ users }) {
       return (
         <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
           <p className="font-semibold text-gray-900 dark:text-white mb-2">
-            Возраст: {label} лет
+            Age: {label} years
           </p>
           {payload.map((entry, index) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
@@ -57,7 +57,7 @@ function AgeDistributionChart({ users }) {
           <XAxis 
             dataKey="age" 
             tick={{ fontSize: 12 }}
-            label={{ value: 'Возраст', position: 'insideBottom', offset: -5 }}
+            label={{ value: 'Age', position: 'insideBottom', offset: -5 }}
           />
           <YAxis tick={{ fontSize: 12 }} />
           <Tooltip content={<CustomTooltip />} />
@@ -65,19 +65,19 @@ function AgeDistributionChart({ users }) {
           <Bar 
             dataKey="completed" 
             fill="#10b981" 
-            name="Завершили"
+            name="Completed"
             radius={[2, 2, 0, 0]}
           />
           <Bar 
             dataKey="in_progress" 
             fill="#f59e0b" 
-            name="В процессе"
+            name="In Progress"
             radius={[2, 2, 0, 0]}
           />
           <Bar 
             dataKey="total" 
             fill="#6b7280" 
-            name="Всего"
+            name="Total"
             fillOpacity={0.3}
             radius={[2, 2, 0, 0]}
           />

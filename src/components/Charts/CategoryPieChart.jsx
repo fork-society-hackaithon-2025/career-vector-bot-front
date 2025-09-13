@@ -6,13 +6,13 @@ function CategoryPieChart({ categories }) {
   if (!categories || Object.keys(categories).length === 0) {
     return (
       <div className="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-        📊 Нет данных для отображения
+        📊 No data to display
       </div>
     )
   }
 
   const data = Object.entries(categories).map(([category, count]) => ({
-    name: `${category} баллов`,
+    name: `${category} points`,
     value: count,
     category: category,
     description: getCategoryDescription(category),
@@ -29,7 +29,7 @@ function CategoryPieChart({ categories }) {
             {data.name}
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Пользователей: <span className="font-medium">{data.value}</span>
+            Users: <span className="font-medium">{data.value}</span>
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-48">
             {data.description}

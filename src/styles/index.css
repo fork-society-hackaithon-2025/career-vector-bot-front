@@ -46,7 +46,7 @@
   }
 }
 
-/* Кастомные scrollbars */
+/* Custom scrollbars */
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;

@@ -4,12 +4,12 @@ const ThemeContext = createContext()
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    // Проверяем localStorage при инициализации
+    // Check localStorage on initialization
     const savedTheme = localStorage.getItem('theme')
     if (savedTheme) {
       return savedTheme
     }
-    // Если нет сохраненной темы, используем системную
+    // If no saved theme, use system theme
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
 

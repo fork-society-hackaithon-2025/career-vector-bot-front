@@ -1,31 +1,31 @@
 import { format, formatDistanceToNow } from 'date-fns'
-import { ru } from 'date-fns/locale'
+import { enUS } from 'date-fns/locale'
 
-// Форматирование даты
+// Date formatting
 export const formatDate = (dateString) => {
   if (!dateString) return '-'
   
   try {
     const date = new Date(dateString)
-    return format(date, 'dd.MM.yyyy HH:mm', { locale: ru })
+    return format(date, 'MM/dd/yyyy HH:mm', { locale: enUS })
   } catch (error) {
     return dateString
   }
 }
 
-// Форматирование относительного времени
+// Relative time formatting
 export const formatRelativeTime = (dateString) => {
   if (!dateString) return '-'
   
   try {
     const date = new Date(dateString)
-    return formatDistanceToNow(date, { addSuffix: true, locale: ru })
+    return formatDistanceToNow(date, { addSuffix: true, locale: enUS })
   } catch (error) {
     return dateString
   }
 }
 
-// Форматирование баллов
+// Score formatting
 export const formatScore = (score, maxScore) => {
   if (typeof score !== 'number' || typeof maxScore !== 'number') {
     return '-'
@@ -33,45 +33,45 @@ export const formatScore = (score, maxScore) => {
   return `${score}/${maxScore}`
 }
 
-// Форматирование процентов
+// Percentage formatting
 export const formatPercentage = (value, decimals = 1) => {
   if (typeof value !== 'number') return '-'
   return `${value.toFixed(decimals)}%`
 }
 
-// Получение класса CSS для категории баллов
+// Get CSS class for score category
 export const getCategoryClass = (category) => {
   switch (category) {
     case '0-24':
-      return 'badge badge-success' // Лучшая категория
+      return 'badge badge-success' // Best category
     case '25-49':
       return 'badge badge-info'
     case '50-73':
       return 'badge badge-warning'
     case '74-98':
-      return 'badge badge-error' // Худшая категория
+      return 'badge badge-error' // Worst category
     default:
       return 'badge'
   }
 }
 
-// Получение описания категории
+// Get category description
 export const getCategoryDescription = (category) => {
   switch (category) {
     case '0-24':
-      return 'Высоко соответствует профилю социального лидера'
+      return 'Highly matches social leader profile'
     case '25-49':
-      return 'Соответствует профилю социального лидера'
+      return 'Matches social leader profile'
     case '50-73':
-      return 'Заметно разнящийся с профилем социального лидера'
+      return 'Significantly differs from social leader profile'
     case '74-98':
-      return 'НЕ соответствует профилю социального лидера'
+      return 'Does NOT match social leader profile'
     default:
-      return 'Неизвестная категория'
+      return 'Unknown category'
   }
 }
 
-// Получение цвета для графиков
+// Get color for charts
 export const getCategoryColor = (category) => {
   switch (category) {
     case '0-24':
@@ -87,23 +87,23 @@ export const getCategoryColor = (category) => {
   }
 }
 
-// Получение короткого описания категории для легенды
+// Get short category description for legend
 export const getCategoryLabel = (category) => {
   switch (category) {
     case '0-24':
-      return 'Высокое соответствие'
+      return 'High match'
     case '25-49':
-      return 'Частичное соответствие'
+      return 'Partial match'
     case '50-73':
-      return 'Заметное различие'
+      return 'Significant difference'
     case '74-98':
-      return 'Не соответствует'
+      return 'No match'
     default:
-      return 'Неизвестная категория'
+      return 'Unknown category'
   }
 }
 
-// Форматирование имени пользователя
+// User name formatting
 export const formatUserName = (user) => {
   if (user.username) {
     return `@${user.username}`
@@ -111,11 +111,11 @@ export const formatUserName = (user) => {
   return `ID: ${user.telegram_id}`
 }
 
-// Форматирование статуса
+// Status formatting
 export const getStatusInfo = (isCompleted, choicesCount = 0) => {
   if (isCompleted) {
     return {
-      text: 'Завершен',
+      text: 'Completed',
       icon: '✅',
       class: 'text-green-600 dark:text-green-400'
     }
@@ -123,14 +123,14 @@ export const getStatusInfo = (isCompleted, choicesCount = 0) => {
   
   if (choicesCount > 0) {
     return {
-      text: 'В процессе',
+      text: 'In Progress',
       icon: '🔄',
       class: 'text-yellow-600 dark:text-yellow-400'
     }
   }
   
   return {
-    text: 'Не начат',
+    text: 'Not Started',
     icon: '⏳',
     class: 'text-gray-600 dark:text-gray-400'
   }

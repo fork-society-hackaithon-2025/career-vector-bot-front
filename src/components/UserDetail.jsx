@@ -46,11 +46,11 @@ function UserDetail() {
       <div className="flex items-center gap-4">
         <Link to="/" className="btn-secondary">
           <ArrowLeft className="w-4 h-4" />
-          Назад
+          Back
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            👤 Отчет
+            👤 Report
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             {user.username ? `@${user.username}` : `ID: ${user.telegram_id}`}
@@ -63,17 +63,17 @@ function UserDetail() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <InfoItem
             icon={<User className="w-5 h-5" />}
-            label="Пользователь"
+            label="User"
             value={user.username ? `@${user.username}` : `ID: ${user.telegram_id}`}
           />
           <InfoItem
             icon={<Calendar className="w-5 h-5" />}
-            label="Возраст"
-            value={`${user.age} лет`}
+            label="Age"
+            value={`${user.age} years`}
           />
           <InfoItem
             icon={<Calendar className="w-5 h-5" />}
-            label="Дата регистрации"
+            label="Registration Date"
             value={formatDate(user.created_at)}
           />
         </div>
@@ -83,37 +83,37 @@ function UserDetail() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="card p-6 text-center">
           <div className="text-lg font-medium text-gray-900 dark:text-white mt-1">
-            Итоговый балл
+            Final Score
           </div>
           <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
             {total_score}
           </div>
           <div className="text-sm text-gray-600 dark:text-gray-400">
-            из {max_possible_score} баллов
+            out of {max_possible_score} points
           </div>
         </div>
         
         <div className="card p-6 text-center">
           <div className="text-lg font-medium text-gray-900 dark:text-white mt-1">
-            Категория
+            Category
           </div>
           <div className={`text-3xl font-bold mb-2 ${getCategoryClass(category).replace('badge', '').trim()}`}>
             {category}
           </div>
           <div className="text-sm text-gray-600 dark:text-gray-400">
-            диапазон баллов
+            score range
           </div>
         </div>
 
         <div className="card p-6 text-center">
           <div className="text-lg font-medium text-gray-900 dark:text-white mt-1">
-            Активность
+            Activity
           </div>
           <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
             {game_choices ? game_choices.length : 0}
           </div>
           <div className="text-sm text-gray-600 dark:text-gray-400">
-            игровых выборов
+            game choices
           </div>
         </div>
       </div>
@@ -122,7 +122,7 @@ function UserDetail() {
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
           <Trophy className="w-5 h-5" />
-          Интерпретация результатов
+          Results Interpretation
         </h3>
         <div className={`p-4 rounded-lg border-l-4 ${
           category === '0-24' ? 'bg-green-50 dark:bg-green-900/20 border-green-500' :
@@ -142,14 +142,14 @@ function UserDetail() {
         <div className="card p-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
             <MessageSquare className="w-5 h-5" />
-            История игровых выборов ({game_choices.length})
+            Game Choices History ({game_choices.length})
           </h2>
           <div className="space-y-4">
             {game_choices.map((choice, index) => (
               <div key={index} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium text-gray-900 dark:text-white">
-                    Выбор #{index + 1}
+                    Choice #{index + 1}
                   </span>
                   <span className="text-xs text-gray-500">
                     {formatDate(choice.created_at)}
@@ -157,7 +157,7 @@ function UserDetail() {
                 </div>
                 <div>
                   <span className="text-gray-600 dark:text-gray-400">
-                    Выбор: {choice.selected_choice} | {choice.competency ? choice.competency.name_ru : `Компетенция ID: ${choice.competency_id}`}
+                    Choice: {choice.selected_choice} | {choice.competency ? choice.competency.name_ru : `Competency ID: ${choice.competency_id}`}
                   </span>
                 </div>
               </div>
@@ -192,18 +192,18 @@ function ErrorState({ error, onRetry }) {
     <div className="card p-8 text-center">
       <div className="text-6xl mb-4">❌</div>
       <div className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-        Ошибка загрузки данных
+        Data loading error
       </div>
       <div className="text-gray-600 dark:text-gray-400 mb-6">
         {error}
       </div>
       <div className="flex items-center justify-center gap-4">
         <button onClick={onRetry} className="btn-primary">
-          Попробовать снова
+          Try again
         </button>
         <Link to="/" className="btn-secondary">
           <ArrowLeft className="w-4 h-4" />
-          На главную
+          Back to main
         </Link>
       </div>
     </div>
@@ -215,14 +215,14 @@ function NotFoundState() {
     <div className="card p-8 text-center">
       <div className="text-6xl mb-4">🔍</div>
       <div className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-        Пользователь не найден
+        User not found
       </div>
       <div className="text-gray-600 dark:text-gray-400 mb-6">
-        Пользователь с таким ID не существует или не завершил тестирование
+        User with this ID does not exist or has not completed testing
       </div>
       <Link to="/" className="btn-primary">
         <ArrowLeft className="w-4 h-4" />
-        Вернуться к списку
+        Back to list
       </Link>
     </div>
   )

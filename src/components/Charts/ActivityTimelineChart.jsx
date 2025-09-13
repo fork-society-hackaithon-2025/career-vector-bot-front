@@ -1,24 +1,24 @@
 import React, { useMemo } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { format, startOfDay, subDays } from 'date-fns'
-import { ru } from 'date-fns/locale'
+import { enUS } from 'date-fns/locale'
 
 function ActivityTimelineChart({ users }) {
   const data = useMemo(() => {
     if (!users || users.length === 0) return []
     
-    // Получаем данные за последние 7 дней
+    // Get data for the last 7 days
     const days = Array.from({ length: 7 }, (_, i) => {
       const date = startOfDay(subDays(new Date(), 6 - i))
       return {
         date,
-        dateString: format(date, 'dd.MM', { locale: ru }),
+        dateString: format(date, 'MM/dd', { locale: enUS }),
         registrations: 0,
         completions: 0,
       }
     })
 
-    // Подсчитываем регистрации и завершения по дням
+    // Count registrations and completions by day
     users.forEach(user => {
       const createdDate = startOfDay(new Date(user.created_at))
       const dayIndex = days.findIndex(day => 
@@ -39,7 +39,7 @@ function ActivityTimelineChart({ users }) {
   if (data.length === 0) {
     return (
       <div className="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-        📊 Нет данных для отображения
+        📊 No data to display
       </div>
     )
   }
@@ -79,7 +79,7 @@ function ActivityTimelineChart({ users }) {
             dataKey="registrations" 
             stroke="#3b82f6" 
             strokeWidth={2}
-            name="Регистрации"
+            name="Registrations"
             dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
             activeDot={{ r: 6 }}
           />
@@ -88,7 +88,7 @@ function ActivityTimelineChart({ users }) {
             dataKey="completions" 
             stroke="#10b981" 
             strokeWidth={2}
-            name="Завершения"
+            name="Completions"
             dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
             activeDot={{ r: 6 }}
           />

@@ -45,7 +45,7 @@ function UserTable({ users }) {
       },
       {
         accessorKey: 'username',
-        header: 'Пользователь',
+        header: 'User',
         cell: ({ row }) => {
           const user = row.original
           return (
@@ -68,17 +68,17 @@ function UserTable({ users }) {
       },
       {
         accessorKey: 'age',
-        header: 'Возраст',
+        header: 'Age',
         size: 80,
         cell: ({ getValue }) => (
           <span className="text-gray-600 dark:text-gray-400">
-            {getValue()} лет
+            {getValue()} years
           </span>
         ),
       },
       {
         accessorKey: 'language',
-        header: 'Язык',
+        header: 'Language',
         size: 80,
         cell: ({ getValue }) => {
           const flags = { ru: '🇷🇺', en: '🇺🇸', kz: '🇰🇿' }
@@ -92,7 +92,7 @@ function UserTable({ users }) {
       },
       {
         accessorKey: 'is_completed',
-        header: 'Статус',
+        header: 'Status',
         cell: ({ row }) => {
           const user = row.original
           const status = getStatusInfo(user.is_completed, user.choices_count)
@@ -114,7 +114,7 @@ function UserTable({ users }) {
       },
       {
         accessorKey: 'total_score',
-        header: 'Баллы',
+        header: 'Score',
         cell: ({ row }) => {
           const user = row.original
           if (!user.is_completed) {
@@ -135,7 +135,7 @@ function UserTable({ users }) {
       },
       {
         accessorKey: 'category',
-        header: 'Категория',
+        header: 'Category',
         cell: ({ row }) => {
           const user = row.original
           if (!user.is_completed) {
@@ -155,7 +155,7 @@ function UserTable({ users }) {
       },
       {
         accessorKey: 'created_at',
-        header: 'Дата регистрации',
+        header: 'Registration Date',
         cell: ({ getValue }) => (
           <span className="text-gray-600 dark:text-gray-400">
             {formatDate(getValue())}
@@ -165,7 +165,7 @@ function UserTable({ users }) {
       },
       {
         id: 'actions',
-        header: 'Действия',
+        header: 'Actions',
         size: 100,
         cell: ({ row }) => {
           const user = row.original
@@ -177,11 +177,11 @@ function UserTable({ users }) {
                   className="btn-primary text-xs py-1 px-2"
                 >
                   <Eye className="w-3 h-3" />
-                  Отчет
+                  Report
                 </Link>
               ) : (
                 <span className="text-xs text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                  Ожидание
+                  Waiting
                 </span>
               )}
             </div>
@@ -214,10 +214,10 @@ function UserTable({ users }) {
 
   const categories = ['all', '0-24', '25-49', '50-73', '74-98']
   const statuses = [
-    { value: 'all', label: 'Все' },
-    { value: 'completed', label: 'Завершены' },
-    { value: 'in_progress', label: 'В процессе' },
-    { value: 'not_started', label: 'Не начаты' },
+    { value: 'all', label: 'All' },
+    { value: 'completed', label: 'Completed' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'not_started', label: 'Not Started' },
   ]
 
   return (
@@ -225,7 +225,7 @@ function UserTable({ users }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-          👥 Все пользователи ({users.length})
+          👥 All Users ({users.length})
         </h2>
       </div>
 
@@ -239,7 +239,7 @@ function UserTable({ users }) {
               value={globalFilter ?? ''}
               onChange={(e) => setGlobalFilter(e.target.value)}
               className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-              placeholder="Поиск пользователей..."
+              placeholder="Search users..."
             />
           </div>
         </div>
@@ -267,10 +267,10 @@ function UserTable({ users }) {
           }
           className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          <option value="all">Все категории</option>
+          <option value="all">All Categories</option>
           {categories.slice(1).map((category) => (
             <option key={category} value={category}>
-              {category} баллов
+              {category} points
             </option>
           ))}
         </select>
@@ -333,7 +333,7 @@ function UserTable({ users }) {
         <div className="text-center py-12 text-gray-500 dark:text-gray-400">
           {globalFilter || columnFilters.length > 0 ? (
             <>
-              🔍 Пользователи не найдены
+              🔍 Users not found
               <div className="mt-2">
                 <button
                   onClick={() => {
@@ -342,12 +342,12 @@ function UserTable({ users }) {
                   }}
                   className="text-blue-600 hover:text-blue-500"
                 >
-                  Сбросить фильтры
+                  Reset filters
                 </button>
               </div>
             </>
           ) : (
-            '📭 Пользователей пока нет'
+            '📭 No users yet'
           )}
         </div>
       )}
@@ -356,12 +356,12 @@ function UserTable({ users }) {
       {table.getRowModel().rows.length > 0 && (
         <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
           <div className="text-sm text-gray-600 dark:text-gray-400">
-            Показано {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} -{' '}
+            Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} -{' '}
             {Math.min(
               (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
               table.getFilteredRowModel().rows.length
             )}{' '}
-            из {table.getFilteredRowModel().rows.length} записей
+            of {table.getFilteredRowModel().rows.length} records
           </div>
 
           <div className="flex items-center gap-2">
@@ -381,9 +381,9 @@ function UserTable({ users }) {
             </button>
             
             <span className="flex items-center gap-1 text-sm text-gray-700 dark:text-gray-300">
-              <span>Страница</span>
+              <span>Page</span>
               <strong className="text-gray-900 dark:text-gray-100">
-                {table.getState().pagination.pageIndex + 1} из {table.getPageCount()}
+                {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
               </strong>
             </span>
 

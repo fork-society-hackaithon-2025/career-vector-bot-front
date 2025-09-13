@@ -44,10 +44,10 @@ function Dashboard() {
   if (error) {
     return (
       <div className="card p-8 text-center">
-        <div className="text-red-500 mb-4">❌ Ошибка загрузки данных</div>
+        <div className="text-red-500 mb-4">❌ Data loading error</div>
         <div className="text-gray-600 dark:text-gray-400 mb-4">{error}</div>
         <button onClick={loadDashboard} className="btn-primary">
-          Попробовать снова
+          Try again
         </button>
       </div>
     )
@@ -61,35 +61,35 @@ function Dashboard() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          📊 Отчеты
+          📊 Reports
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Обзор результатов профориентационного тестирования
+          Overview of career guidance testing results
         </p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <StatCard
-          title="Всего пользователей"
+          title="Total Users"
           value={stats.total_users || 0}
           icon={<Users className="w-6 h-6" />}
           color="blue"
         />
         <StatCard
-          title="Завершили тест"
+          title="Completed Test"
           value={stats.completed_users || 0}
           icon={<CheckCircle className="w-6 h-6" />}
           color="green"
         />
         <StatCard
-          title="В процессе"
+          title="In Progress"
           value={stats.in_progress_users || 0}
           icon={<Clock className="w-6 h-6" />}
           color="yellow"
         />
         <StatCard
-          title="Средний балл"
+          title="Average Score"
           value={stats.average_score ? stats.average_score.toFixed(1) : '0.0'}
           icon={<TrendingUp className="w-6 h-6" />}
           color="purple"
@@ -102,7 +102,7 @@ function Dashboard() {
         <div className="card p-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
             <PieChart className="w-5 h-5" />
-            Распределение по категориям
+            Category Distribution
           </h2>
           <CategoryPieChart categories={stats.categories} />
         </div>
@@ -111,7 +111,7 @@ function Dashboard() {
         <div className="card p-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
             <BarChart3 className="w-5 h-5" />
-            Распределение по возрасту
+            Age Distribution
           </h2>
           <AgeDistributionChart users={users} />
         </div>
@@ -121,7 +121,7 @@ function Dashboard() {
       <div className="card p-6">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
           <TrendingUp className="w-5 h-5" />
-          Активность за последние 7 дней
+          Activity for the last 7 days
         </h2>
         <ActivityTimelineChart users={users} />
       </div>
@@ -133,10 +133,10 @@ function Dashboard() {
         <div className="card p-12 text-center">
           <div className="text-6xl mb-4">📭</div>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-            Пользователей пока нет
+            No users yet
           </h3>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Начните использовать Telegram бота для появления данных
+            Start using the Telegram bot to see data
           </p>
         </div>
       )}
